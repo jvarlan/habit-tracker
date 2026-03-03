@@ -1,14 +1,11 @@
-import csv
-from config import BASE_DIR
-
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, limpiar_pantalla, preguntar_seguir
-from .checks import comprobar_categoria, comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas, validar_borrar_temporizador
+from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir
+from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito
-from .cargar import mostrar_registros, mostrar_temporizadores, contar_temporizador, contar_habitos, mostrar_categorias,dev_temporizador_id,dev_lista_habitos_cat, dev_categoria_id, dev_habito_id, dev_lista_temporizadores_cat
+from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias
+from .devolver import dev_categoria_id, dev_habito_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar
-from .borrar import borrar_habito, borrar_temporizadores, borrar_csv, borrar_temporizador, borrar_categoria
+from .borrar import borrar_csv, borrar_temporizador
 
-from datetime import datetime
 volver = f"\nEscribe 'volver' si quieres salir al menú de opciones."
 volver2 = f"\n............................................................................"
 

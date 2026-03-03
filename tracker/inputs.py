@@ -1,8 +1,10 @@
 from datetime import datetime
 from .checks import normalizar, validar_horas, comprobar_registro, validar_borrar_temporizador, comprobar_categoria
-from .cargar import contar_habitos, mostrar_registros, mostrar_temporizadores,contar_temporizador, mostrar_categorias, dev_habito_id, dev_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
+from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias 
+from .contar import contar_temporizador, contar_habitos
+from .devolver import dev_habito_id, dev_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria
-from .utilidades import ROJO, VERDE, CIAN, RESET,print_color
+from .utilidades import ROJO, VERDE, RESET,print_color
 
 def pedir_nombre_registro():
      while True:

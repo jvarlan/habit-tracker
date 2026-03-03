@@ -1,6 +1,6 @@
 from .guardar import registrar, habito, registrar_categoria
 from .estadisticas import estadisticas, leer
-from .cargar import mostrar_registros
+from .mostrar import mostrar_registros
 from .opciones import opcion_registro
 from .checks import comprobar_registro
 from .menu import mostrar_menu, seleccionar

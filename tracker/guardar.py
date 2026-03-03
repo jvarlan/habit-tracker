@@ -2,7 +2,7 @@ import csv
 from config import BASE_DIR
 from pathlib import Path
 from .checks import comprobar_categoria
-from .cargar import contar_id
+from .contar import contar_id
 
 def habito(id_habito,nombre, tiempo, fecha):
     ruta = BASE_DIR / "datos" / "temporizadores.csv"

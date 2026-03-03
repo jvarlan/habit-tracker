@@ -1,9 +1,8 @@
-from .cargar import mostrar_registros, mostrar_categorias, mostrar_temporizadores
+from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores
 from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria
-from .guardar import habito
 from .utilidades import limpiar_pantalla
 from .checks import normalizar
-from .utilidades import ROJO, VERDE, CIAN, RESET, print_color
+from .utilidades import ROJO, VERDE, CIAN, print_color
 
 import tkinter as tk
 
