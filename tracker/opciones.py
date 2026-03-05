@@ -3,7 +3,7 @@ from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, va
 from .guardar import registrar, registrar_categoria, habito
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias
 from .devolver import dev_categoria_id, dev_habito_id
-from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar
+from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi
 from .borrar import borrar_csv, borrar_temporizador
 
 volver = f"\nEscribe 'volver' si quieres salir al menú de opciones."
@@ -210,3 +210,29 @@ def opcion_borrar_todo():
     else:
         print_color("No existen elementos a eliminar.",CIAN)
 
+def opcion_modi_habito():
+    # muestra previamente todos los registros a eliminar
+    lista = mostrar_registros()
+
+    if lista:
+        while True:
+            lista = mostrar_registros()
+            print("\nEstos son los hábitos ya registrados: \n")
+            for i, item in enumerate(lista, start=1):
+                print(f"{i} - {item}")
+            print_color(volver, CIAN)
+            print_color("\nModificar un hábito\n",INVERSION)
+            modificar = pedir_habito_modi()
+            if modificar == None:
+                break
+            lista = mostrar_registros()
+            if lista:
+                seguir = input("\n¿Quieres modificar otro hábito? s/n: ")
+                if preguntar_seguir(normalizar(seguir)):
+                    continue
+                else:
+                    break    
+            else:
+                break
+    else:
+        print_color("\nNo existe ningún hábito a modificar.",CIAN)

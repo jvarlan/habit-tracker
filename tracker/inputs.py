@@ -4,6 +4,7 @@ from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categori
 from .contar import contar_temporizador, contar_habitos
 from .devolver import dev_habito_id, dev_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria
+from .modificar import modificar_habito
 from .utilidades import ROJO, VERDE, RESET,print_color
 
 def pedir_nombre_registro():
@@ -123,5 +124,32 @@ def pedir_temporizador_borrar():
                     continue
                 else:
                     return validado
+        else:
+            return None
+        
+def pedir_habito_modi():
+    while True:
+        lista = mostrar_registros()
+        if lista:
+            modificar = input("Introduce el nombre del elemento a modificar: ")
+            if normalizar(modificar) == "volver" or normalizar(modificar) == "salir":
+                return None
+            modificado = input(f"Introduce el nuevo nombre para el hábito {modificar}: ")
+            temporizadores = contar_temporizador(modificar)
+            habitos = contar_habitos(modificar)
+            if habitos == False:
+                print_color("Este hábito no existe.",ROJO)
+                continue
+            else:
+                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres modificar el hábito {modificar}? s/n: {RESET}")
+                seguro = seguro.lower()
+                
+                if seguro == "s" or seguro == "si":
+                    #registros = modificar_temporizadores(dev_habito_id(modificar),temporizadores)
+                    habito = modificar_habito(modificado,dev_habito_id(modificar))
+                    print_color(f"\nEl hábito {modificar} ha sido cambiado con éxito por {modificado}.",VERDE)
+                    return True
+                elif seguro == "n" or seguro == "no":
+                    return
         else:
             return None
