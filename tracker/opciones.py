@@ -1,7 +1,7 @@
 from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito
-from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias
+from .mostrar import mostrar_registros, mostrar_registros_todo, mostrar_temporizadores, mostrar_categorias
 from .devolver import dev_categoria_id, dev_habito_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi
 from .borrar import borrar_csv, borrar_temporizador
@@ -216,14 +216,20 @@ def opcion_modi_habito():
 
     if lista:
         while True:
-            lista = mostrar_registros()
+            lista_todo = mostrar_registros_todo()
+            #ordena la lista por nombre (el segundo campo del csv)
+            lista_todo = sorted(lista_todo, key=lambda x: x[1])
+
             print("\nEstos son los hábitos ya registrados: \n")
-            for i, item in enumerate(lista, start=1):
-                print(f"{i} - {item}")
+            for i, item in enumerate(lista_todo, start=1):
+                habito = item[1]
+                objetivo = item[3]
+                print(f"{i} - {habito} ({objetivo} horas)")
             print_color(volver, CIAN)
             print_color("\nModificar un hábito\n",INVERSION)
             modificar = pedir_habito_modi()
-            if modificar == None:
+           
+            if modificar == "volver":
                 break
             lista = mostrar_registros()
             if lista:

@@ -1,11 +1,11 @@
 from datetime import datetime
 from .checks import normalizar, validar_horas, comprobar_registro, validar_borrar_temporizador, comprobar_categoria
-from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias 
+from .mostrar import mostrar_registros, mostrar_registros_todo, mostrar_temporizadores, mostrar_categorias 
 from .contar import contar_temporizador, contar_habitos
 from .devolver import dev_habito_id, dev_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria
 from .modificar import modificar_habito
-from .utilidades import ROJO, VERDE, RESET,print_color
+from .utilidades import ROJO, VERDE, CIAN, RESET,print_color
 
 def pedir_nombre_registro():
      while True:
@@ -132,24 +132,43 @@ def pedir_habito_modi():
         lista = mostrar_registros()
         if lista:
             modificar = input("Introduce el nombre del elemento a modificar: ")
+            
             if normalizar(modificar) == "volver" or normalizar(modificar) == "salir":
-                return None
-            modificado = input(f"Introduce el nuevo nombre para el hábito {modificar}: ")
-            temporizadores = contar_temporizador(modificar)
+                return "volver"
             habitos = contar_habitos(modificar)
+
             if habitos == False:
                 print_color("Este hábito no existe.",ROJO)
                 continue
             else:
-                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres modificar el hábito {modificar}? s/n: {RESET}")
+                todo_habito = mostrar_registros_todo()
+                for fila in todo_habito:
+                    if fila[1] == modificar:
+                        habito = fila[1]
+                        objetivo = fila[3]
+                print_color(f"Hábito actual: {habito}",CIAN)
+                
+                print_color(f"Objectivo actual: {objetivo} ",CIAN)
+                contador = 0
+
+                seguro = input(f"\n{ROJO}¿Quieres modificar el nombre? s/n: {RESET}")
                 seguro = seguro.lower()
                 
-                if seguro == "s" or seguro == "si":
-                    #registros = modificar_temporizadores(dev_habito_id(modificar),temporizadores)
-                    habito = modificar_habito(modificado,dev_habito_id(modificar))
-                    print_color(f"\nEl hábito {modificar} ha sido cambiado con éxito por {modificado}.",VERDE)
-                    return True
-                elif seguro == "n" or seguro == "no":
+                if seguro in ("s","si"):
+                    habito = input(f"Nuevo nombre: ")
+                    contador +=1
+ 
+                seguro = input(f"\n{ROJO}¿Quieres modificar el objetivo de horas? s/n: {RESET}")
+                seguro = seguro.lower()
+                
+                if seguro in ("s","si"):
+                    objetivo = input(f"Nuevo objetivo: ")
+                    contador +=1
+
+                if contador > 0:
+                    modificar_habito(habito,objetivo,dev_habito_id(modificar))
+                    print_color(f"\nEl hábito {modificar} ha sido cambiado con éxito por {habito} con un objetivo de {objetivo} horas.",VERDE)
                     return
-        else:
-            return None
+                else:
+                    print_color("No se ha modificado nada.",CIAN)
+                    continue
