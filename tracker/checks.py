@@ -67,6 +67,7 @@ def validar_horas(numero):
         return True
 
 def validar_borrar_temporizador(borrar,lista):
+  
     try:
         borrar = int(borrar)
         if borrar >= 1 and borrar <= len(lista):

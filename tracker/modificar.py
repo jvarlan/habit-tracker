@@ -31,7 +31,7 @@ def modificar_habito(modificar,objetivo,id_modificar):
     else:
         return (f"{ROJO}Registro '{modificar}' modificado.{RESET}")
     
-def borrar_temporizador(borrar,seleccion):
+def modificar_temporizador(id_temporizador,horas,fecha):
     ruta = BASE_DIR / "datos" / "temporizadores.csv"
 
     if not ruta.exists():
@@ -42,17 +42,22 @@ def borrar_temporizador(borrar,seleccion):
     with open(ruta, newline="", encoding="utf-8") as archivo:
         lector = csv.reader(archivo)
         for fila in lector:
-            filas_originales.append(fila)
-            if normalizar(fila[0]) != borrar:
+            
+            if fila[0] == id_temporizador:
+                fila_modificada = [fila[0],fila[1],fila[2],horas,fecha]
+                filas_restantes.append(fila_modificada)
+            else:
                 filas_restantes.append(fila)
+                filas_originales.append(fila)
+
     with open(ruta, "w", newline="", encoding="utf-8") as archivo:
         escritor = csv.writer(archivo)
         escritor.writerows(filas_restantes)
 
     if len(filas_originales) == len(filas_restantes):
-        return (f"{ROJO}El registro '{seleccion}' no existe.{RESET}")
+        return (f"{ROJO}El registro '{id_temporizador}' no existe.{RESET}")
     else:
-        return (f"{VERDE}Registro '{seleccion}' eliminado.{RESET}")
+        return (f"{VERDE}Registro '{id_temporizador}' eliminado.{RESET}")
     
 def modificar_temporizadores(id_habito,temporizador):
     ruta = BASE_DIR / "datos" / "temporizadores.csv"

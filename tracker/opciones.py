@@ -1,9 +1,9 @@
 from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito
-from .mostrar import mostrar_registros, mostrar_registros_todo, mostrar_temporizadores, mostrar_categorias
+from .mostrar import mostrar_registros, mostrar_registros_todo, mostrar_temporizadores, mostrar_temporizadores_todo, mostrar_categorias
 from .devolver import dev_categoria_id, dev_habito_id
-from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi
+from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi
 from .borrar import borrar_csv, borrar_temporizador
 
 volver = f"\nEscribe 'volver' si quieres salir al menú de opciones."
@@ -228,6 +228,41 @@ def opcion_modi_habito():
             print_color(volver, CIAN)
             print_color("\nModificar un hábito\n",INVERSION)
             modificar = pedir_habito_modi()
+           
+            if modificar == "volver":
+                break
+            lista = mostrar_registros()
+            if lista:
+                seguir = input("\n¿Quieres modificar otro hábito? s/n: ")
+                if preguntar_seguir(normalizar(seguir)):
+                    continue
+                else:
+                    break    
+            else:
+                break
+    else:
+        print_color("\nNo existe ningún hábito a modificar.",CIAN)
+
+def opcion_modi_tempo():
+    # muestra previamente todos los registros a eliminar
+    lista = mostrar_registros()
+
+    if lista:
+        while True:
+            lista_todo = mostrar_temporizadores_todo()
+            #ordena la lista por fecha (el cuarto campo del csv)
+            lista_todo = sorted(lista_todo, key=lambda x: x[4])
+
+            print("\nEstos son los temporizadores ya registrados: \n")
+            for i, item in enumerate(lista_todo, start=1):
+                temporizador = item[2]
+                tiempo = item[3]
+                fecha = item[4]
+                print(f"{i} - {fecha} - {tiempo} horas ({temporizador})")
+
+            print_color(volver, CIAN)
+            print_color("\nModificar un temporizador\n",INVERSION)
+            modificar = pedir_tempo_modi()
            
             if modificar == "volver":
                 break

@@ -1,5 +1,5 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores
-from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito
+from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo
 from .utilidades import limpiar_pantalla
 from .checks import normalizar
 from .utilidades import ROJO, VERDE, CIAN, print_color
@@ -207,11 +207,9 @@ def modi_1():
     limpiar_pantalla()
     return True
 def modi_2():
-    print("Now in development")
-    return False
-    #opcion_borrar_tempo()
-    #limpiar_pantalla()
-    #return True
+    opcion_modi_tempo()
+    limpiar_pantalla()
+    return True
 def modi_3():
     print("Now in development")
     return False

@@ -61,6 +61,25 @@ def mostrar_temporizadores():
                 "fecha": fila[4]
                 })
     return temporizadores
+
+def mostrar_temporizadores_todo():
+    
+    ruta = BASE_DIR / "datos" / "temporizadores.csv"
+
+    if not ruta.exists():
+        return 0
+    contador = 0
+    lista = []
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        next(lector, None)
+       
+        for fila in lector:
+            contador +=1
+            lista.append(fila)
+    return lista
+
 def mostrar_categorias(temporizador = None):
     
     ruta = BASE_DIR / "datos" / "categorias.csv"
