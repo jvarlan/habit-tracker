@@ -1,8 +1,8 @@
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir
+from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, id_habito_nombre
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito
 from .mostrar import mostrar_registros, mostrar_registros_todo, mostrar_temporizadores, mostrar_temporizadores_todo, mostrar_categorias
-from .devolver import dev_categoria_id, dev_habito_id
+from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi
 from .borrar import borrar_csv, borrar_temporizador
 
@@ -73,7 +73,8 @@ def opcion_temporizador():
             while True:
                 fecha = pedir_fecha_temp()  
                 temporizadores = mostrar_temporizadores()
-                contador_horas_24 = comprobar_horas_temp_24(temporizadores, fecha, nombre)
+                id_habito = dev_habito_id(nombre)
+                contador_horas_24 = comprobar_horas_temp_24(temporizadores, fecha, id_habito)
                 if contador_horas_24 >= 24:
                     print_color(f"Este temporizador ya tiene 24 horas registradas en este día.",ROJO)
                     break
@@ -81,13 +82,13 @@ def opcion_temporizador():
                     horas = pedir_horas_temp()
                     id_habito = dev_habito_id(nombre)
                     
-                    contador_horas = comprobar_horas_temp(temporizadores,horas,fecha,nombre)
+                    contador_horas = comprobar_horas_temp(temporizadores, horas,fecha, id_habito)
 
                     if contador_horas > 24:
                         print_color("El total de horas registradas para esta actividad no puede ser mayor de 24",ROJO)
                         continue #si la actividad supera las 24 horas el mismo día, vuelve a pedir las horas
                     else:     
-                        habito(id_habito,nombre,horas,fecha)
+                        habito(id_habito,horas,fecha)
                         print_color(f"\nSe han añadido {horas} horas al temporizador {nombre} con fecha {fecha}",VERDE)
                         break # una vez es correcto, sale del bucle de horas y dias y vuelve al bucle original
                 break
@@ -114,7 +115,7 @@ def opcion_borrar():
                 break
             lista = mostrar_registros()
             if lista:
-                seguir = input("\n¿Quieres eliminar otro temporizador? s/n: ")
+                seguir = input("\n¿Quieres eliminar otro hábito? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
                     continue
                 else:
@@ -131,17 +132,21 @@ def opcion_borrar_tempo():
 
     if lista:
         while True:
-            lista = mostrar_temporizadores()
+            #dev_habito_id
+            #obtener_nombre_idhabito = id_habito_nombre()
             print("\nEstos son los temporizadores ya registrados: \n")
             for i, item in enumerate(lista, start=1):
-                print(f"{i} - {item["nombre"]}: Horas '{item["horas"]}' Fecha '{item["fecha"]}'")
+                    nombre = dev_habito_id(item["id_habito"])
+                    print(f"{i} - {item["fecha"]}, {item["horas"]} horas ({nombre}) ")
             print_color(volver,CIAN)
             print_color("\nEliminar un temporizador\n",INVERSION)
             borrar = pedir_temporizador_borrar()
             if borrar == None:
                 return False
             else:
-                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el hábito {borrar["nombre"]} con {borrar["horas"]} horas registradas del día {borrar["fecha"]}? s/n: {RESET}")
+                nombre_borrar = dev_nombre_habito_id(borrar["id_habito"])
+
+                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el hábito {nombre_borrar} con {borrar["horas"]} horas registradas del día {borrar["fecha"]}? s/n: {RESET}")
                 seguro = seguro.lower()
 
                 if seguro == "s" or seguro == "si":
@@ -250,19 +255,19 @@ def opcion_modi_tempo():
     if lista:
         while True:
             lista_todo = mostrar_temporizadores_todo()
-            #ordena la lista por fecha (el cuarto campo del csv)
-            lista_todo = sorted(lista_todo, key=lambda x: x[4])
+            #ordena la lista por fecha (el tercer campo del csv)
+            lista_todo = sorted(lista_todo, key=lambda x: x[3])
 
             print("\nEstos son los temporizadores ya registrados: \n")
             for i, item in enumerate(lista_todo, start=1):
-                temporizador = item[2]
-                tiempo = item[3]
-                fecha = item[4]
+                temporizador = dev_nombre_habito_id(item[1])
+                tiempo = item[2]
+                fecha = item[3]
                 print(f"{i} - {fecha} - {tiempo} horas ({temporizador})")
 
             print_color(volver, CIAN)
             print_color("\nModificar un temporizador\n",INVERSION)
-            modificar = pedir_tempo_modi()
+            modificar = pedir_tempo_modi(lista_todo)
            
             if modificar == "volver":
                 break

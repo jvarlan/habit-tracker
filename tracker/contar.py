@@ -3,6 +3,7 @@ from config import BASE_DIR
 from .checks import normalizar
 
 def contar_temporizador(nombre):
+    
     ruta = BASE_DIR / "datos" / "temporizadores.csv"
     if not ruta.exists():
         return 0
@@ -12,7 +13,7 @@ def contar_temporizador(nombre):
         next(lector, None)
         contador = 0
         for fila in lector:
-            if normalizar(fila[2]) == normalizar(nombre):
+            if fila[1] == nombre:
                 contador = contador + 1
     return contador
 
@@ -41,7 +42,7 @@ def contar_habitos(nombre):
         next(lector, None)
         contador = 0
         for fila in lector:
-            if normalizar(fila[1]) == normalizar(nombre):
+            if fila[0] == nombre:
                 contador = contador + 1
     return contador
 

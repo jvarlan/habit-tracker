@@ -39,18 +39,18 @@ def comprobar_categoria(categoria):
 
         return any(fila["categoria"].lower() == categoria.lower() for fila in lector)
     
-def comprobar_horas_temp(temporizadores, horas, fecha, nombre):
+def comprobar_horas_temp(temporizadores, horas, fecha, id_habito):
     contador_horas = 0.0
     for temporizador in temporizadores:
-        if datetime.strptime(temporizador["fecha"], "%Y-%m-%d").date() == fecha and temporizador["nombre"] == nombre:
+        if datetime.strptime(temporizador["fecha"], "%Y-%m-%d").date() == fecha and temporizador["id_habito"] == id_habito:
             contador_horas = contador_horas + float(temporizador["horas"])
     contador_horas = contador_horas + float(horas)
     return contador_horas
 
-def comprobar_horas_temp_24(temporizadores, fecha, nombre):
+def comprobar_horas_temp_24(temporizadores, fecha, id_habito):
     contador_horas = 0.0
     for temporizador in temporizadores:
-        if datetime.strptime(temporizador["fecha"], "%Y-%m-%d").date() == fecha and temporizador["nombre"] == nombre:
+        if datetime.strptime(temporizador["fecha"], "%Y-%m-%d").date() == fecha and temporizador["id_habito"] in id_habito:
             contador_horas = contador_horas + float(temporizador["horas"])
     return contador_horas
 

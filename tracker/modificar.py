@@ -44,7 +44,7 @@ def modificar_temporizador(id_temporizador,horas,fecha):
         for fila in lector:
             
             if fila[0] == id_temporizador:
-                fila_modificada = [fila[0],fila[1],fila[2],horas,fecha]
+                fila_modificada = [fila[0],fila[1],horas,fecha]
                 filas_restantes.append(fila_modificada)
             else:
                 filas_restantes.append(fila)

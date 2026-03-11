@@ -56,9 +56,8 @@ def mostrar_temporizadores():
             temporizadores.append({
                 "id": fila[0],
                 "id_habito": fila[1],
-                "nombre": fila[2],
-                "horas": fila[3],
-                "fecha": fila[4]
+                "horas": fila[2],
+                "fecha": fila[3]
                 })
     return temporizadores
 

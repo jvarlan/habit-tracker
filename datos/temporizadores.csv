@@ -1,4 +1,4 @@
-id,id_habito,temporizador,tiempo,fecha
-1,2,Dragon Ball Z,10,2026-03-10
-2,1,Naruto,12,2026-03-10
-3,1,Naruto,3,2026-01-10
+id,id_habito,tiempo,fecha
+1,1,10,2026-03-11
+2,2,10,2026-03-11
+3,3,10,2026-03-11

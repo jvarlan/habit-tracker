@@ -13,7 +13,20 @@ def dev_habito_id(habito):
         for fila in lector:
             if fila[1].lower() == habito.lower():
                 return fila[0]
-            
+def dev_nombre_habito_id(id_habito):
+
+    ruta = BASE_DIR / "datos" / "habitos.csv"
+    if not ruta.exists():
+        return 0
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        next(lector, None)
+       
+        for fila in lector:
+            if fila[0].lower() == id_habito:
+                return fila[1]
+                     
 def dev_temporizador_id(temporizador):
     ruta = BASE_DIR / "datos" / "temporizadores.csv"
 
