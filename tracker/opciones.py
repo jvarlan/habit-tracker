@@ -77,7 +77,7 @@ def opcion_temporizador():
                 contador_horas_24 = comprobar_horas_temp_24(temporizadores, fecha, id_habito)
                 if contador_horas_24 >= 24:
                     print_color(f"Este temporizador ya tiene 24 horas registradas en este día.",ROJO)
-                    break
+                    continue
                 while True:
                     horas = pedir_horas_temp()
                     id_habito = dev_habito_id(nombre)
@@ -136,7 +136,7 @@ def opcion_borrar_tempo():
             #obtener_nombre_idhabito = id_habito_nombre()
             print("\nEstos son los temporizadores ya registrados: \n")
             for i, item in enumerate(lista, start=1):
-                    nombre = dev_habito_id(item["id_habito"])
+                    nombre = dev_nombre_habito_id(item["id_habito"])
                     print(f"{i} - {item["fecha"]}, {item["horas"]} horas ({nombre}) ")
             print_color(volver,CIAN)
             print_color("\nEliminar un temporizador\n",INVERSION)

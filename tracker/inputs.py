@@ -133,7 +133,7 @@ def pedir_habito_modi():
         lista = mostrar_registros()
         if lista:
             modificar = input("Introduce el nombre del elemento a modificar: ")
-        if normalizar(modificar) == "volver" or normalizar(modificar) == "salir":
+        if normalizar(modificar) in ("volver","salir"):
                 return "volver"
               
         habitos = contar_habitos(dev_habito_id(modificar))
@@ -187,18 +187,24 @@ def pedir_habito_modi():
                 return
             else:
                 print_color("No se ha modificado nada.",CIAN)
-                continue
+                break
 
 def pedir_tempo_modi(lista_todo):
     while True:
 
         if lista_todo:
-            modificar = input("Introduce el número del temporizador a modificar: ")
-            
+            try:
+                modificar = input("Introduce el número del temporizador a modificar: ")
 
-            if normalizar(modificar) == "volver" or normalizar(modificar) == "salir":
-                return "volver"
-            modificar = int(modificar)
+                if normalizar(modificar) in ("volver","salir"):
+                    return "volver"
+                modificar = int(modificar)            
+            except ValueError:
+                print_color(f"Formato incorrecto. Debes introducir un número de la lista.",ROJO)
+                continue
+
+            
+            
             id_temporizador = lista_todo[modificar-1][0]
            
             temporizadores = contar_temporizador_id(id_temporizador)
