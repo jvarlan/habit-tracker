@@ -72,9 +72,8 @@ def opcion_temporizador():
                 return False
             while True:
                 fecha = pedir_fecha_temp()  
-                temporizadores = mostrar_temporizadores()
                 id_habito = dev_habito_id(nombre)
-                contador_horas_24 = comprobar_horas_temp_24(temporizadores, fecha, id_habito)
+                contador_horas_24 = comprobar_horas_temp_24(fecha, id_habito)
                 if contador_horas_24 >= 24:
                     print_color(f"Este temporizador ya tiene 24 horas registradas en este día.",ROJO)
                     continue
@@ -82,7 +81,7 @@ def opcion_temporizador():
                     horas = pedir_horas_temp()
                     id_habito = dev_habito_id(nombre)
                     
-                    contador_horas = comprobar_horas_temp(temporizadores, horas,fecha, id_habito)
+                    contador_horas = comprobar_horas_temp(horas,fecha, id_habito)
 
                     if contador_horas > 24:
                         print_color("El total de horas registradas para esta actividad no puede ser mayor de 24",ROJO)

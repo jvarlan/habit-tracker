@@ -1,5 +1,5 @@
 from datetime import datetime
-from .checks import normalizar, validar_horas, comprobar_registro, validar_borrar_temporizador, comprobar_categoria
+from .checks import normalizar, validar_horas, comprobar_horas_temp_24, comprobar_registro, validar_borrar_temporizador, comprobar_categoria
 from .mostrar import mostrar_registros, mostrar_registros_todo, mostrar_temporizadores, mostrar_temporizadores_todo, mostrar_categorias 
 from .contar import contar_temporizador, contar_temporizador_id, contar_habitos
 from .devolver import dev_habito_id, dev_nombre_habito_id, dev_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
@@ -201,6 +201,7 @@ def pedir_tempo_modi(lista_todo):
                 modificar = int(modificar) 
 
                 id_temporizador = lista_todo[modificar-1][0]
+                
                 temporizadores = contar_temporizador_id(id_temporizador)           
             except ValueError:
                 print_color(f"Formato incorrecto. Debes introducir un número de la lista.",ROJO)
@@ -225,8 +226,19 @@ def pedir_tempo_modi(lista_todo):
             seguro = seguro.lower()
             
             if seguro in ("s","si"):
-                nueva_hora = input(f"Nuevo nº horas: ")
-                contador +=1
+                while True:
+                    nueva_hora = pedir_horas_temp()
+                    id_habito = lista_todo[modificar-1][1]
+                    
+                    contador_horas_24 = comprobar_horas_temp_24(datetime.strptime(fecha, "%Y-%m-%d").date(), id_habito)
+                    contador_horas_24_total = int(contador_horas_24) - int(horas) + int(nueva_hora)
+                    
+                    if contador_horas_24_total > 24:
+                        print_color(f"Este temporizador ya tiene 24 horas registradas en este día.",ROJO)
+                        continue
+                    else:
+                        contador +=1
+                        break
             else:
                 nueva_hora = horas
 
@@ -234,7 +246,7 @@ def pedir_tempo_modi(lista_todo):
             seguro = seguro.lower()
             
             if seguro in ("s","si"):
-                nueva_fecha = input(f"Nueva fecha: ")
+                nueva_fecha = pedir_fecha_temp()
                 contador +=1
             else:
                 nueva_fecha = fecha
