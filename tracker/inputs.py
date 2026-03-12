@@ -27,7 +27,7 @@ def pedir_nombre_temp(lista_minus,lista):
         for i, item in enumerate(lista_minus):
             if item == nombre:
                 return lista[i]
-        if nombre == "volver":
+        if nombre in ("volver","salir"):
             return nombre
         else:
             print_color(f"Introduce un temporizador de la lista.",ROJO)
@@ -195,61 +195,57 @@ def pedir_tempo_modi(lista_todo):
         if lista_todo:
             try:
                 modificar = input("Introduce el número del temporizador a modificar: ")
-
+                
                 if normalizar(modificar) in ("volver","salir"):
                     return "volver"
-                modificar = int(modificar)            
+                modificar = int(modificar) 
+
+                id_temporizador = lista_todo[modificar-1][0]
+                temporizadores = contar_temporizador_id(id_temporizador)           
             except ValueError:
                 print_color(f"Formato incorrecto. Debes introducir un número de la lista.",ROJO)
                 continue
-
-            
-            
-            id_temporizador = lista_todo[modificar-1][0]
-           
-            temporizadores = contar_temporizador_id(id_temporizador)
-
-            if temporizadores == False:
+            except IndexError:
                 print_color("Este temporizador no existe.",ROJO)
                 continue
+
+            todo_habito = mostrar_temporizadores_todo()
+            for fila in todo_habito:
+                if fila[0] == id_temporizador:
+                    habito = dev_nombre_habito_id(fila[1])
+                    horas = fila[2]
+                    fecha = fila[3]
+            print_color(f"Hábito actual: {habito}",CIAN)
+            print_color(f"Hora actual: {horas}",CIAN)
+            print_color(f"Fecha actual: {fecha} ",CIAN)
+
+            contador = 0
+
+            seguro = input(f"{ROJO}¿Quieres modificar las horas? s/n: {RESET}")
+            seguro = seguro.lower()
+            
+            if seguro in ("s","si"):
+                nueva_hora = input(f"Nuevo nº horas: ")
+                contador +=1
             else:
-                todo_habito = mostrar_temporizadores_todo()
-                for fila in todo_habito:
-                    if fila[0] == id_temporizador:
-                        habito = dev_nombre_habito_id(fila[1])
-                        horas = fila[2]
-                        fecha = fila[3]
-                print_color(f"Hábito actual: {habito}",CIAN)
-                print_color(f"Hora actual: {horas}",CIAN)
-                print_color(f"Fecha actual: {fecha} ",CIAN)
+                nueva_hora = horas
 
-                contador = 0
+            seguro = input(f"{ROJO}¿Quieres modificar la fecha del registro? s/n: {RESET}")
+            seguro = seguro.lower()
+            
+            if seguro in ("s","si"):
+                nueva_fecha = input(f"Nueva fecha: ")
+                contador +=1
+            else:
+                nueva_fecha = fecha
 
-                seguro = input(f"{ROJO}¿Quieres modificar las horas? s/n: {RESET}")
-                seguro = seguro.lower()
-                
-                if seguro in ("s","si"):
-                    nueva_hora = input(f"Nuevo nº horas: ")
-                    contador +=1
-                else:
-                    nueva_hora = horas
- 
-                seguro = input(f"{ROJO}¿Quieres modificar la fecha del registro? s/n: {RESET}")
-                seguro = seguro.lower()
-                
-                if seguro in ("s","si"):
-                    nueva_fecha = input(f"Nueva fecha: ")
-                    contador +=1
-                else:
-                    nueva_fecha = fecha
-
-                if contador > 0:
-                    print(id_temporizador)
-                    print(nueva_hora)
-                    print(nueva_fecha)
-                    modificar_temporizador(id_temporizador,nueva_hora,nueva_fecha)
-                    print_color(f"\nEl temporizador {id_temporizador} con {horas} horas registradas el día {fecha} ha sido cambiado con éxito por {nueva_hora} horas con fecha {nueva_fecha}.",VERDE)
-                    return
-                else:
-                    print_color("No se ha modificado nada.",CIAN)
-                    continue
+            if contador > 0:
+                print(id_temporizador)
+                print(nueva_hora)
+                print(nueva_fecha)
+                modificar_temporizador(id_temporizador,nueva_hora,nueva_fecha)
+                print_color(f"\nEl temporizador {id_temporizador} con {horas} horas registradas el día {fecha} ha sido cambiado con éxito por {nueva_hora} horas con fecha {nueva_fecha}.",VERDE)
+                return
+            else:
+                print_color("No se ha modificado nada.",CIAN)
+                return
