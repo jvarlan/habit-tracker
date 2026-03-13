@@ -29,7 +29,7 @@ def mostrar_menu():
             print_color("3. Eliminar elementos (100%)",ROJO)
         else:
             print("3. Eliminar elementos (100%)")
-        print("4. Modificar elementos (En desarrollo)")
+        print("4. Modificar elementos (BETA)")
         print("5. Mostrar estadísticas (Por desarrollar)")
         print("6. Salir")
         print_color("====================================",VERDE)
