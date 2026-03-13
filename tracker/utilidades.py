@@ -5,7 +5,7 @@ INVERSION = "\033[7m"
 RESET = "\033[0m"
 
 import os
-from .mostrar import mostrar_registros_todo
+from .mostrar import mostrar_csv
 
 def print_color(texto,color):
     RESET = "\033[0m"
@@ -31,7 +31,7 @@ def id_habito_nombre():
     # crea un diccionario vacio
     id_habito_nombre = {}
     # saca del csv todos los habitos registrados y sus campos
-    habitos = mostrar_registros_todo()
+    habitos = mostrar_csv("habitos")
     for habito in habitos:
         #guarda en el diccionario el equivalente del id_habito a su nombre
         id_habito_nombre[habito[0]] = habito[1]
@@ -42,7 +42,7 @@ def nombre_idhabito():
     # crea un diccionario vacio
     id_habito_nombre = {}
     # saca del csv todos los habitos registrados y sus campos
-    habitos = mostrar_registros_todo()
+    habitos = mostrar_csv("habitos")
     for habito in habitos:
         #guarda en el diccionario el equivalente del id_habito a su nombre
         id_habito_nombre[habito[1]] = habito[0]

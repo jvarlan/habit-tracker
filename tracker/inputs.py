@@ -1,10 +1,10 @@
 from datetime import datetime
 from .checks import normalizar, validar_horas, comprobar_horas_temp_24, comprobar_registro, validar_borrar_temporizador, comprobar_categoria
-from .mostrar import mostrar_registros, mostrar_registros_todo, mostrar_temporizadores, mostrar_temporizadores_todo, mostrar_categorias 
-from .contar import contar_temporizador, contar_temporizador_id, contar_habitos
+from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv
+from .contar import contar_csv_n, contar_csv_id
 from .devolver import dev_habito_id, dev_nombre_habito_id, dev_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria
-from .modificar import modificar_habito, modificar_temporizador
+from .modificar import modificar_habito, modificar_temporizador, modificar_categoria
 from .utilidades import ROJO, VERDE, CIAN, RESET,print_color
 
 def pedir_nombre_registro():
@@ -64,8 +64,8 @@ def pedir_habito_borrar():
             if normalizar(borrar) == "volver" or normalizar(borrar) == "salir":
                 return None
             borrar = dev_habito_id(borrar)
-            temporizadores = contar_temporizador(borrar)
-            habitos = contar_habitos(borrar)
+            temporizadores = contar_csv_n("temporizadores",borrar)
+            habitos = contar_csv_n("habitos",borrar)
             if habitos == False:
                 print_color("Este hábito no existe.",ROJO)
                 continue
@@ -142,7 +142,7 @@ def pedir_habito_modi():
             print_color("Este hábito no existe.",ROJO)
             continue
         else:
-            todo_habito = mostrar_registros_todo()
+            todo_habito = mostrar_csv("habitos")
             for fila in todo_habito:
                 if fila[1].lower() == modificar.lower():
                     habito = fila[1]
@@ -202,7 +202,7 @@ def pedir_tempo_modi(lista_todo):
 
                 id_temporizador = lista_todo[modificar-1][0]
                 
-                temporizadores = contar_temporizador_id(id_temporizador)           
+                temporizadores = contar_csv_id("temporizadores",id_temporizador)           
             except ValueError:
                 print_color(f"Formato incorrecto. Debes introducir un número de la lista.",ROJO)
                 continue
@@ -210,7 +210,7 @@ def pedir_tempo_modi(lista_todo):
                 print_color("Este temporizador no existe.",ROJO)
                 continue
 
-            todo_habito = mostrar_temporizadores_todo()
+            todo_habito = mostrar_csv("temporizadores")
             for fila in todo_habito:
                 if fila[0] == id_temporizador:
                     habito = dev_nombre_habito_id(fila[1])
@@ -252,12 +252,34 @@ def pedir_tempo_modi(lista_todo):
                 nueva_fecha = fecha
 
             if contador > 0:
-                print(id_temporizador)
-                print(nueva_hora)
-                print(nueva_fecha)
+                
                 modificar_temporizador(id_temporizador,nueva_hora,nueva_fecha)
-                print_color(f"\nEl temporizador {id_temporizador} con {horas} horas registradas el día {fecha} ha sido cambiado con éxito por {nueva_hora} horas con fecha {nueva_fecha}.",VERDE)
+                
+                print_color(f"\nEl temporizador {dev_nombre_habito_id(id_habito)} con {horas} horas registradas el día {fecha} ha sido cambiado con éxito por {nueva_hora} horas con fecha {nueva_fecha}.",VERDE)
                 return
             else:
                 print_color("No se ha modificado nada.",CIAN)
                 return
+            
+def pedir_categoria_modi(lista_todo):
+    while True:
+        if lista_todo:
+                modificar = input("Introduce el nombre de la categoría a modificar: ")
+
+                if normalizar(modificar) in ("volver","salir"):
+                    return "volver"
+                for lista in lista_todo:
+                    if modificar == lista[1]:
+                        id_categoria = lista[0]
+
+                categorias = contar_csv_id("categorias",id_categoria)
+
+                nueva_categoria = input("Introduce el nuevo nombre para la categoria: ")
+                if categorias:
+
+                    modificar_categoria(id_categoria,nueva_categoria)
+
+                    print_color("Categoria cambiada con éxito.",VERDE)
+
+                    return
+            

@@ -2,9 +2,9 @@ import csv
 from config import BASE_DIR
 from .checks import normalizar
 
-def contar_temporizador(nombre):
-    
-    ruta = BASE_DIR / "datos" / "temporizadores.csv"
+def contar_csv_n(fichero, nombre):
+        
+    ruta = BASE_DIR / "datos" / f"{fichero}.csv"
     if not ruta.exists():
         return 0
 
@@ -17,32 +17,18 @@ def contar_temporizador(nombre):
                 contador = contador + 1
     return contador
 
-def contar_temporizador_id(id_temporizador):
-    ruta = BASE_DIR / "datos" / "temporizadores.csv"
+def contar_csv_id(fichero,id):
+    ruta = BASE_DIR / "datos" / f"{fichero}.csv"
+    
     if not ruta.exists():
         return 0
-
+    
     with open(ruta, newline="", encoding="utf-8") as archivo:
         lector = csv.reader(archivo)
         next(lector, None)
         contador = 0
         for fila in lector:
-            if normalizar(fila[0]) == normalizar(id_temporizador):
-                contador = contador + 1
-    return contador
-
-
-def contar_habitos(nombre):
-    ruta = BASE_DIR / "datos" / "habitos.csv"
-    if not ruta.exists():
-        return 0
-
-    with open(ruta, newline="", encoding="utf-8") as archivo:
-        lector = csv.reader(archivo)
-        next(lector, None)
-        contador = 0
-        for fila in lector:
-            if fila[0] == nombre:
+            if normalizar(fila[0]) == normalizar(id):
                 contador = contador + 1
     return contador
 

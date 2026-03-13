@@ -1,5 +1,5 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores
-from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo
+from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria
 from .utilidades import limpiar_pantalla
 from .checks import normalizar
 from .utilidades import ROJO, VERDE, CIAN, print_color
@@ -191,8 +191,7 @@ def mostrar_menu_modificar():
                 print("2. Modificar un temporizador")
 
             print("3. Modificar una categoría")
-            print("4. Modificar todos los elementos")
-            print("5. Salir")
+            print("4. Salir")
             print_color("====================================",VERDE)
 
             opcion = input("\nSelecciona una opción: ")
@@ -211,17 +210,10 @@ def modi_2():
     limpiar_pantalla()
     return True
 def modi_3():
-    print("Now in development")
-    return False
-    #opcion_borrar_categoria()
-    #limpiar_pantalla()
-    #return True
+    opcion_modi_categoria()
+    limpiar_pantalla()
+    return True
 def modi_4():
-    print("Now in development")
-    return False
-    #opcion_borrar_todo()
-    #return True
-def modi_5():
     #sale del bucle
     return False
 # diccionario que contiene la redirección de las funciones
@@ -229,8 +221,7 @@ menu_modificar = {
     "1": modi_1,
     "2": modi_2,
     "3": modi_3,
-    "4": modi_4,
-    "5": modi_5
+    "4": modi_4
 }
 
 def modificar(opcion):

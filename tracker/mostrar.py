@@ -19,25 +19,6 @@ def mostrar_registros(temporizador = None):
             lista.append(fila[1])
     return lista
 
-def mostrar_registros_todo(temporizador = None):
-    
-    ruta = BASE_DIR / "datos" / "habitos.csv"
-
-    if not ruta.exists():
-        return 0
-    contador = 0
-    lista = []
-
-    with open(ruta, newline="", encoding="utf-8") as archivo:
-        lector = csv.reader(archivo)
-        next(lector, None)
-       
-        for fila in lector:
-            contador +=1
-            lista.append(fila)
-    return lista
-
-
 def mostrar_temporizadores():
     
     ruta = BASE_DIR / "datos" / "temporizadores.csv"
@@ -61,24 +42,6 @@ def mostrar_temporizadores():
                 })
     return temporizadores
 
-def mostrar_temporizadores_todo():
-    
-    ruta = BASE_DIR / "datos" / "temporizadores.csv"
-
-    if not ruta.exists():
-        return 0
-    contador = 0
-    lista = []
-
-    with open(ruta, newline="", encoding="utf-8") as archivo:
-        lector = csv.reader(archivo)
-        next(lector, None)
-       
-        for fila in lector:
-            contador +=1
-            lista.append(fila)
-    return lista
-
 def mostrar_categorias(temporizador = None):
     
     ruta = BASE_DIR / "datos" / "categorias.csv"
@@ -98,3 +61,20 @@ def mostrar_categorias(temporizador = None):
     return lista
 
 
+def mostrar_csv(fichero):
+    
+    ruta = BASE_DIR / "datos" / f"{fichero}.csv"
+
+    if not ruta.exists():
+        return 0
+    contador = 0
+    lista = []
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        next(lector, None)
+       
+        for fila in lector:
+            contador +=1
+            lista.append(fila)
+    return lista

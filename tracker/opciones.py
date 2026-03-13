@@ -1,9 +1,9 @@
 from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, id_habito_nombre
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito
-from .mostrar import mostrar_registros, mostrar_registros_todo, mostrar_temporizadores, mostrar_temporizadores_todo, mostrar_categorias
+from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id
-from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi
+from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi
 from .borrar import borrar_csv, borrar_temporizador
 
 volver = f"\nEscribe 'volver' si quieres salir al menú de opciones."
@@ -220,7 +220,7 @@ def opcion_modi_habito():
 
     if lista:
         while True:
-            lista_todo = mostrar_registros_todo()
+            lista_todo = mostrar_csv("habitos")
             #ordena la lista por nombre (el segundo campo del csv)
             lista_todo = sorted(lista_todo, key=lambda x: x[1])
 
@@ -253,7 +253,7 @@ def opcion_modi_tempo():
 
     if lista:
         while True:
-            lista_todo = mostrar_temporizadores_todo()
+            lista_todo = mostrar_csv("temporizadores")
             #ordena la lista por fecha (el tercer campo del csv)
             lista_todo = sorted(lista_todo, key=lambda x: x[3])
 
@@ -281,3 +281,37 @@ def opcion_modi_tempo():
                 break
     else:
         print_color("\nNo existe ningún hábito a modificar.",CIAN)
+
+def opcion_modi_categoria():
+    lista = mostrar_categorias()
+
+    if lista:
+        while True:
+            lista_todo = mostrar_csv("categorias")
+
+
+            lista_todo = sorted(lista_todo, key=lambda x: x[1])
+            print("\nEstos son las categorias ya registrados: \n")
+
+            for i, item in enumerate(lista_todo, start=1):
+                id_categoria = item[0]
+                categoria = item[1]
+                print(f"{i} - {categoria}")
+
+            print_color(volver, CIAN)
+            print_color("\n Modificar una categoria\n",INVERSION)
+
+            modificar = pedir_categoria_modi(lista_todo)
+
+            if modificar == "volver":
+                break
+            lista = mostrar_registros()
+            
+            if lista:
+                seguir = input("\n¿Quieres modificar otro hábito? s/n: ")
+                if preguntar_seguir(normalizar(seguir)):
+                    continue
+                else:
+                    break    
+            else:
+                break
