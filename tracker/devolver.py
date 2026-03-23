@@ -40,7 +40,20 @@ def dev_temporizador_id(temporizador):
         for fila in lector:
             if fila[2] == temporizador:
                 return fila[0]
-            
+def dev_idhabito_temporizador(id_temporizador):
+
+    ruta = BASE_DIR / "datos" / "temporizadores.csv"
+    if not ruta.exists():
+        return 0
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        next(lector, None)
+       
+        for fila in lector:
+            if fila[0].lower() == id_temporizador:
+                return fila[1]
+                        
 def dev_lista_habitos_cat(id_categoria):
     ruta = BASE_DIR / "datos" / "habitos.csv"
 

@@ -30,7 +30,14 @@ def opcion_registro():
                 
             # si no está registrado, prosigue con el resto de inputs
             categoria = input("Categoria: ")
-
+            tipo_valido = ["diario", "semanal","mensual","anual"]
+            while True:
+                tipo = input("Objetivo (diario, semanal, mensual, anual): ")
+                tipo = normalizar(tipo)
+                if tipo not in tipo_valido:
+                    continue
+                break
+            
             while True:
                 objetivo = input("Objetivo (horas): ")
                 
@@ -39,8 +46,8 @@ def opcion_registro():
                 if validar_horas(objetivo):
                     registrar_categoria(categoria)
                     id_categoria = dev_categoria_id(categoria)
-                    registrar(nombre, id_categoria, objetivo)
-                    print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo de "+objetivo+" horas.",VERDE)
+                    registrar(nombre, id_categoria, tipo, objetivo)
+                    print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo+" de "+objetivo+" horas.",VERDE)
                 else:
                     continue
                 break
@@ -91,7 +98,7 @@ def opcion_temporizador():
                         print_color(f"\nSe han añadido {horas} horas al temporizador {nombre} con fecha {fecha}",VERDE)
                         break # una vez es correcto, sale del bucle de horas y dias y vuelve al bucle original
                 break
-            seguir = input("\n¿Quieres introducir un nuevo hábito? s/n: ")
+            seguir = input("\n¿Quieres introducir un nuevo temporizador? s/n: ")
             if preguntar_seguir(normalizar(seguir)):
                 continue
             else:
@@ -100,7 +107,6 @@ def opcion_temporizador():
 def opcion_borrar():
     # muestra previamente todos los registros a eliminar
     lista = mostrar_registros()
-
     if lista:
         while True:
             lista = mostrar_registros()
@@ -140,12 +146,11 @@ def opcion_borrar_tempo():
             print_color(volver,CIAN)
             print_color("\nEliminar un temporizador\n",INVERSION)
             borrar = pedir_temporizador_borrar()
+            
             if borrar == None:
                 return False
             else:
-                nombre_borrar = dev_nombre_habito_id(borrar["id_habito"])
-
-                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el hábito {nombre_borrar} con {borrar["horas"]} horas registradas del día {borrar["fecha"]}? s/n: {RESET}")
+                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el hábito {dev_nombre_habito_id(borrar["id_habito"])} con {borrar["horas"]} horas registradas del día {borrar["fecha"]}? s/n: {RESET}")
                 seguro = seguro.lower()
 
                 if seguro == "s" or seguro == "si":
@@ -227,8 +232,9 @@ def opcion_modi_habito():
             print("\nEstos son los hábitos ya registrados: \n")
             for i, item in enumerate(lista_todo, start=1):
                 habito = item[1]
-                objetivo = item[3]
-                print(f"{i} - {habito} ({objetivo} horas)")
+                tipo_objetivo = item[3]
+                objetivo_horas = item[4]
+                print(f"{i} - {habito} (Objetivo {tipo_objetivo} de {objetivo_horas} horas)")
             print_color(volver, CIAN)
             print_color("\nModificar un hábito\n",INVERSION)
             modificar = pedir_habito_modi()

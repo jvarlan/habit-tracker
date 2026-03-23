@@ -13,7 +13,7 @@ def contar_csv_n(fichero, nombre):
         next(lector, None)
         contador = 0
         for fila in lector:
-            if fila[1] == nombre:
+            if fila[0] == nombre:
                 contador = contador + 1
     return contador
 

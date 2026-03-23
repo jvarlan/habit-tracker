@@ -2,7 +2,7 @@ from datetime import datetime
 from .checks import normalizar, validar_horas, comprobar_horas_temp_24, comprobar_registro, validar_borrar_temporizador, comprobar_categoria
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv
 from .contar import contar_csv_n, contar_csv_id
-from .devolver import dev_habito_id, dev_nombre_habito_id, dev_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
+from .devolver import dev_habito_id, dev_nombre_habito_id,dev_idhabito_temporizador, dev_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria
 from .utilidades import ROJO, VERDE, CIAN, RESET,print_color
@@ -63,9 +63,11 @@ def pedir_habito_borrar():
             borrar = input("Introduce el nombre del elemento a borrar: ")
             if normalizar(borrar) == "volver" or normalizar(borrar) == "salir":
                 return None
-            borrar = dev_habito_id(borrar)
-            temporizadores = contar_csv_n("temporizadores",borrar)
-            habitos = contar_csv_n("habitos",borrar)
+            
+            borrar_id = dev_habito_id(borrar)
+            temporizadores = contar_csv_n("temporizadores",borrar_id)
+            habitos = contar_csv_n("habitos",borrar_id)
+
             if habitos == False:
                 print_color("Este hábito no existe.",ROJO)
                 continue
@@ -74,8 +76,8 @@ def pedir_habito_borrar():
                 seguro = seguro.lower()
                 
                 if seguro == "s" or seguro == "si":
-                    registros = borrar_temporizadores(borrar,temporizadores)
-                    habito = borrar_habito(dev_nombre_habito_id(borrar),borrar)
+                    registros = borrar_temporizadores(borrar_id,temporizadores)
+                    habito = borrar_habito(borrar,borrar_id)
                     print_color(f"\nEl hábito {borrar} se ha eliminado con éxito.",VERDE)
                     return True
                 elif seguro == "n" or seguro == "no":
@@ -120,7 +122,6 @@ def pedir_temporizador_borrar():
                 return None
             else:
                 validado = validar_borrar_temporizador(borrar,lista)
-
                 if validado is None:
                     continue
                 else:
@@ -136,7 +137,7 @@ def pedir_habito_modi():
         if normalizar(modificar) in ("volver","salir"):
                 return "volver"
               
-        habitos = contar_habitos(dev_habito_id(modificar))
+        habitos = contar_csv_id("habitos",dev_habito_id(modificar))
 
         if habitos == False:
             print_color("Este hábito no existe.",ROJO)
@@ -146,10 +147,11 @@ def pedir_habito_modi():
             for fila in todo_habito:
                 if fila[1].lower() == modificar.lower():
                     habito = fila[1]
-                    objetivo = fila[3]
+                    tipo_objetivo = fila[3]
+                    objetivo_horas = fila[4]
             print_color(f"Hábito actual: {habito}",CIAN)
-            
-            print_color(f"Objectivo actual: {objetivo} ",CIAN)
+            print_color(f"Tipo de objetivo actual: {tipo_objetivo}",CIAN)
+            print_color(f"Objectivo actual: {objetivo_horas} ",CIAN)
             contador = 0
 
             seguro = input(f"{ROJO}¿Quieres modificar el nombre? s/n: {RESET}")
@@ -169,21 +171,35 @@ def pedir_habito_modi():
                     else: 
                         break
 
+            seguro = input(f"{ROJO}¿Quieres modificar el tipo de objetivo? s/n: {RESET}")
+            seguro = seguro.lower()
+            
+            if seguro in ("s","si"):
+                while True:
+                    tipo_valido = ["diario","semanal","mensual","anual"]
+                    tipo_objetivo = input(f"Nuevo tipo (diario, semanal, mensual, anual): ")
+                    tipo_objetivo = normalizar(tipo_objetivo)
+                    if tipo_objetivo in tipo_valido:
+                        contador +=1
+                        break
+                    else:
+                        continue
+
             seguro = input(f"{ROJO}¿Quieres modificar el objetivo de horas? s/n: {RESET}")
             seguro = seguro.lower()
             
             if seguro in ("s","si"):
                 while True:
-                    objetivo = input(f"Nuevo objetivo: ")
-                    if validar_horas(objetivo):
+                    objetivo_horas = input(f"Nuevo objetivo: ")
+                    if validar_horas(objetivo_horas):
                         contador +=1
                         break
                     else:
                         continue
 
             if contador > 0:
-                modificar_habito(habito,objetivo,dev_habito_id(modificar))
-                print_color(f"\nEl hábito {modificar} ha sido cambiado con éxito por {habito} con un objetivo de {objetivo} horas.",VERDE)
+                modificar_habito(habito,tipo_objetivo,objetivo_horas,dev_habito_id(modificar))
+                print_color(f"\nEl hábito {modificar} ha sido cambiado con éxito por {habito} con un objetivo {tipo_objetivo} de {objetivo_horas} horas.",VERDE)
                 return
             else:
                 print_color("No se ha modificado nada.",CIAN)
@@ -254,7 +270,7 @@ def pedir_tempo_modi(lista_todo):
             if contador > 0:
                 
                 modificar_temporizador(id_temporizador,nueva_hora,nueva_fecha)
-                
+                id_habito = dev_idhabito_temporizador(id_temporizador)
                 print_color(f"\nEl temporizador {dev_nombre_habito_id(id_habito)} con {horas} horas registradas el día {fecha} ha sido cambiado con éxito por {nueva_hora} horas con fecha {nueva_fecha}.",VERDE)
                 return
             else:
