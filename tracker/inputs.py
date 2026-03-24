@@ -14,11 +14,11 @@ def pedir_nombre_registro():
         comprobado = comprobar_registro(nombre)
 
         # si está registrado, vuelve a pedir el nombre
-        if comprobado > 0:
+        if comprobado == 0:
+            return nombre
+        elif comprobado > 0:
             print_color("Esté hábito ya está registrado. Por favor, introduce uno nuevo.", ROJO)
-            continue
-        else: 
-            return nombre        
+            continue     
 def pedir_nombre_temp(lista_minus,lista):
     while True:
         nombre = input("Nombre a temporizar: ")
@@ -27,7 +27,7 @@ def pedir_nombre_temp(lista_minus,lista):
         for i, item in enumerate(lista_minus):
             if item == nombre:
                 return lista[i]
-        if nombre in ("volver","salir"):
+        if nombre == "":
             return nombre
         else:
             print_color(f"Introduce un temporizador de la lista.",ROJO)

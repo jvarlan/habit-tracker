@@ -1,5 +1,5 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores
-from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria
+from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_estadistica_objetivo
 from .utilidades import limpiar_pantalla
 from .checks import normalizar
 from .utilidades import ROJO, VERDE, CIAN, print_color
@@ -7,7 +7,7 @@ from .utilidades import ROJO, VERDE, CIAN, print_color
 import tkinter as tk
 
 # se guarda en una variable para luego simplemente mostrarlo en pantalla
-volver = f"\nEscribe 'volver' si quieres salir del programa."
+volver = f"\nPulsa 'ENTER' si quieres salir del programa."
 volver2 = f"\n..............................................."
 
 #menu principal
@@ -74,8 +74,11 @@ def opcion_4():
 
 def opcion_5():
     limpiar_pantalla()
-    print("Prueba")
-    print(mostrar_registros())
+    lista = mostrar_categorias()
+    if lista:
+        mostrar_menu_estadisticas()
+    else:
+        print_color("\nActualmente no existe ningún elemento.",CIAN)
     return True
 
 def opcion_6():
@@ -93,7 +96,7 @@ menu = {
 
 def seleccionar(opcion):
     # normaliza tanto volver como salir, y cierra el menú actual
-    if normalizar(opcion) in ("volver", "salir"):
+    if opcion == "":
         return False
     # si la opción escogida está en el diccionario menu, redirige a la opción escogida
     if opcion in menu:
@@ -125,6 +128,7 @@ def mostrar_menu_borrar():
             print("4. Eliminar todos los elementos")
             print("5. Salir")
             print_color("====================================",VERDE)
+            print_color(volver,CIAN)
 
             opcion = input("\nSelecciona una opción: ")
         else:
@@ -163,7 +167,7 @@ menu_borrar = {
     
 def borrar(opcion):
     # si el usuario escribe volver o salir también sale de la aplicación
-    if normalizar(opcion) in("volver","salir"):
+    if opcion == "":
         return False
     # si la opcion coincide con una del diccionario menu_borrar, redirige a esa función
     if opcion in menu_borrar:
@@ -193,7 +197,8 @@ def mostrar_menu_modificar():
             print("3. Modificar una categoría")
             print("4. Salir")
             print_color("====================================",VERDE)
-
+            print_color(volver,CIAN)
+            
             opcion = input("\nSelecciona una opción: ")
         else:
             break
@@ -226,11 +231,76 @@ menu_modificar = {
 
 def modificar(opcion):
     # si el usuario escribe volver o salir también sale de la aplicación
-    if normalizar(opcion) in("volver","salir"):
+    if opcion == "":
         return False
     # si la opcion coincide con una del diccionario menu_borrar, redirige a esa función
     if opcion in menu_modificar:
         return menu_modificar[opcion]()
+    else:
+        print_color("\nOpción no válida.\n",ROJO)
+        return True
+
+def mostrar_menu_estadisticas():
+    while True:
+        categorias = mostrar_categorias()
+        if categorias:
+            habitos = mostrar_registros()
+            temporizadores = mostrar_temporizadores()
+            categorias = mostrar_categorias()
+        # se repite en bucle hasta que se pulse Salir
+            print_color("\n========= MENÚ ESTADÍSTICAS =========",VERDE)
+            if not habitos:
+                print_color("1. Resumen",ROJO)
+            else:
+                print("1. Resumen")
+            if not temporizadores:
+                print_color("2. Por hábito",ROJO)
+            else:
+                print("2. Por hábito")
+
+            print("3. Objetivos")
+            print("4. Rachas")
+            print("5. Salir")
+            print_color("====================================",VERDE)
+
+            opcion = input("\nSelecciona una opción: ")
+        else:
+            break
+        if not estadisticas(opcion):
+            break
+
+# las distintas opciones del menu modificar           
+def estadisticas_1():
+    limpiar_pantalla()
+    return True
+def estadisticas_2():
+    limpiar_pantalla()
+    return True
+def estadisticas_3():
+    opcion_estadistica_objetivo()
+    
+   
+def estadisticas_4():
+    #sale del bucle
+    return True
+def estadisticas_5():
+    return False
+# diccionario que contiene la redirección de las funciones
+menu_estadisticas = {
+    "1": estadisticas_1,
+    "2": estadisticas_2,
+    "3": estadisticas_3,
+    "4": estadisticas_4,
+    "5": estadisticas_5
+}
+
+def estadisticas(opcion):
+    # si el usuario escribe volver o salir también sale de la aplicación
+    if opcion == "":
+        return False
+    # si la opcion coincide con una del diccionario menu_borrar, redirige a esa función
+    if opcion in menu_estadisticas:
+        return menu_estadisticas[opcion]()
     else:
         print_color("\nOpción no válida.\n",ROJO)
         return True

@@ -1,12 +1,12 @@
 from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, id_habito_nombre
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito
-from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv
+from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi
 from .borrar import borrar_csv, borrar_temporizador
 
-volver = f"\nEscribe 'volver' si quieres salir al menú de opciones."
+volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
 volver2 = f"\n............................................................................"
 
 
@@ -25,7 +25,7 @@ def opcion_registro():
             nombre = pedir_nombre_registro()
             
             # da la opción de introducir volver y salir en todas sus variables
-            if normalizar(nombre) == "volver" or normalizar(nombre) == "salir":
+            if nombre == "":
                 return False
                 
             # si no está registrado, prosigue con el resto de inputs
@@ -75,7 +75,7 @@ def opcion_temporizador():
             print_color(volver, CIAN)
             
             nombre = pedir_nombre_temp(lista_minus,lista)
-            if normalizar(nombre) == "volver" or normalizar(nombre) == "salir":
+            if nombre == "":
                 return False
             while True:
                 fecha = pedir_fecha_temp()  
@@ -239,7 +239,7 @@ def opcion_modi_habito():
             print_color("\nModificar un hábito\n",INVERSION)
             modificar = pedir_habito_modi()
            
-            if modificar == "volver":
+            if modificar == "":
                 break
             lista = mostrar_registros()
             if lista:
@@ -274,7 +274,7 @@ def opcion_modi_tempo():
             print_color("\nModificar un temporizador\n",INVERSION)
             modificar = pedir_tempo_modi(lista_todo)
            
-            if modificar == "volver":
+            if modificar == "":
                 break
             lista = mostrar_registros()
             if lista:
@@ -321,3 +321,43 @@ def opcion_modi_categoria():
                     break    
             else:
                 break
+
+def opcion_estadistica_objetivo():
+    habitos = mostrar_csv_diccionario("habitos")
+    temporizadores = mostrar_csv_diccionario("temporizadores")
+    diarios = [h for h in habitos if h.get("tipo","").strip().lower() == "diario"]
+    semanales = [h for h in habitos if h.get("tipo","").strip().lower() == "semanal"]
+    mensuales = [h for h in habitos if h.get("tipo","").strip().lower() == "mensual"]
+    anuales = [h for h in habitos if h.get("tipo","").strip().lower() == "anual"]
+   
+    
+    if diarios == []:
+        print_color("No hay objetivos diarios",ROJO)
+    else:
+        print_color("Objetivos diarios: ",VERDE)
+        for diario in diarios:
+            print(f"{diario['habito']} -> {diario['objetivo']} horas")
+    if semanales == []:
+        print_color("No hay objetivos semanales",ROJO)
+    else:
+        print_color("Objetivos semanales: ",VERDE)
+        for semanal in semanales:
+            print(f"{semanal['habito']} -> {semanal['objetivo']} horas")
+    if mensuales == []:
+        print_color("No hay objetivos mensuales",ROJO)
+    else:
+        print_color("Objetivos mensuales: ",VERDE)
+        for mensual in mensuales:
+            print(f"{mensual['habito']} -> {mensual['objetivo']} horas")
+    if anuales == []:
+        print_color("No hay objetivos anuales",ROJO)
+    else:
+        print_color("Objetivos anuales: ",VERDE)
+        for anual in anuales:
+            print(f"{anual['habito']} -> {anual['objetivo']} horas")
+
+
+    input("\nPulsa 'ENTER' si quieres volver al menú de estadísticas: ")
+
+
+    

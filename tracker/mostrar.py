@@ -78,3 +78,20 @@ def mostrar_csv(fichero):
             contador +=1
             lista.append(fila)
     return lista
+
+def mostrar_csv_diccionario(fichero):
+    
+    ruta = BASE_DIR / "datos" / f"{fichero}.csv"
+
+    if not ruta.exists():
+        return 0
+    contador = 0
+    lista = []
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.DictReader(archivo)
+       
+        for fila in lector:
+            contador +=1
+            lista.append(fila)
+    return lista
