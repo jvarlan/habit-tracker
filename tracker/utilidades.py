@@ -6,6 +6,7 @@ RESET = "\033[0m"
 
 import os
 from .mostrar import mostrar_csv
+from datetime import timedelta
 
 def print_color(texto,color):
     RESET = "\033[0m"
@@ -47,3 +48,30 @@ def nombre_idhabito():
         #guarda en el diccionario el equivalente del id_habito a su nombre
         id_habito_nombre[habito[1]] = habito[0]
     return id_habito_nombre
+
+def cumple_periodo(fecha, ahora, tipo, offset=0):
+
+    if tipo == "dia":
+        referencia = ahora - timedelta(days=offset)
+        return fecha.date() == referencia.date()
+
+    elif tipo == "semana":
+        referencia = ahora - timedelta(weeks=offset)
+        a1, s1, _ = fecha.isocalendar()
+        a2, s2, _ = referencia.isocalendar()
+        return a1 == a2 and s1 == s2
+
+    elif tipo == "mes":
+        mes = ahora.month - offset
+        año = ahora.year
+
+        while mes <= 0:
+            mes += 12
+            año -= 1
+
+        return fecha.year == año and fecha.month == mes
+
+    elif tipo == "año":
+        return fecha.year == (ahora.year - offset)
+
+    return False
