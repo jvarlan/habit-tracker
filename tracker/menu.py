@@ -172,8 +172,11 @@ def borrar(opcion):
     # si la opcion coincide con una del diccionario menu_borrar, redirige a esa función
     if opcion in menu_borrar:
         return menu_borrar[opcion]()
+    if normalizar(opcion) in ("volver","salir",""):
+        return False 
     else:
-        print_color("\nOpción no válida.\n",ROJO)
+        limpiar_pantalla()
+        print_color("\nOpción no válida.",ROJO)
         return True
 
 def mostrar_menu_modificar():
@@ -236,7 +239,10 @@ def modificar(opcion):
     # si la opcion coincide con una del diccionario menu_borrar, redirige a esa función
     if opcion in menu_modificar:
         return menu_modificar[opcion]()
+    if normalizar(opcion) in ("volver","salir",""):
+        return False
     else:
+        limpiar_pantalla()
         print_color("\nOpción no válida.\n",ROJO)
         return True
 
@@ -277,6 +283,7 @@ def estadisticas_2():
     limpiar_pantalla()
     return True
 def estadisticas_3():
+    limpiar_pantalla()
     opcion_estadistica_objetivo()
     
    
@@ -296,11 +303,12 @@ menu_estadisticas = {
 
 def estadisticas(opcion):
     # si el usuario escribe volver o salir también sale de la aplicación
-    if opcion == "":
+    if normalizar(opcion) in ("volver","salir",""):
         return False
     # si la opcion coincide con una del diccionario menu_borrar, redirige a esa función
     if opcion in menu_estadisticas:
         return menu_estadisticas[opcion]()
     else:
-        print_color("\nOpción no válida.\n",ROJO)
+        limpiar_pantalla()
+        print_color("\nOpción no válida.",ROJO)
         return True

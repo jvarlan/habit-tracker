@@ -27,8 +27,8 @@ def pedir_nombre_temp(lista_minus,lista):
         for i, item in enumerate(lista_minus):
             if item == nombre:
                 return lista[i]
-        if nombre == "":
-            return nombre
+        if normalizar(nombre) in ("volver","salir",""):
+            return None
         else:
             print_color(f"Introduce un temporizador de la lista.",ROJO)
 
@@ -61,7 +61,7 @@ def pedir_habito_borrar():
         lista = mostrar_registros()
         if lista:
             borrar = input("Introduce el nombre del elemento a borrar: ")
-            if normalizar(borrar) == "volver" or normalizar(borrar) == "salir":
+            if normalizar(borrar) in ("volver","salir",""):
                 return None
             
             borrar_id = dev_habito_id(borrar)
@@ -89,7 +89,7 @@ def pedir_categoria_borrar():
         lista = mostrar_categorias()
         if lista:
             borrar = input("Introduce el nombre del elemento a borrar: ")
-            if normalizar(borrar) == "volver" or normalizar(borrar) == "salir":
+            if normalizar(borrar) in ("volver","salir",""):
                 return None
             if comprobar_categoria(normalizar(borrar)) is True:
         
@@ -118,7 +118,7 @@ def pedir_temporizador_borrar():
         if lista:
         
             borrar = input("Introduce el número del elemento a borrar: ")
-            if normalizar(borrar) == "volver" or normalizar(borrar) == "salir":
+            if normalizar(borrar) in ("volver","salir",""):
                 return None
             else:
                 validado = validar_borrar_temporizador(borrar,lista)
@@ -134,7 +134,7 @@ def pedir_habito_modi():
         lista = mostrar_registros()
         if lista:
             modificar = input("Introduce el nombre del elemento a modificar: ")
-        if normalizar(modificar) in ("volver","salir"):
+        if normalizar(modificar) in ("volver","salir",""):
                 return "volver"
               
         habitos = contar_csv_id("habitos",dev_habito_id(modificar))
@@ -282,7 +282,7 @@ def pedir_categoria_modi(lista_todo):
         if lista_todo:
                 modificar = input("Introduce el nombre de la categoría a modificar: ")
 
-                if normalizar(modificar) in ("volver","salir"):
+                if normalizar(modificar) in ("volver","salir",""):
                     return "volver"
                 for lista in lista_todo:
                     if modificar == lista[1]:

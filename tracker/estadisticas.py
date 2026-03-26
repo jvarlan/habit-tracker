@@ -21,14 +21,8 @@ def estadisticas(datos):
     for fila in datos:
         return(fila)
     
-
 def objetivos(tipos,temporizadores, tipo_periodo, offset=0):
         ahora = datetime.now()
-        variable = ""
-        if offset == 0:
-            variable = "Actual"
-        elif offset == 1:
-            variable = "Anterior"
         
         for tipo in tipos:     
             id_habito = tipo['id']
@@ -37,13 +31,33 @@ def objetivos(tipos,temporizadores, tipo_periodo, offset=0):
                 if temporizador['id_habito'] == id_habito:
                     fecha_temp = datetime.strptime(temporizador['fecha'], "%Y-%m-%d")
                     if cumple_periodo(fecha_temp, ahora, tipo_periodo, offset):
-                        
-                       
                         horas_totales = horas_totales + int(temporizador['tiempo'])
+                        
             conseguido = ""
             if int(horas_totales) >= int(tipo['objetivo']):
                 conseguido = "✔️"
             else:
                 conseguido = "❌"
 
-            print(f"{variable}: {tipo['habito']} -> {horas_totales}/{tipo['objetivo']} horas {conseguido}")
+            print(f"{tipo['habito']} -> {horas_totales}/{tipo['objetivo']} horas {conseguido}")
+
+def media_objetivos(tipos,temporizadores, tipo_periodo, num_periodos):
+        ahora = datetime.now()
+        
+        for tipo in tipos:     
+            id_habito = tipo['id']
+            horas_totales = 0
+            for offset in range(num_periodos):
+                for temporizador in temporizadores:
+                    if temporizador['id_habito'] == id_habito:
+                        fecha_temp = datetime.strptime(temporizador['fecha'], "%Y-%m-%d")
+                        if cumple_periodo(fecha_temp, ahora, tipo_periodo, offset):
+                            horas_totales = horas_totales + int(temporizador['tiempo'])
+            conseguido = ""
+            horas_totales = horas_totales / num_periodos
+            if int(horas_totales) >= int(tipo['objetivo']):
+                conseguido = "✔️"
+            else:
+                conseguido = "❌"
+
+            print(f"{tipo['habito']} -> {horas_totales:.2f}/{tipo['objetivo']} horas {conseguido}")

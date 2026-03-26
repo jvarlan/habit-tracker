@@ -1,11 +1,11 @@
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, cumple_periodo
+from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, cumple_periodo, limpiar_pantalla
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi
 from .borrar import borrar_csv, borrar_temporizador
-from .estadisticas import objetivos
+from .estadisticas import objetivos, media_objetivos
 from datetime import datetime
 
 volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
@@ -27,7 +27,7 @@ def opcion_registro():
             nombre = pedir_nombre_registro()
             
             # da la opción de introducir volver y salir en todas sus variables
-            if nombre == "":
+            if normalizar(nombre) in ("volver","salir",""):
                 return False
                 
             # si no está registrado, prosigue con el resto de inputs
@@ -77,7 +77,7 @@ def opcion_temporizador():
             print_color(volver, CIAN)
             
             nombre = pedir_nombre_temp(lista_minus,lista)
-            if nombre == "":
+            if nombre == None:
                 return False
             while True:
                 fecha = pedir_fecha_temp()  
@@ -217,6 +217,7 @@ def opcion_borrar_todo():
             borrar_csv("temporizadores.csv")
             print(f"{VERDE}Todos los registros han sido eliminados.{RESET}")
         elif seguro == "n" or seguro == "no":
+            limpiar_pantalla()
             return
     else:
         print_color("No existen elementos a eliminar.",CIAN)
@@ -337,27 +338,46 @@ def opcion_estadistica_objetivo():
     if diarios == []:
         print_color("No hay objetivos diarios",ROJO)
     else:
-        print_color("Objetivos diarios: ",VERDE)
+        print_color("\nObjetivos diarios: ",VERDE)
+        print("\nDía actual: ")
         objetivos(diarios,temporizadores, "dia",0)
+        print("\nDía anterior: ")
         objetivos(diarios,temporizadores, "dia",1)
+        print("\nMedia últimos 7 días: ")
+        media_objetivos(diarios,temporizadores, "dia",7)
     if semanales == []:
         print_color("No hay objetivos semanales",ROJO)
     else:
-        print_color("Objetivos semanales: ",VERDE)
+        print_color("\nObjetivos semanales: ",VERDE)
+        print("\nSemana actual: ")
         objetivos(semanales,temporizadores, "semana",0)
+        print("\nSemana anterior: ")
+        objetivos(semanales,temporizadores, "semana",1)
+        print("\nMedia últimas 4 semanas: ")
+        media_objetivos(semanales,temporizadores, "semana",4)
     if mensuales == []:
         print_color("No hay objetivos mensuales",ROJO)
     else:
-        print_color("Objetivos mensuales: ",VERDE)
+        print_color("\nObjetivos mensuales: ",VERDE)
+        print("\nMes actual: ")
         objetivos(mensuales,temporizadores, "mes",0)
+        print("\nMes anterior: ")
+        objetivos(mensuales,temporizadores, "mes",1)
+        print("\nMedia últimos 4 meses: ")
+        media_objetivos(mensuales,temporizadores, "mes",4)
     if anuales == []:
         print_color("No hay objetivos anuales",ROJO)
     else:
-        print_color("Objetivos anuales: ",VERDE)
+        print_color("\nObjetivos anuales: ",VERDE)
+        print_color("\nAño actual: ",CIAN)
         objetivos(anuales,temporizadores, "año",0)
+        print_color("\nAño anterior: ",CIAN)
+        objetivos(anuales,temporizadores, "año",1)     
+        print_color("\nMedia últimos 4 años: ",CIAN)
+        media_objetivos(anuales,temporizadores, "año",4)   
 
-
-    input("\nPulsa 'ENTER' si quieres volver al menú de estadísticas: ")
+    salir = input("\nPulsa 'ENTER' si quieres volver al menú de estadísticas: ")
+ 
 
 
     
