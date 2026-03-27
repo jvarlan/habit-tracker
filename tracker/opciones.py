@@ -1,4 +1,4 @@
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, cumple_periodo, limpiar_pantalla
+from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
@@ -333,51 +333,66 @@ def opcion_estadistica_objetivo():
     semanales = [h for h in habitos if h.get("tipo","").strip().lower() == "semanal"]
     mensuales = [h for h in habitos if h.get("tipo","").strip().lower() == "mensual"]
     anuales = [h for h in habitos if h.get("tipo","").strip().lower() == "anual"]
-
-
+    lineas = []
+    lineas.append(print_color_pausa("===== Objetivos registrados ======",CIAN))
     if diarios == []:
         print_color("No hay objetivos diarios",ROJO)
     else:
-        print_color("\nObjetivos diarios: ",VERDE)
-        print("\nDía actual: ")
-        objetivos(diarios,temporizadores, "dia",0)
-        print("\nDía anterior: ")
-        objetivos(diarios,temporizadores, "dia",1)
-        print("\nMedia últimos 7 días: ")
-        media_objetivos(diarios,temporizadores, "dia",7)
+        
+        lineas.append(print_color_pausa("\nObjetivos diarios: ",VERDE))
+        lineas.append("\nDía actual: ")
+        lineas.extend(objetivos(diarios,temporizadores, "dia",0))
+
+        lineas.append("\nDía anterior: ")
+        lineas.extend(objetivos(diarios,temporizadores, "dia",1))
+        
+        lineas.append("\nMedia últimos 7 días: ")
+        lineas.extend(media_objetivos(diarios,temporizadores, "dia",7))
+    
     if semanales == []:
         print_color("No hay objetivos semanales",ROJO)
     else:
-        print_color("\nObjetivos semanales: ",VERDE)
-        print("\nSemana actual: ")
-        objetivos(semanales,temporizadores, "semana",0)
-        print("\nSemana anterior: ")
-        objetivos(semanales,temporizadores, "semana",1)
-        print("\nMedia últimas 4 semanas: ")
-        media_objetivos(semanales,temporizadores, "semana",4)
-    if mensuales == []:
-        print_color("No hay objetivos mensuales",ROJO)
-    else:
-        print_color("\nObjetivos mensuales: ",VERDE)
-        print("\nMes actual: ")
-        objetivos(mensuales,temporizadores, "mes",0)
-        print("\nMes anterior: ")
-        objetivos(mensuales,temporizadores, "mes",1)
-        print("\nMedia últimos 4 meses: ")
-        media_objetivos(mensuales,temporizadores, "mes",4)
-    if anuales == []:
-        print_color("No hay objetivos anuales",ROJO)
-    else:
-        print_color("\nObjetivos anuales: ",VERDE)
-        print_color("\nAño actual: ",CIAN)
-        objetivos(anuales,temporizadores, "año",0)
-        print_color("\nAño anterior: ",CIAN)
-        objetivos(anuales,temporizadores, "año",1)     
-        print_color("\nMedia últimos 4 años: ",CIAN)
-        media_objetivos(anuales,temporizadores, "año",4)   
+        lineas.append(print_color_pausa("\nObjetivos semanales: ",VERDE))
+        lineas.append("\nSemana actual: ")
+        lineas.extend(objetivos(semanales,temporizadores, "semana",0))
+        lineas.append("\nSemana anterior: ")
+        lineas.extend(objetivos(semanales,temporizadores, "semana",1))
+        lineas.append("\nMedia últimas 4 semanas: ")
+        lineas.extend(media_objetivos(semanales,temporizadores, "semana",4))
+    imprimir_con_pausa(lineas)    
+    while True:
+        mostrar_mas = input("\nPulsa 'M' para ver los objetivos mensuales, 'A' para los anuales o 'ENTER' para salir: ")
 
-    salir = input("\nPulsa 'ENTER' si quieres volver al menú de estadísticas: ")
- 
+        if mostrar_mas == "":
+            break
+        
+        if normalizar(mostrar_mas) == "m":
+            lineas_mes = []
+            if mensuales == []:
+                lineas.append(print_color_pausa("No hay objetivos mensuales",ROJO))
+            else:
+                lineas_mes.append(print_color_pausa("\nObjetivos mensuales: ",VERDE))
+                lineas_mes.append("\nMes actual: ")
+                lineas_mes.extend(objetivos(mensuales,temporizadores, "mes",0))
+                lineas_mes.append("\nMes anterior: ")
+                lineas_mes.extend(objetivos(mensuales,temporizadores, "mes",1))
+                lineas_mes.append("\nMedia últimos 4 meses: ")
+                lineas_mes.extend(media_objetivos(mensuales,temporizadores, "mes",4))
+            imprimir_con_pausa(lineas_mes)
 
+        if normalizar(mostrar_mas) == "a":
+            lineas_año = []
+            if anuales == []:
+                print_color("No hay objetivos anuales",ROJO)
+            else:
+                
+                lineas_año.append(print_color_pausa("\nObjetivos anuales: ",VERDE))
+                lineas_año.append("\nAño actual: ")
+                lineas_año.extend(objetivos(anuales,temporizadores, "año",0))
+                lineas_año.append("\nAño anterior: ")
+                lineas_año.extend(objetivos(anuales,temporizadores, "año",1))     
+                lineas_año.append("\nMedia últimos 4 años: ")
+                lineas_año.extend(media_objetivos(anuales,temporizadores, "año",4))
+            imprimir_con_pausa(lineas_año)
 
     

@@ -1,6 +1,6 @@
 import csv
 from config import BASE_DIR
-from .utilidades import print_color, cumple_periodo
+from .utilidades import print_color, cumple_periodo, imprimir_con_pausa
 from datetime import datetime
 
 
@@ -23,7 +23,7 @@ def estadisticas(datos):
     
 def objetivos(tipos,temporizadores, tipo_periodo, offset=0):
         ahora = datetime.now()
-        
+        lineas = []
         for tipo in tipos:     
             id_habito = tipo['id']
             horas_totales = 0
@@ -39,11 +39,13 @@ def objetivos(tipos,temporizadores, tipo_periodo, offset=0):
             else:
                 conseguido = "❌"
 
-            print(f"{tipo['habito']} -> {horas_totales}/{tipo['objetivo']} horas {conseguido}")
+            linea = f"{tipo['habito']} -> {horas_totales}/{tipo['objetivo']} horas {conseguido}"
+            lineas.append(linea)
 
+        return lineas
 def media_objetivos(tipos,temporizadores, tipo_periodo, num_periodos):
         ahora = datetime.now()
-        
+        lineas = []
         for tipo in tipos:     
             id_habito = tipo['id']
             horas_totales = 0
@@ -60,4 +62,7 @@ def media_objetivos(tipos,temporizadores, tipo_periodo, num_periodos):
             else:
                 conseguido = "❌"
 
-            print(f"{tipo['habito']} -> {horas_totales:.2f}/{tipo['objetivo']} horas {conseguido}")
+            linea = f"{tipo['habito']} -> {horas_totales:.2f}/{tipo['objetivo']} horas {conseguido}"
+            lineas.append(linea)
+
+        return lineas

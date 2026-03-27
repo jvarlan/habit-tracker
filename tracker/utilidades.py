@@ -4,13 +4,16 @@ CIAN = "\033[36m"
 INVERSION = "\033[7m"
 RESET = "\033[0m"
 
-import os
+import os, shutil
 from .mostrar import mostrar_csv
 from datetime import timedelta
 
 def print_color(texto,color):
     RESET = "\033[0m"
     print(f"{color}{texto}{RESET}")
+def print_color_pausa(texto,color):
+    RESET = "\033[0m"
+    return f"{color}{texto}{RESET}"
 
 def limpiar_pantalla():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -75,3 +78,19 @@ def cumple_periodo(fecha, ahora, tipo, offset=0):
         return fecha.year == (ahora.year - offset)
 
     return False
+
+def imprimir_con_pausa(lineas):
+    try:
+        altura = shutil.get_terminal_size().lines - 10 #margen de lineas
+    except:
+        altura = 20
+
+    contador = 0
+
+    for linea in lineas:
+        print(linea)
+        contador +=1
+
+        if contador >= altura:
+            input("\nPulsa ENTER para continuar...")
+            contador = 0

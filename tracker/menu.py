@@ -306,6 +306,7 @@ def estadisticas(opcion):
     if normalizar(opcion) in ("volver","salir",""):
         return False
     # si la opcion coincide con una del diccionario menu_borrar, redirige a esa función
+
     if opcion in menu_estadisticas:
         return menu_estadisticas[opcion]()
     else:
