@@ -1,4 +1,4 @@
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa
+from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
@@ -68,7 +68,7 @@ def opcion_temporizador():
   
             lista = mostrar_registros() # devuelve el listado de habitos registrados
             lista_minus = [item.lower() for item in lista]
-            print_color("Añadir un nuevo temporizador",INVERSION)
+            print_color("\nAñadir un nuevo temporizador",INVERSION)
             print("\nHábitos registrados: \n")
 
             # recorre el listado, numerandolo con el nombre al lado
@@ -326,13 +326,8 @@ def opcion_modi_categoria():
                 break
 
 def opcion_estadistica_objetivo():
-    habitos = mostrar_csv_diccionario("habitos")
-    temporizadores = mostrar_csv_diccionario("temporizadores")
+    diarios, semanales, mensuales, anuales, habitos, temporizadores = agrupar_datos_csv()
 
-    diarios = [h for h in habitos if h.get("tipo","").strip().lower() == "diario"]
-    semanales = [h for h in habitos if h.get("tipo","").strip().lower() == "semanal"]
-    mensuales = [h for h in habitos if h.get("tipo","").strip().lower() == "mensual"]
-    anuales = [h for h in habitos if h.get("tipo","").strip().lower() == "anual"]
     lineas = []
     lineas.append(print_color_pausa("===== Objetivos registrados ======",CIAN))
     if diarios == []:
@@ -363,7 +358,7 @@ def opcion_estadistica_objetivo():
     while True:
         mostrar_mas = input("\nPulsa 'M' para ver los objetivos mensuales, 'A' para los anuales o 'ENTER' para salir: ")
 
-        if mostrar_mas == "":
+        if normalizar(mostrar_mas) in ("","volver","salir"):
             break
         
         if normalizar(mostrar_mas) == "m":
@@ -395,4 +390,14 @@ def opcion_estadistica_objetivo():
                 lineas_año.extend(media_objetivos(anuales,temporizadores, "año",4))
             imprimir_con_pausa(lineas_año)
 
+def opcion_estadistica_resumen():
+    while True:
+
+
+        volver = input("Pulsa 'ENTER' para volver al menú de estadísticas...")
+        
+        if volver_atras(volver) == False:
+            break
+        
+        diarios, semanales, mensuales, anuales, habitos, temporizadores = agrupar_datos_csv()
     

@@ -1,5 +1,5 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores
-from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_estadistica_objetivo
+from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_estadistica_objetivo, opcion_estadistica_resumen
 from .utilidades import limpiar_pantalla
 from .checks import normalizar
 from .utilidades import ROJO, VERDE, CIAN, print_color
@@ -108,6 +108,7 @@ def seleccionar(opcion):
 #menu borrar    
 def mostrar_menu_borrar():
     while True:
+        limpiar_pantalla()
         categorias = mostrar_categorias()
         if categorias:
             habitos = mostrar_registros()
@@ -138,16 +139,16 @@ def mostrar_menu_borrar():
 
 # las distintas opciones del menu borrar           
 def borrar_1():
-    opcion_borrar()
     limpiar_pantalla()
+    opcion_borrar()
     return True
 def borrar_2():
-    opcion_borrar_tempo()
     limpiar_pantalla()
+    opcion_borrar_tempo()
     return True
 def borrar_3():
-    opcion_borrar_categoria()
     limpiar_pantalla()
+    opcion_borrar_categoria()
     return True
 def borrar_4():
     opcion_borrar_todo()
@@ -181,6 +182,7 @@ def borrar(opcion):
 
 def mostrar_menu_modificar():
     while True:
+        limpiar_pantalla()
         categorias = mostrar_categorias()
         if categorias:
             habitos = mostrar_registros()
@@ -210,16 +212,16 @@ def mostrar_menu_modificar():
 
 # las distintas opciones del menu modificar           
 def modi_1():
-    opcion_modi_habito()
     limpiar_pantalla()
+    opcion_modi_habito()
     return True
 def modi_2():
-    opcion_modi_tempo()
     limpiar_pantalla()
+    opcion_modi_tempo()
     return True
 def modi_3():
-    opcion_modi_categoria()
     limpiar_pantalla()
+    opcion_modi_categoria()
     return True
 def modi_4():
     #sale del bucle
@@ -248,6 +250,7 @@ def modificar(opcion):
 
 def mostrar_menu_estadisticas():
     while True:
+        limpiar_pantalla()
         categorias = mostrar_categorias()
         if categorias:
             habitos = mostrar_registros()
@@ -275,9 +278,10 @@ def mostrar_menu_estadisticas():
         if not estadisticas(opcion):
             break
 
-# las distintas opciones del menu modificar           
+# las distintas opciones del menu estadisticas           
 def estadisticas_1():
     limpiar_pantalla()
+    opcion_estadistica_resumen()
     return True
 def estadisticas_2():
     limpiar_pantalla()
@@ -285,7 +289,7 @@ def estadisticas_2():
 def estadisticas_3():
     limpiar_pantalla()
     opcion_estadistica_objetivo()
-    
+    return True
    
 def estadisticas_4():
     #sale del bucle
@@ -305,7 +309,7 @@ def estadisticas(opcion):
     # si el usuario escribe volver o salir también sale de la aplicación
     if normalizar(opcion) in ("volver","salir",""):
         return False
-    # si la opcion coincide con una del diccionario menu_borrar, redirige a esa función
+    # si la opcion coincide con una del diccionario menu_estadisticas, redirige a esa función
 
     if opcion in menu_estadisticas:
         return menu_estadisticas[opcion]()

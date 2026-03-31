@@ -135,7 +135,7 @@ def pedir_habito_modi():
         if lista:
             modificar = input("Introduce el nombre del elemento a modificar: ")
         if normalizar(modificar) in ("volver","salir",""):
-                return "volver"
+                return ""
               
         habitos = contar_csv_id("habitos",dev_habito_id(modificar))
 
@@ -213,7 +213,7 @@ def pedir_tempo_modi(lista_todo):
                 modificar = input("Introduce el número del temporizador a modificar: ")
                 
                 if normalizar(modificar) in ("volver","salir"):
-                    return "volver"
+                    return ""
                 modificar = int(modificar) 
 
                 id_temporizador = lista_todo[modificar-1][0]

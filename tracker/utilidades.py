@@ -5,7 +5,7 @@ INVERSION = "\033[7m"
 RESET = "\033[0m"
 
 import os, shutil
-from .mostrar import mostrar_csv
+from .mostrar import mostrar_csv, mostrar_csv_diccionario
 from datetime import timedelta
 
 def print_color(texto,color):
@@ -92,5 +92,21 @@ def imprimir_con_pausa(lineas):
         contador +=1
 
         if contador >= altura:
-            input("\nPulsa ENTER para continuar...")
+            input(print_color_pausa("\nPulsa ENTER para continuar... \n",ROJO))
             contador = 0
+
+def volver_atras(texto):
+    if texto in ("","volver","salir"):
+        return False
+    
+def agrupar_datos_csv():
+    habitos = mostrar_csv_diccionario("habitos")
+    temporizadores = mostrar_csv_diccionario("temporizadores")
+
+    diarios = [h for h in habitos if h.get("tipo","").strip().lower() == "diario"]
+    semanales = [h for h in habitos if h.get("tipo","").strip().lower() == "semanal"]
+    mensuales = [h for h in habitos if h.get("tipo","").strip().lower() == "mensual"]
+    anuales = [h for h in habitos if h.get("tipo","").strip().lower() == "anual"]
+
+    return diarios, semanales, mensuales, anuales, habitos, temporizadores
+
