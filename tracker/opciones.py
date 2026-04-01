@@ -5,7 +5,7 @@ from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categori
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi
 from .borrar import borrar_csv, borrar_temporizador
-from .estadisticas import objetivos, media_objetivos
+from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen
 from datetime import datetime
 
 volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
@@ -328,76 +328,56 @@ def opcion_modi_categoria():
 def opcion_estadistica_objetivo():
     diarios, semanales, mensuales, anuales, habitos, temporizadores = agrupar_datos_csv()
 
-    lineas = []
-    lineas.append(print_color_pausa("===== Objetivos registrados ======",CIAN))
-    if diarios == []:
-        print_color("No hay objetivos diarios",ROJO)
-    else:
+    lineas = [
+        print_color_pausa("===== Objetivos registrados ======",CIAN),
         
-        lineas.append(print_color_pausa("\nObjetivos diarios: ",VERDE))
-        lineas.append("\nDía actual: ")
-        lineas.extend(objetivos(diarios,temporizadores, "dia",0))
-
-        lineas.append("\nDía anterior: ")
-        lineas.extend(objetivos(diarios,temporizadores, "dia",1))
-        
-        lineas.append("\nMedia últimos 7 días: ")
-        lineas.extend(media_objetivos(diarios,temporizadores, "dia",7))
+        *generar_bloque_objetivo("diarios", diarios, temporizadores, "dia", "Día", 7),
+        *generar_bloque_objetivo("semanales", semanales, temporizadores, "semana", "Semana", 4),
+    ]
     
-    if semanales == []:
-        print_color("No hay objetivos semanales",ROJO)
-    else:
-        lineas.append(print_color_pausa("\nObjetivos semanales: ",VERDE))
-        lineas.append("\nSemana actual: ")
-        lineas.extend(objetivos(semanales,temporizadores, "semana",0))
-        lineas.append("\nSemana anterior: ")
-        lineas.extend(objetivos(semanales,temporizadores, "semana",1))
-        lineas.append("\nMedia últimas 4 semanas: ")
-        lineas.extend(media_objetivos(semanales,temporizadores, "semana",4))
-    imprimir_con_pausa(lineas)    
+    imprimir_con_pausa(lineas)
+
     while True:
-        mostrar_mas = input("\nPulsa 'M' para ver los objetivos mensuales, 'A' para los anuales o 'ENTER' para salir: ")
+        mostrar_mas = normalizar(input(
+            "\nPulsa 'M' para ver los objetivos mensuales, 'A' para los anuales o 'ENTER' para salir: "
+        ))
 
-        if normalizar(mostrar_mas) in ("","volver","salir"):
+        if mostrar_mas in ("","volver","salir"):
             break
-        
-        if normalizar(mostrar_mas) == "m":
-            lineas_mes = []
-            if mensuales == []:
-                lineas.append(print_color_pausa("No hay objetivos mensuales",ROJO))
-            else:
-                lineas_mes.append(print_color_pausa("\nObjetivos mensuales: ",VERDE))
-                lineas_mes.append("\nMes actual: ")
-                lineas_mes.extend(objetivos(mensuales,temporizadores, "mes",0))
-                lineas_mes.append("\nMes anterior: ")
-                lineas_mes.extend(objetivos(mensuales,temporizadores, "mes",1))
-                lineas_mes.append("\nMedia últimos 4 meses: ")
-                lineas_mes.extend(media_objetivos(mensuales,temporizadores, "mes",4))
+        if mostrar_mas == "m":
+            lineas_mes = generar_bloque_objetivo("mensuales", mensuales, temporizadores, "mes", "Mes", 4)
             imprimir_con_pausa(lineas_mes)
-
-        if normalizar(mostrar_mas) == "a":
-            lineas_año = []
-            if anuales == []:
-                print_color("No hay objetivos anuales",ROJO)
-            else:
-                
-                lineas_año.append(print_color_pausa("\nObjetivos anuales: ",VERDE))
-                lineas_año.append("\nAño actual: ")
-                lineas_año.extend(objetivos(anuales,temporizadores, "año",0))
-                lineas_año.append("\nAño anterior: ")
-                lineas_año.extend(objetivos(anuales,temporizadores, "año",1))     
-                lineas_año.append("\nMedia últimos 4 años: ")
-                lineas_año.extend(media_objetivos(anuales,temporizadores, "año",4))
+        elif mostrar_mas == "a":
+            lineas_año = generar_bloque_objetivo("anuales", anuales, temporizadores, "año", "Año", 4)
             imprimir_con_pausa(lineas_año)
+
 
 def opcion_estadistica_resumen():
     while True:
 
-
-        volver = input("Pulsa 'ENTER' para volver al menú de estadísticas...")
+        diarios, semanales, mensuales, anuales, habitos, temporizadores = agrupar_datos_csv()
+       
+        lineas = [
+        print_color_pausa("===== Resumen ======",CIAN),
         
+        *generar_bloque_resumen("diarios", diarios, temporizadores, "dia", "Día", 7),
+        *generar_bloque_resumen("semanales", semanales, temporizadores, "semana", "Semana", 4),
+    ]
+        imprimir_con_pausa(lineas)
+
+        while True:
+            mostrar_mas = normalizar(input(
+                "\nPulsa 'M' para ver los objetivos mensuales, 'A' para los anuales o 'ENTER' para salir: "
+            ))
+
+            if mostrar_mas in ("","volver","salir"):
+                break
+            if mostrar_mas == "m":
+                lineas_mes = generar_bloque_resumen("mensuales", mensuales, temporizadores, "mes", "Mes", 4)
+                imprimir_con_pausa(lineas_mes)
+            elif mostrar_mas == "a":
+                lineas_año = generar_bloque_resumen("anuales", anuales, temporizadores, "año", "Año", 4)
+                imprimir_con_pausa(lineas_año)
+            
         if volver_atras(volver) == False:
             break
-        
-        diarios, semanales, mensuales, anuales, habitos, temporizadores = agrupar_datos_csv()
-    

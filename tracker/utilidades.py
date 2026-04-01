@@ -109,4 +109,3 @@ def agrupar_datos_csv():
     anuales = [h for h in habitos if h.get("tipo","").strip().lower() == "anual"]
 
     return diarios, semanales, mensuales, anuales, habitos, temporizadores
-
