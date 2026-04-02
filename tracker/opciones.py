@@ -353,15 +353,19 @@ def opcion_estadistica_objetivo():
 
 
 def opcion_estadistica_resumen():
-    while True:
+    salir = False
+    while not salir:
 
-        diarios, semanales, mensuales, anuales, habitos, temporizadores = agrupar_datos_csv()
-       
+        diarios, semanales, mensuales, anuales, habitos, temporizadores, categorias = agrupar_datos_csv()
+
+
         lineas = [
-        print_color_pausa("===== Resumen ======",CIAN),
+        print_color_pausa("\n=======================================",CIAN),
+        print_color_pausa("  📊 RESUMEN DE HÁBITOS REGISTRADOS    ",CIAN),
+        print_color_pausa("=======================================",CIAN),
         
-        *generar_bloque_resumen("diarios", diarios, temporizadores, "dia", "Día", 7),
-        *generar_bloque_resumen("semanales", semanales, temporizadores, "semana", "Semana", 4),
+        *generar_bloque_resumen("DIARIOS", diarios, temporizadores, "dia", categorias),
+        *generar_bloque_resumen("SEMANALES", semanales, temporizadores, "semana", categorias),
     ]
         imprimir_con_pausa(lineas)
 
@@ -371,13 +375,12 @@ def opcion_estadistica_resumen():
             ))
 
             if mostrar_mas in ("","volver","salir"):
-                break
+                salir = True  # Indicamos que queremos salir de todo
+                break  # Salimos del bucle interno
             if mostrar_mas == "m":
-                lineas_mes = generar_bloque_resumen("mensuales", mensuales, temporizadores, "mes", "Mes", 4)
+                lineas_mes = generar_bloque_resumen("MENSUALES", mensuales, temporizadores, "mes",categorias)
                 imprimir_con_pausa(lineas_mes)
             elif mostrar_mas == "a":
-                lineas_año = generar_bloque_resumen("anuales", anuales, temporizadores, "año", "Año", 4)
+                lineas_año = generar_bloque_resumen("ANUALES", anuales, temporizadores, "año",categorias)
                 imprimir_con_pausa(lineas_año)
-            
-        if volver_atras(volver) == False:
-            break
+    

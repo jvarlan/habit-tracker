@@ -45,13 +45,13 @@ def registrar_categoria(categoria):
     id = contar_id("categorias.csv")
 
     with open(ruta, mode="a", newline="", encoding="utf-8") as archivo:
-        campos = ["id","categoria"]
+        campos = ["id","categoria","emoticono"]
         writer = csv.DictWriter(archivo, fieldnames=campos)
 
         if encabezado:
             writer.writeheader()
         if not comprobar_categoria(categoria) >= 1:
-            writer.writerow({"id": id,"categoria": categoria}) 
+            writer.writerow({"id": id,"categoria": categoria,"emoticono":""}) 
            
     
 

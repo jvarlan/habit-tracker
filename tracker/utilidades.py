@@ -93,6 +93,7 @@ def imprimir_con_pausa(lineas):
 
         if contador >= altura:
             input(print_color_pausa("\nPulsa ENTER para continuar... \n",ROJO))
+            limpiar_pantalla()
             contador = 0
 
 def volver_atras(texto):
@@ -102,10 +103,11 @@ def volver_atras(texto):
 def agrupar_datos_csv():
     habitos = mostrar_csv_diccionario("habitos")
     temporizadores = mostrar_csv_diccionario("temporizadores")
+    categorias = mostrar_csv_diccionario("categorias")
 
     diarios = [h for h in habitos if h.get("tipo","").strip().lower() == "diario"]
     semanales = [h for h in habitos if h.get("tipo","").strip().lower() == "semanal"]
     mensuales = [h for h in habitos if h.get("tipo","").strip().lower() == "mensual"]
     anuales = [h for h in habitos if h.get("tipo","").strip().lower() == "anual"]
 
-    return diarios, semanales, mensuales, anuales, habitos, temporizadores
+    return diarios, semanales, mensuales, anuales, habitos, temporizadores, categorias
