@@ -59,7 +59,7 @@ def modificar_temporizador(id_temporizador,horas,fecha):
     else:
         return (f"{VERDE}Registro '{id_temporizador}' eliminado.{RESET}")
 
-def modificar_categoria(id_categoria,nombre):
+def modificar_categoria(id_categoria,nombre, emoticono):
     ruta = BASE_DIR / "datos" / "categorias.csv"
 
     if not ruta.exists():
@@ -72,7 +72,7 @@ def modificar_categoria(id_categoria,nombre):
         for fila in lector:
             
             if fila[0] == id_categoria:
-                fila_modificada = [fila[0],nombre]
+                fila_modificada = [fila[0],nombre, emoticono]
                 filas_restantes.append(fila_modificada)
             else:
                 filas_restantes.append(fila)

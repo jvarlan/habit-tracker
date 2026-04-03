@@ -29,9 +29,23 @@ def opcion_registro():
             # da la opción de introducir volver y salir en todas sus variables
             if normalizar(nombre) in ("volver","salir",""):
                 return False
-                
+            
+            categorias = mostrar_csv_diccionario("categorias")
+            cat_dict = {cat["categoria"]: cat["emoticono"] for cat in categorias}
+            
             # si no está registrado, prosigue con el resto de inputs
-            categoria = input("Categoria: ")
+            print("\nCategorías disponibles:")
+            categorias_lista = sorted(cat_dict.keys())
+            for i, cat in enumerate(categorias_lista, 1):
+                print(f"{i}. {cat} {cat_dict[cat]}")
+
+            categoria = input("\nIntroduce una categoria de la lista o introduce una nueva: ")
+           
+            if categoria in cat_dict:
+                emoticono = cat_dict[categoria]
+            else:
+                emoticono = input("Introduce un emoticono asociado: ")
+
             tipo_valido = ["diario", "semanal","mensual","anual"]
             while True:
                 tipo = input("Objetivo (diario, semanal, mensual, anual): ")
@@ -46,7 +60,7 @@ def opcion_registro():
                 # comprueba que las horas sean mayores que 0 y no contengan letras u otros caracteres
                 
                 if validar_horas(objetivo):
-                    registrar_categoria(categoria)
+                    registrar_categoria(categoria, emoticono)
                     id_categoria = dev_categoria_id(categoria)
                     registrar(nombre, id_categoria, tipo, objetivo)
                     print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo+" de "+objetivo+" horas.",VERDE)
@@ -152,7 +166,7 @@ def opcion_borrar_tempo():
             if borrar == None:
                 return False
             else:
-                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el hábito {dev_nombre_habito_id(borrar["id_habito"])} con {borrar["horas"]} horas registradas del día {borrar["fecha"]}? s/n: {RESET}")
+                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el temporizador {dev_nombre_habito_id(borrar["id_habito"])} con {borrar["horas"]} horas registradas del día {borrar["fecha"]}?\nEsta acción ELIMINARÁ el temporizador de forma PERMANENTE. 4s/n: {RESET}")
                 seguro = seguro.lower()
 
                 if seguro == "s" or seguro == "si":
@@ -300,12 +314,13 @@ def opcion_modi_categoria():
 
 
             lista_todo = sorted(lista_todo, key=lambda x: x[1])
-            print("\nEstos son las categorias ya registrados: \n")
+            print("\nEstos son las categorias ya registradas: \n")
 
             for i, item in enumerate(lista_todo, start=1):
                 id_categoria = item[0]
                 categoria = item[1]
-                print(f"{i} - {categoria}")
+                emoticono = item[2]
+                print(f"{i} - {categoria} {emoticono}")
 
             print_color(volver, CIAN)
             print_color("\n Modificar una categoria\n",INVERSION)

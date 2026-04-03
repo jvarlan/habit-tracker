@@ -35,7 +35,7 @@ def registrar(habito, id_categoria, tipo, objetivo):
             writer.writeheader()
         writer.writerow({"id": id, "habito": habito, "id_categoria": id_categoria, "tipo": tipo, "objetivo": objetivo})
 
-def registrar_categoria(categoria):
+def registrar_categoria(categoria, emoticono):
 
     ruta = BASE_DIR / "datos" / "categorias.csv"
     ruta.parent.mkdir(exist_ok=True)
@@ -51,7 +51,7 @@ def registrar_categoria(categoria):
         if encabezado:
             writer.writeheader()
         if not comprobar_categoria(categoria) >= 1:
-            writer.writerow({"id": id,"categoria": categoria,"emoticono":""}) 
+            writer.writerow({"id": id,"categoria": categoria,"emoticono":emoticono}) 
            
     
 

@@ -72,7 +72,7 @@ def pedir_habito_borrar():
                 print_color("Este hábito no existe.",ROJO)
                 continue
             else:
-                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el hábito {borrar}?\nSe eliminarán {temporizadores} registros de horas asociados. s/n: {RESET}")
+                seguro = input(f"\n{ROJO}Al borrar el hábito {borrar} se eliminarán {temporizadores} registros de horas asociados. Esta acción borrará los DATOS de forma PERMANENTE. ¿Quieres continuar? s/n: {RESET}")
                 seguro = seguro.lower()
                 
                 if seguro == "s" or seguro == "si":
@@ -97,7 +97,7 @@ def pedir_categoria_borrar():
                 lista_habitos = dev_lista_habitos_cat(id_categoria)
                 lista_temporizadores = dev_lista_temporizadores_cat(lista_habitos,id_categoria)
 
-                seguro = input(f"{ROJO}La categoria {borrar} tiene {len(lista_habitos)} hábitos asociados, con {len(lista_temporizadores)} registros de tiempo. ¿Estás seguro de que quieres borrar esta categoría? s/n: {RESET}")
+                seguro = input(f"{ROJO}\nLa categoria {borrar} tiene {len(lista_habitos)} hábitos asociados, con {len(lista_temporizadores)} registros de tiempo. Esta acción eliminará los DATOS de forma PERMANENTE.\n¿Quieres continuar? s/n: {RESET}")
                 seguro = seguro.lower()
                 
                 if seguro == "s" or seguro == "si":
@@ -281,7 +281,10 @@ def pedir_categoria_modi(lista_todo):
     while True:
         if lista_todo:
                 modificar = input("Introduce el nombre de la categoría a modificar: ")
-
+                for item in lista_todo:
+                    if item[1] == modificar:
+                        emoticono = item[2]
+                        break
                 if normalizar(modificar) in ("volver","salir",""):
                     return "volver"
                 for lista in lista_todo:
@@ -289,13 +292,34 @@ def pedir_categoria_modi(lista_todo):
                         id_categoria = lista[0]
 
                 categorias = contar_csv_id("categorias",id_categoria)
+                # contador para contabilizar si el usuario modifica algo o no
+                contador = 0
+                seguro = input(f"{ROJO}¿Quieres modificar el nombre de la categoria? s/n: {RESET}")
+                seguro = seguro.lower()
+                
+                if seguro in ("s","si"):
+                    nueva_categoria = input("Introduce el nuevo nombre para la categoria: ")
+                    contador +=1
+                else:
+                    nueva_categoria = modificar
+                seguro = input(f"{ROJO}¿Quieres modificar el emoticono asociado? s/n: {RESET}")
+                seguro = seguro.lower()
 
-                nueva_categoria = input("Introduce el nuevo nombre para la categoria: ")
-                if categorias:
-
-                    modificar_categoria(id_categoria,nueva_categoria)
-
-                    print_color("Categoria cambiada con éxito.",VERDE)
-
-                    return
+                if seguro in ("s","si"):
+                    nuevo_emoticono = input("Introduce el nuevo emoticono: ")
+                    contador +=1
+                else:
+                    nuevo_emoticono = emoticono
+ 
             
+                if categorias:
+                    if contador > 0:
+                        modificar_categoria(id_categoria,nueva_categoria, nuevo_emoticono)
+
+                        print_color("Categoria cambiada con éxito.",VERDE)
+
+                        return
+                    else:
+                        print_color("No se ha modificado nada.",ROJO)
+                        return
+                
