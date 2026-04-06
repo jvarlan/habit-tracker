@@ -1,11 +1,13 @@
 from datetime import datetime
+import time
+import threading
 from .checks import normalizar, validar_horas, comprobar_horas_temp_24, comprobar_registro, validar_borrar_temporizador, comprobar_categoria
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv
 from .contar import contar_csv_n, contar_csv_id
 from .devolver import dev_habito_id, dev_nombre_habito_id,dev_idhabito_temporizador, dev_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria
-from .utilidades import ROJO, VERDE, CIAN, RESET,print_color
+from .utilidades import ROJO, VERDE, CIAN, RESET,print_color, cronometro, esperar_enter, horas_a_segundos
 
 def pedir_nombre_registro():
      while True:
@@ -34,10 +36,32 @@ def pedir_nombre_temp(lista_minus,lista):
 
 def pedir_horas_temp():
     while True:
-        horas = input("Duración de la actividad (horas): ")
-        if validar_horas(horas):
-            return horas
+        registro = input("Pulsa 'M' para registro manual o 'A' para automático: ")
+        if normalizar(registro) == "m":
+            horas = input("Duración de la actividad (HH:MM:SS): ")
+            if validar_horas(horas):
+                return horas
 
+        elif normalizar(registro) == "a":
+            stop_event = threading.Event()
+            resultado = []
+
+            print_color("Pulsa ENTER cuando quieras parar el cronómetro... ",CIAN)
+            
+            
+            hilo_input = threading.Thread(target=esperar_enter, args=(stop_event,))
+            hilo_input.start()
+
+            hilo_crono = threading.Thread(target=cronometro, args=(stop_event, resultado))
+            hilo_crono.start()
+
+            hilo_crono.join()
+            hilo_input.join()
+
+            horas = resultado[0]
+            if validar_horas(horas):
+                return horas
+        return False
 def pedir_fecha_temp():
     while True:
             fecha = input("Introduce la fecha (AAAA-MM-DD) o déjalo vacío para hoy: ")
@@ -247,9 +271,9 @@ def pedir_tempo_modi(lista_todo):
                     id_habito = lista_todo[modificar-1][1]
                     
                     contador_horas_24 = comprobar_horas_temp_24(datetime.strptime(fecha, "%Y-%m-%d").date(), id_habito)
-                    contador_horas_24_total = int(contador_horas_24) - int(horas) + int(nueva_hora)
+                    contador_horas_24_total = int(contador_horas_24) - int(horas_a_segundos(horas)) + int(horas_a_segundos(nueva_hora))
                     
-                    if contador_horas_24_total > 24:
+                    if contador_horas_24_total > 24 * 3600:
                         print_color(f"Este temporizador ya tiene 24 horas registradas en este día.",ROJO)
                         continue
                     else:

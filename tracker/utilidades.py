@@ -5,6 +5,7 @@ INVERSION = "\033[7m"
 RESET = "\033[0m"
 
 import os, shutil
+import time
 from .mostrar import mostrar_csv, mostrar_csv_diccionario
 from datetime import timedelta
 
@@ -111,3 +112,35 @@ def agrupar_datos_csv():
     anuales = [h for h in habitos if h.get("tipo","").strip().lower() == "anual"]
 
     return diarios, semanales, mensuales, anuales, habitos, temporizadores, categorias
+
+def cronometro(stop_event, resultado):
+
+    inicio = time.time()
+
+    while not stop_event.is_set():
+
+        tiempo = time.time() - inicio
+        horas = int(tiempo // 3600)
+        minutos = int((tiempo % 3600) // 60)
+        segundos = int(tiempo % 60)
+
+        print(f"\rTiempo: {horas:02d}:{minutos:02d}:{segundos:02d}",end="")
+        time.sleep(1)
+    print()
+    resultado.append(f"{horas:02d}:{minutos:02d}:{segundos:02d}")
+
+def esperar_enter(stop_event):
+    input()
+    stop_event.set()
+
+def horas_a_segundos(horas_str):
+    """Convierte un string 'HH:MM:SS' a segundos totales"""
+    h, m, s = map(int, horas_str.split(":"))
+    return h * 3600 + m * 60 + s
+
+def segundos_a_hhmmss(segundos):
+    """Convierte segundos a string HH:MM:SS"""
+    h = segundos // 3600
+    m = (segundos % 3600) // 60
+    s = segundos % 60
+    return f"{int(h):02d}:{int(m):02d}:{int(s):02d}"

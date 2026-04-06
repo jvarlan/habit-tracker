@@ -1,7 +1,7 @@
 import csv
 from config import BASE_DIR
 from datetime import datetime
-from .utilidades import ROJO, print_color
+from .utilidades import ROJO, print_color, horas_a_segundos
 from .mostrar import mostrar_temporizadores
 import unicodedata
 
@@ -40,35 +40,47 @@ def comprobar_categoria(categoria):
 
         return any(fila["categoria"].lower() == categoria.lower() for fila in lector)
     
-def comprobar_horas_temp(horas, fecha, id_habito):
+def comprobar_horas_temp(horas_str, fecha, id_habito):
+
+    if not validar_horas(horas_str):
+        return False
+    
+    total_segundos = horas_a_segundos(horas_str)
+
     temporizadores = mostrar_temporizadores()
-    contador_horas = 0.0
+    contador_segundos = 0.0
     for temporizador in temporizadores:
         if datetime.strptime(temporizador["fecha"], "%Y-%m-%d").date() == fecha and temporizador["id_habito"] == id_habito:
-            contador_horas = contador_horas + float(temporizador["horas"])
-    contador_horas = contador_horas + float(horas)
-    return contador_horas
+            contador_segundos += horas_a_segundos(temporizador["horas"])
+
+    contador_segundos += total_segundos
+
+    return contador_segundos
 
 def comprobar_horas_temp_24(fecha, id_habito):
    
     temporizadores = mostrar_temporizadores()
-    contador_horas = 0.0
+    contador_segundos = 0
+
     for temporizador in temporizadores:
         if datetime.strptime(temporizador["fecha"], "%Y-%m-%d").date() == fecha and temporizador["id_habito"] == id_habito:
-            contador_horas = contador_horas + float(temporizador["horas"])
-    return contador_horas
+            horas_str = temporizador["horas"]            
+            contador_segundos += horas_a_segundos(horas_str)
+
+    return contador_segundos
 
 def validar_horas(numero):
+    partes = numero.split(":")
+    if len(partes) != 3:
+        return False
     try:
-        numero = float(numero)
+        h, m, s = map(int, partes)
+        if h <0 or not (0 <=m < 60) or not (0 <= s < 60):
+            return False
+        return True
     except ValueError:
         print_color("Introduce un número de horas válido.",ROJO)
         return False
-    if float(numero) <= 0:
-        print_color("Las horas deben ser mayores que 0",ROJO)
-        return False
-    else:
-        return True
 
 def validar_borrar_temporizador(borrar,lista):
   

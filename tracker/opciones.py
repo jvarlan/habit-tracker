@@ -1,4 +1,4 @@
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv
+from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
@@ -97,21 +97,20 @@ def opcion_temporizador():
                 fecha = pedir_fecha_temp()  
                 id_habito = dev_habito_id(nombre)
                 contador_horas_24 = comprobar_horas_temp_24(fecha, id_habito)
-                if contador_horas_24 >= 24:
+                if contador_horas_24 >= 24*3600:
                     print_color(f"Este temporizador ya tiene 24 horas registradas en este día.",ROJO)
                     continue
                 while True:
                     horas = pedir_horas_temp()
                     id_habito = dev_habito_id(nombre)
-                    
                     contador_horas = comprobar_horas_temp(horas,fecha, id_habito)
 
-                    if contador_horas > 24:
+                    if contador_horas > 24*3600:
                         print_color("El total de horas registradas para esta actividad no puede ser mayor de 24",ROJO)
                         continue #si la actividad supera las 24 horas el mismo día, vuelve a pedir las horas
                     else:     
                         habito(id_habito,horas,fecha)
-                        print_color(f"\nSe han añadido {horas} horas al temporizador {nombre} con fecha {fecha}",VERDE)
+                        print_color(f"\nSe ha registrado {horas} en el temporizador {nombre} con fecha {fecha}",VERDE)
                         break # una vez es correcto, sale del bucle de horas y dias y vuelve al bucle original
                 break
             seguir = input("\n¿Quieres introducir un nuevo temporizador? s/n: ")
