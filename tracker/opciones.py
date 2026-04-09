@@ -5,7 +5,7 @@ from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categori
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi
 from .borrar import borrar_csv, borrar_temporizador
-from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen
+from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias
 from datetime import datetime
 
 volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
@@ -340,13 +340,13 @@ def opcion_modi_categoria():
                 break
 
 def opcion_estadistica_objetivo():
-    diarios, semanales, mensuales, anuales, habitos, temporizadores = agrupar_datos_csv()
+    diarios, semanales, mensuales, anuales, habitos, temporizadores, categorias = agrupar_datos_csv()
 
     lineas = [
         print_color_pausa("===== Objetivos registrados ======",CIAN),
         
-        *generar_bloque_objetivo("diarios", diarios, temporizadores, "dia", "Día", 7),
-        *generar_bloque_objetivo("semanales", semanales, temporizadores, "semana", "Semana", 4),
+        *generar_bloque_objetivo("días", diarios, temporizadores, "dia", "Día", 7),
+        *generar_bloque_objetivo("semanas", semanales, temporizadores, "semana", "Semana", 4),
     ]
     
     imprimir_con_pausa(lineas)
@@ -359,10 +359,10 @@ def opcion_estadistica_objetivo():
         if mostrar_mas in ("","volver","salir"):
             break
         if mostrar_mas == "m":
-            lineas_mes = generar_bloque_objetivo("mensuales", mensuales, temporizadores, "mes", "Mes", 4)
+            lineas_mes = generar_bloque_objetivo("meses", mensuales, temporizadores, "mes", "Mes", 4)
             imprimir_con_pausa(lineas_mes)
         elif mostrar_mas == "a":
-            lineas_año = generar_bloque_objetivo("anuales", anuales, temporizadores, "año", "Año", 4)
+            lineas_año = generar_bloque_objetivo("años", anuales, temporizadores, "año", "Año", 4)
             imprimir_con_pausa(lineas_año)
 
 
@@ -397,4 +397,19 @@ def opcion_estadistica_resumen():
             elif mostrar_mas == "a":
                 lineas_año = generar_bloque_resumen("ANUALES", anuales, temporizadores, "año",categorias)
                 imprimir_con_pausa(lineas_año)
-    
+
+def opcion_estadistica_categoria():
+    salir = False
+    while not salir:
+
+        diarios, semanales, mensuales, anuales, habitos, temporizadores, categorias = agrupar_datos_csv()
+
+
+        lineas = [
+        print_color_pausa("\n=======================================",CIAN),
+        print_color_pausa("  📊  CATEGORÍAS    ",CIAN),
+        print_color_pausa("=======================================",CIAN),
+        
+        *generar_bloque_categorias(habitos, temporizadores, categorias),
+    ]
+        imprimir_con_pausa(lineas)

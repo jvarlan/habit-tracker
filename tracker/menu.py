@@ -1,5 +1,5 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores
-from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_estadistica_objetivo, opcion_estadistica_resumen
+from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria
 from .utilidades import limpiar_pantalla
 from .checks import normalizar
 from .utilidades import ROJO, VERDE, CIAN, print_color
@@ -263,9 +263,9 @@ def mostrar_menu_estadisticas():
             else:
                 print("1. Resumen")
             if not temporizadores:
-                print_color("2. Por hábito",ROJO)
+                print_color("2. Categorías",ROJO)
             else:
-                print("2. Por hábito")
+                print("2. Categorías")
 
             print("3. Objetivos")
             print("4. Rachas")
@@ -285,6 +285,7 @@ def estadisticas_1():
     return True
 def estadisticas_2():
     limpiar_pantalla()
+    opcion_estadistica_categoria()
     return True
 def estadisticas_3():
     limpiar_pantalla()
