@@ -399,8 +399,8 @@ def opcion_estadistica_resumen():
                 imprimir_con_pausa(lineas_año)
 
 def opcion_estadistica_categoria():
-    salir = False
-    while not salir:
+    mostrar_mas = False
+    while not mostrar_mas:
 
         diarios, semanales, mensuales, anuales, habitos, temporizadores, categorias = agrupar_datos_csv()
 
@@ -413,3 +413,10 @@ def opcion_estadistica_categoria():
         *generar_bloque_categorias(habitos, temporizadores, categorias),
     ]
         imprimir_con_pausa(lineas)
+
+        mostrar_mas = normalizar(input(
+            "\nPulsa 'ENTER' para salir: "
+        ))
+
+        if mostrar_mas in ("","volver","salir"):
+            mostrar_mas = True

@@ -146,12 +146,12 @@ def segundos_a_hhmmss(segundos):
     return f"{int(h):02d}:{int(m):02d}:{int(s):02d}"
 
 def numero_string_a_HHMM(numero_str):
-    numero = float(numero_str)
+    numero = int(float(numero_str))  # aseguras entero
 
-    horas = int(numero)
+    horas = numero // 3600
+    minutos = (numero % 3600) // 60
+    segundos = numero % 60
 
-    minutos = int((numero - horas) * 60)
-
-    hhmm = f"{horas:02d}:{minutos:02d}"
+    hhmm = f"{horas:02d}:{minutos:02d}:{segundos:02d}"
 
     return hhmm

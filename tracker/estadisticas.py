@@ -101,7 +101,7 @@ def generar_bloque_categorias(habitos,temporizadores, categorias):
         print_color(f"No hay objetivos",ROJO)
         return []
     return [
-        print_color_pausa(f"\naaa",VERDE),
+        print_color_pausa(f"\nHistórico acumulado",VERDE),
         print_color_pausa("────────────────────────",VERDE),
         *categorias_est(habitos, temporizadores, categorias),
     ]
@@ -126,7 +126,6 @@ def resumen_est(tipos, categorias, temporizadores, tipo_periodo, offset=0):
             segundos_totales = 0
             for temporizador in temporizadores:
                 if temporizador['id_habito'] == id_habito:
-                    
                     fecha_temp = datetime.strptime(temporizador['fecha'], "%Y-%m-%d")
                     if cumple_periodo(fecha_temp, ahora, tipo_periodo, offset):
                         segundos_totales = segundos_totales + horas_a_segundos(temporizador['tiempo'])
@@ -162,26 +161,23 @@ def categorias_est(habitos, temporizadores, categorias):
         lineas = []
         
         for categoria in categorias:
-            objetivo = 0
             segundos_totales = 0
             for habito in habitos:
-              
-                objetivo += int(habito['objetivo'])
-               
-            for temporizador in temporizadores:
-              
-
-                segundos_totales += horas_a_segundos(temporizador['tiempo'])
+                if habito['id_categoria'] == categoria['id']:
+                   # objetivo += int(habito['objetivo'])
+                    for temporizador in temporizadores:
+                        if temporizador['id_habito'] == habito['id']:
+                            segundos_totales += horas_a_segundos(temporizador['tiempo'])
 
             # Icono de la categoría (💪, 🎮, 📖)
             
             emoticono_categoria = categoria['emoticono']
-
-            porcentaje = (float(segundos_totales) / (float(objetivo)* 3600)) * 100
-
-            horas_totales = segundos_totales / 3600     
-
-            linea = f"{emoticono_categoria} {categoria['categoria']} -> {numero_string_a_HHMM(horas_totales)}/{numero_string_a_HHMM(objetivo)} horas ({porcentaje:.2f}%) {objetivo}"
+          
+          #  try:
+           #     porcentaje = (float(segundos_totales) / (float(objetivo)* 3600)) * 100
+           # except ZeroDivisionError:
+            #    porcentaje = 0
+            linea = f"{emoticono_categoria} {categoria['categoria']} -> {numero_string_a_HHMM(segundos_totales)} horas"
             lineas.append(linea)
 
         return lineas
