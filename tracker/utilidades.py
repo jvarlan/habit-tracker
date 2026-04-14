@@ -7,7 +7,7 @@ RESET = "\033[0m"
 import os, shutil
 import time
 from .mostrar import mostrar_csv, mostrar_csv_diccionario
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 def print_color(texto,color):
     RESET = "\033[0m"
@@ -54,10 +54,19 @@ def nombre_idhabito():
     return id_habito_nombre
 
 def cumple_periodo(fecha, ahora, tipo, offset=0):
+    if isinstance(fecha, str):
+        fecha = datetime.strptime(fecha, "%Y-%m-%d").date()
+    elif hasattr(fecha, "date") and not isinstance(fecha, datetime.date):
+        fecha = fecha.date()
 
     if tipo == "dia":
         referencia = ahora - timedelta(days=offset)
-        return fecha.date() == referencia.date()
+        
+        return (
+        fecha.year == referencia.year and
+        fecha.month == referencia.month and
+        fecha.day == referencia.day
+    )
 
     elif tipo == "semana":
         referencia = ahora - timedelta(weeks=offset)
@@ -144,6 +153,18 @@ def segundos_a_hhmmss(segundos):
     m = (segundos % 3600) // 60
     s = segundos % 60
     return f"{int(h):02d}:{int(m):02d}:{int(s):02d}"
+
+def horas_string_a_HHMM(numero_str):
+
+    numero = float(numero_str)  # aseguras entero
+
+    horas = int(numero)
+    minutos = int((numero - horas) * 60)
+    segundos = int((((numero - horas) * 60) - minutos) * 60)
+
+    hhmm = f"{horas:02d}:{minutos:02d}:{segundos:02d}"
+
+    return hhmm
 
 def numero_string_a_HHMM(numero_str):
     numero = int(float(numero_str))  # aseguras entero

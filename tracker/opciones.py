@@ -409,7 +409,6 @@ def opcion_estadistica_categoria():
         print_color_pausa("\n=======================================",CIAN),
         print_color_pausa("  📊  CATEGORÍAS    ",CIAN),
         print_color_pausa("=======================================",CIAN),
-        
         *generar_bloque_categorias(habitos, temporizadores, categorias),
     ]
         imprimir_con_pausa(lineas)

@@ -1,6 +1,6 @@
 import csv
 from config import BASE_DIR
-from .utilidades import print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos
+from .utilidades import print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM
 from .mostrar import mostrar_csv_diccionario
 from datetime import datetime, timedelta
 
@@ -101,11 +101,22 @@ def generar_bloque_categorias(habitos,temporizadores, categorias):
         print_color(f"No hay objetivos",ROJO)
         return []
     return [
-        print_color_pausa(f"\nHistórico acumulado",VERDE),
+        print_color_pausa(f"\nHoy",VERDE),
+        print_color_pausa("────────────────────────",VERDE),
+        *categorias_fecha(habitos, temporizadores, categorias,"dia"),
+        print_color_pausa(f"\nSemana actual",VERDE),
+        print_color_pausa("────────────────────────",VERDE),
+        *categorias_fecha(habitos, temporizadores, categorias,"semana"),
+        print_color_pausa(f"\nMes actual",VERDE),
+        print_color_pausa("────────────────────────",VERDE),
+        *categorias_fecha(habitos, temporizadores, categorias,"mes"),
+        print_color_pausa(f"\nAño actual",VERDE),
+        print_color_pausa("────────────────────────",VERDE),
+        *categorias_fecha(habitos, temporizadores, categorias,"año"),
+        print_color_pausa(f"\Histórico acumulado",VERDE),
         print_color_pausa("────────────────────────",VERDE),
         *categorias_est(habitos, temporizadores, categorias),
     ]
-
 
 def generar_bloque_resumen(titulo,datos,temporizadores,tipo, categorias):
     
@@ -150,7 +161,7 @@ def resumen_est(tipos, categorias, temporizadores, tipo_periodo, offset=0):
             
             horas_totales = segundos_totales / 3600     
 
-            linea = f"{emoticono_categoria} {tipo['habito']} -> {numero_string_a_HHMM(horas_totales)}/{numero_string_a_HHMM(tipo['objetivo'])} horas ({porcentaje:.2f}%) {objetivo}"
+            linea = f"{emoticono_categoria} {tipo['habito']} -> {horas_string_a_HHMM(horas_totales)}/{horas_string_a_HHMM(tipo['objetivo'])} horas ({porcentaje:.2f}%) {objetivo}"
             lineas.append(linea)
 
         return lineas
@@ -168,6 +179,36 @@ def categorias_est(habitos, temporizadores, categorias):
                     for temporizador in temporizadores:
                         if temporizador['id_habito'] == habito['id']:
                             segundos_totales += horas_a_segundos(temporizador['tiempo'])
+
+            # Icono de la categoría (💪, 🎮, 📖)
+            
+            emoticono_categoria = categoria['emoticono']
+          
+          #  try:
+           #     porcentaje = (float(segundos_totales) / (float(objetivo)* 3600)) * 100
+           # except ZeroDivisionError:
+            #    porcentaje = 0
+            linea = f"{emoticono_categoria} {categoria['categoria']} -> {numero_string_a_HHMM(segundos_totales)} horas"
+            lineas.append(linea)
+
+        return lineas
+
+def categorias_fecha(habitos, temporizadores, categorias, tipo):
+    
+        lineas = []
+
+        ahora = datetime.now().date()
+        
+        for categoria in categorias:
+            segundos_totales = 0
+            for habito in habitos:
+                if habito['id_categoria'] == categoria['id']:
+                   # objetivo += int(habito['objetivo'])
+                    for temporizador in temporizadores:
+                        if temporizador['id_habito'] == habito['id']:
+                            if(cumple_periodo(temporizador['fecha'], ahora, tipo, 0)):
+                                    segundos_totales += horas_a_segundos(temporizador['tiempo'])
+
 
             # Icono de la categoría (💪, 🎮, 📖)
             
