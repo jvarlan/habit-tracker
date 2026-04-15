@@ -64,9 +64,18 @@ def opcion_registro():
                     id_categoria = dev_categoria_id(categoria)
                     registrar(nombre, id_categoria, tipo, objetivo)
                     print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo+" de "+objetivo+" horas.",VERDE)
+
+                    otro_habito = input("\n¿Quieres añadir un objetivo diferente para este hábito? s/n: ")
+                    if preguntar_seguir(otro_habito):
+                        print("hola")
+                    else:
+                        print("holas")
                 else:
                     continue
                 break
+
+
+
             seguir = input("\n¿Quieres introducir un nuevo hábito? s/n: ")
             lista = mostrar_registros()
             if preguntar_seguir(seguir):

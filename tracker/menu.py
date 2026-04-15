@@ -22,16 +22,15 @@ def mostrar_menu():
         print_color("\n======== MENÚ HABIT TRACKER ========",VERDE)
         print("1. Registrar un nuevo hábito (100%)")
         if not habitos:
-            print_color("2. Crear un temporizador (100%)",ROJO)
+            print_color("2. Añadir tiempo (100%)",ROJO)
         else:
-            print("2. Crear un temporizador (100%)")
+            print("2. Añadir tiempo (100%)")
         if not habitos and not temporizadores and not categorias:
             print_color("3. Eliminar elementos (100%)",ROJO)
         else:
             print("3. Eliminar elementos (100%)")
-        print("4. Modificar elementos (BETA)")
-        print("5. Mostrar estadísticas (Por desarrollar)")
-        print("6. Salir")
+        print("4. Modificar elementos (100%)")
+        print("5. Mostrar estadísticas (En desarrollo)")
         print_color("====================================",VERDE)
         print_color(volver,CIAN)
 
@@ -81,28 +80,25 @@ def opcion_5():
         print_color("\nActualmente no existe ningún elemento.",CIAN)
     return True
 
-def opcion_6():
-    print_color("Cerrando aplicación...",VERDE)
-    return False
 # según la elección escogida en el menú, redirige a las funciones de arriba
 menu = {
     "1": opcion_1,
     "2": opcion_2,
     "3": opcion_3,
     "4": opcion_4,
-    "5": opcion_5,
-    "6": opcion_6
+    "5": opcion_5
 }
 
 def seleccionar(opcion):
-    # normaliza tanto volver como salir, y cierra el menú actual
-    if opcion == "":
-        return False
+    
     # si la opción escogida está en el diccionario menu, redirige a la opción escogida
     if opcion in menu:
         return menu[opcion]()
+    # normaliza tanto volver como salir, y cierra el menú actual
+    elif normalizar(opcion) in ("volver","salir",""):
+        print_color("\nCerrando aplicación...",VERDE)
+        return False 
     else:
-        print_color("\nOpción no válida.",ROJO)
         return True
 
 #menu borrar    
@@ -127,7 +123,6 @@ def mostrar_menu_borrar():
 
             print("3. Eliminar una categoría")
             print("4. Eliminar todos los elementos")
-            print("5. Salir")
             print_color("====================================",VERDE)
             print_color(volver,CIAN)
 
@@ -153,31 +148,23 @@ def borrar_3():
 def borrar_4():
     opcion_borrar_todo()
     return True
-def borrar_5():
-    #sale del bucle
-    return False
 
 # diccionario que contiene la redirección de las funciones
 menu_borrar = {
     "1": borrar_1,
     "2": borrar_2,
     "3": borrar_3,
-    "4": borrar_4,
-    "5": borrar_5
+    "4": borrar_4
 }
     
 def borrar(opcion):
-    # si el usuario escribe volver o salir también sale de la aplicación
-    if opcion == "":
-        return False
-    # si la opcion coincide con una del diccionario menu_borrar, redirige a esa función
+        # si la opción escogida está en el diccionario menu, redirige a la opción escogida
     if opcion in menu_borrar:
         return menu_borrar[opcion]()
-    if normalizar(opcion) in ("volver","salir",""):
+    # normaliza tanto volver como salir, y cierra el menú actual
+    elif normalizar(opcion) in ("volver","salir",""):
         return False 
     else:
-        limpiar_pantalla()
-        print_color("\nOpción no válida.",ROJO)
         return True
 
 def mostrar_menu_modificar():
@@ -200,7 +187,6 @@ def mostrar_menu_modificar():
                 print("2. Modificar un temporizador")
 
             print("3. Modificar una categoría")
-            print("4. Salir")
             print_color("====================================",VERDE)
             print_color(volver,CIAN)
             
@@ -223,15 +209,11 @@ def modi_3():
     limpiar_pantalla()
     opcion_modi_categoria()
     return True
-def modi_4():
-    #sale del bucle
-    return False
 # diccionario que contiene la redirección de las funciones
 menu_modificar = {
     "1": modi_1,
     "2": modi_2,
-    "3": modi_3,
-    "4": modi_4
+    "3": modi_3
 }
 
 def modificar(opcion):
@@ -242,6 +224,7 @@ def modificar(opcion):
     if opcion in menu_modificar:
         return menu_modificar[opcion]()
     if normalizar(opcion) in ("volver","salir",""):
+        print_color("Cerrando aplicación...",VERDE)
         return False
     else:
         limpiar_pantalla()
@@ -269,7 +252,6 @@ def mostrar_menu_estadisticas():
 
             print("3. Objetivos")
             print("4. Rachas")
-            print("5. Salir")
             print_color("====================================",VERDE)
 
             opcion = input("\nSelecciona una opción: ")
@@ -295,20 +277,18 @@ def estadisticas_3():
 def estadisticas_4():
     #sale del bucle
     return True
-def estadisticas_5():
-    return False
 # diccionario que contiene la redirección de las funciones
 menu_estadisticas = {
     "1": estadisticas_1,
     "2": estadisticas_2,
     "3": estadisticas_3,
-    "4": estadisticas_4,
-    "5": estadisticas_5
+    "4": estadisticas_4
 }
 
 def estadisticas(opcion):
     # si el usuario escribe volver o salir también sale de la aplicación
     if normalizar(opcion) in ("volver","salir",""):
+        print_color("Volviendo al menú principal...",VERDE)
         return False
     # si la opcion coincide con una del diccionario menu_estadisticas, redirige a esa función
 

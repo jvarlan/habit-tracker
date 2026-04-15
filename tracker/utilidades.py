@@ -56,8 +56,6 @@ def nombre_idhabito():
 def cumple_periodo(fecha, ahora, tipo, offset=0):
     if isinstance(fecha, str):
         fecha = datetime.strptime(fecha, "%Y-%m-%d").date()
-    elif hasattr(fecha, "date") and not isinstance(fecha, datetime.date):
-        fecha = fecha.date()
 
     if tipo == "dia":
         referencia = ahora - timedelta(days=offset)
@@ -91,7 +89,7 @@ def cumple_periodo(fecha, ahora, tipo, offset=0):
 
 def imprimir_con_pausa(lineas):
     try:
-        altura = shutil.get_terminal_size().lines - 10 #margen de lineas
+        altura = shutil.get_terminal_size().lines - 9 #margen de lineas
     except:
         altura = 20
 

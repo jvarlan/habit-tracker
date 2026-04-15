@@ -214,7 +214,7 @@ def pedir_habito_modi():
             
             if seguro in ("s","si"):
                 while True:
-                    objetivo_horas = input(f"Nuevo objetivo: ")
+                    objetivo_horas = input(f"Nuevo objetivo (HH:MM:SS): ")
                     if validar_horas(objetivo_horas):
                         contador +=1
                         break

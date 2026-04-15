@@ -23,6 +23,7 @@ def estadisticas(datos):
         return(fila)
     
 def objetivos(tipos,temporizadores, tipo_periodo, offset=0):
+        # saca los datos de los objetivos
         ahora = datetime.now()
         lineas = []
         for tipo in tipos:  
@@ -43,17 +44,18 @@ def objetivos(tipos,temporizadores, tipo_periodo, offset=0):
 
          
             conseguido = ""
-            horas_totales = segundos_totales / 3600
-            if int(horas_totales) >= int(tipo['objetivo']):
+           
+            if int(segundos_totales) >= int(horas_a_segundos(tipo['objetivo'])):
                 conseguido = "✔️"
             else:
                 conseguido = "❌"
             
-            linea = f"{emoticono_categoria} {tipo['habito']} -> {numero_string_a_HHMM(horas_totales)}/{numero_string_a_HHMM(tipo['objetivo'])} horas {conseguido}"
+            linea = f"{emoticono_categoria} {tipo['habito']} -> {numero_string_a_HHMM(segundos_totales)}/{tipo['objetivo']} horas {conseguido}"
             lineas.append(linea)
 
         return lineas
 def media_objetivos(tipos,temporizadores, tipo_periodo, num_periodos):
+        # calcula la media dependiendo del tipo de periodo que sea (diario, semanal, mensual, anual)
         ahora = datetime.now()
         lineas = []
         for tipo in tipos:     
@@ -66,14 +68,13 @@ def media_objetivos(tipos,temporizadores, tipo_periodo, num_periodos):
                         if cumple_periodo(fecha_temp, ahora, tipo_periodo, offset):
                             segundos_totales = segundos_totales + horas_a_segundos(temporizador['tiempo'])
             conseguido = ""
-            horas_totales = segundos_totales / 3600
             segundos_totales = segundos_totales / num_periodos
-            if int(horas_totales) >= int(tipo['objetivo']):
+            if int(segundos_totales) >= int(horas_a_segundos(tipo['objetivo'])) * 3600:
                 conseguido = "✔️"
             else:
                 conseguido = "❌"
             
-            linea = f"{tipo['habito']} -> {numero_string_a_HHMM(horas_totales)}/{numero_string_a_HHMM(tipo['objetivo'])} horas {conseguido}"
+            linea = f"{tipo['habito']} -> {numero_string_a_HHMM(segundos_totales)}/{tipo['objetivo']} horas {conseguido}"
             lineas.append(linea)
 
         return lineas
@@ -146,7 +147,7 @@ def resumen_est(tipos, categorias, temporizadores, tipo_periodo, offset=0):
            
             emoticono_categoria = categorias[id_categoria_habito]["emoticono"]
 
-            porcentaje = (float(segundos_totales) / (float(tipo['objetivo'])* 3600)) * 100
+            porcentaje = (float(segundos_totales) / (float(horas_a_segundos(tipo['objetivo'])))) * 100
 
             if porcentaje == 0:
                 objetivo = "👎"
@@ -161,7 +162,7 @@ def resumen_est(tipos, categorias, temporizadores, tipo_periodo, offset=0):
             
             horas_totales = segundos_totales / 3600     
 
-            linea = f"{emoticono_categoria} {tipo['habito']} -> {horas_string_a_HHMM(horas_totales)}/{horas_string_a_HHMM(tipo['objetivo'])} horas ({porcentaje:.2f}%) {objetivo}"
+            linea = f"{emoticono_categoria} {tipo['habito']} -> {horas_string_a_HHMM(horas_totales)}/{tipo['objetivo']} horas ({porcentaje:.2f}%) {objetivo}"
             lineas.append(linea)
 
         return lineas
