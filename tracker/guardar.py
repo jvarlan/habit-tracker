@@ -18,7 +18,7 @@ def habito(id_habito, tiempo, fecha):
             writer.writeheader()
         writer.writerow({"id": id,"id_habito":id_habito, "tiempo": tiempo, "fecha": fecha})
 
-def registrar(habito, id_categoria, tipo, objetivo):
+def registrar(habito, id_categoria):
     
     ruta = BASE_DIR / "datos" / "habitos.csv"
     ruta.parent.mkdir(exist_ok=True)
@@ -28,12 +28,13 @@ def registrar(habito, id_categoria, tipo, objetivo):
     id = contar_id("habitos.csv")
 
     with open(ruta, mode="a", newline="",encoding="utf-8") as archivo:
-        campos = ["id","habito","id_categoria","tipo","objetivo"]
+        campos = ["id","habito","id_categoria"]
         writer = csv.DictWriter(archivo, fieldnames=campos)
 
         if encabezado:
             writer.writeheader()
-        writer.writerow({"id": id, "habito": habito, "id_categoria": id_categoria, "tipo": tipo, "objetivo": objetivo})
+        writer.writerow({"id": id, "habito": habito, "id_categoria": id_categoria})
+    return id
 
 def registrar_categoria(categoria, emoticono):
 
@@ -51,8 +52,24 @@ def registrar_categoria(categoria, emoticono):
         if encabezado:
             writer.writeheader()
         if not comprobar_categoria(categoria) >= 1:
-            writer.writerow({"id": id,"categoria": categoria,"emoticono":emoticono}) 
+            writer.writerow({"id": id,"categoria": categoria,"emoticono":emoticono})
            
+def registrar_objetivo(id_habito, tipo, objetivo):
+
+    ruta = BASE_DIR / "datos" / "objetivos.csv"
+    ruta.parent.mkdir(exist_ok=True)
+
+    encabezado = not ruta.exists() or ruta.stat().st_size == 0
+
+    id = contar_id("objetivos.csv")
+
+    with open(ruta, mode="a", newline="", encoding="utf-8") as archivo:
+        campos = ["id","id_habito", "tipo","objetivo"]
+        writer = csv.DictWriter(archivo, fieldnames=campos)
+
+        if encabezado:
+            writer.writeheader()
+        writer.writerow({"id": id,"id_habito": id_habito,"tipo": tipo, "objetivo": objetivo}) 
     
 
    

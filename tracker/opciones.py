@@ -1,6 +1,6 @@
 from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
-from .guardar import registrar, registrar_categoria, habito
+from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi
@@ -21,7 +21,7 @@ def opcion_registro():
                 print("\nHábitos registrados: \n")
                 # recorre el listado, numerandolo con el nombre al lado
                 for i, item in enumerate(sorted(lista), start=1):
-                    print(f"{i}. {item}")
+                    print(f"👉 {item}")
             print_color(volver, CIAN)
 
             nombre = pedir_nombre_registro()
@@ -33,13 +33,18 @@ def opcion_registro():
             categorias = mostrar_csv_diccionario("categorias")
             cat_dict = {cat["categoria"]: cat["emoticono"] for cat in categorias}
             
-            # si no está registrado, prosigue con el resto de inputs
-            print("\nCategorías disponibles:")
+            
             categorias_lista = sorted(cat_dict.keys())
-            for i, cat in enumerate(categorias_lista, 1):
-                print(f"{i}. {cat} {cat_dict[cat]}")
+            if categorias_lista:
+                # si no está registrado, prosigue con el resto de inputs
+                print("\nCategorías disponibles:")
+                
+                for i, cat in enumerate(categorias_lista, 1):
+                    print(f"{i}. {cat} {cat_dict[cat]}")
 
-            categoria = input("\nIntroduce una categoria de la lista o introduce una nueva: ")
+                categoria = input("\nIntroduce una categoria de la lista o añade una nueva: ")
+            else:
+                categoria = input("Categoría: ")
            
             if categoria in cat_dict:
                 emoticono = cat_dict[categoria]
@@ -48,7 +53,8 @@ def opcion_registro():
 
             tipo_valido = ["diario", "semanal","mensual","anual"]
             while True:
-                tipo = input("Objetivo (diario, semanal, mensual, anual): ")
+                lista_tipos = ["diario","semanal","mensual","anual"]
+                tipo = input(f"Objetivo ({lista_tipos}): ")
                 tipo = normalizar(tipo)
                 if tipo not in tipo_valido:
                     continue
@@ -62,12 +68,32 @@ def opcion_registro():
                 if validar_horas(objetivo):
                     registrar_categoria(categoria, emoticono)
                     id_categoria = dev_categoria_id(categoria)
-                    registrar(nombre, id_categoria, tipo, objetivo)
+                    id_habito = registrar(nombre, id_categoria)
+                    registrar_objetivo(id_habito, tipo, objetivo)
                     print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo+" de "+objetivo+" horas.",VERDE)
 
                     otro_habito = input("\n¿Quieres añadir un objetivo diferente para este hábito? s/n: ")
+                    lista_objetivos = mostrar_csv_diccionario("objetivos")
+
+                    tipos_usados = []
+
+                    for lista_o in lista_objetivos:
+                        if lista_o['id_habito'] == id_habito:
+                            tipos_usados.append(lista_o['tipo'])
+                    tipos_usados.append(tipo)
+                    
+                    tipos_restantes = []
+
+                    for ltipos in lista_tipos:
+                        if ltipos not in tipos_usados:
+                            tipos_restantes.append(ltipos)
+
                     if preguntar_seguir(otro_habito):
-                        print("hola")
+                        tipo_ad = input(f"Otro tipo ({tipos_restantes}): ")
+                        objetivo_ad = input("Otro objetivo (horas): ")
+                        registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
+                        print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.",VERDE)
+
                     else:
                         print("holas")
                 else:
@@ -96,7 +122,7 @@ def opcion_temporizador():
 
             # recorre el listado, numerandolo con el nombre al lado
             for i, item in enumerate(sorted(lista), start=1):
-                print(f"{i}. {item}")
+                print(f"- {item}")
             print_color(volver, CIAN)
             
             nombre = pedir_nombre_temp(lista_minus,lista)
@@ -226,8 +252,9 @@ def opcion_borrar_todo():
     lista1 = mostrar_temporizadores()
     lista2 = mostrar_registros()
     lista3 = mostrar_categorias()
+    lista4 = mostrar_csv("objetivos")
 
-    if lista1 or lista2 or lista3:
+    if lista1 or lista2 or lista3 or lista4:
         seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar todos los registros? s/n:{RESET} ")
 
         seguro = seguro.lower()
@@ -237,6 +264,7 @@ def opcion_borrar_todo():
             borrar_csv("categorias.csv")
             borrar_csv("habitos.csv")
             borrar_csv("temporizadores.csv")
+            borrar_csv("objetivos.csv")
             print(f"{VERDE}Todos los registros han sido eliminados.{RESET}")
         elif seguro == "n" or seguro == "no":
             limpiar_pantalla()

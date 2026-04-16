@@ -1,8 +1,10 @@
-id,habito,id_categoria,tipo,objetivo
-1,Entrene,1,mensual,16:00:00
-2,Yakuza 0,2,mensual,100:00:00
-3,Limpiar,3,semanal,01:00:00
-4,Ramen Para Dos,4,semanal,03:00:00
-5,Videojuegos,2,anual,1000:00:00
-6,Harry Potter,5,semanal,03:00:00
-7,Dexter,5,diario,01:00:00
+id,habito,id_categoria
+1,Entrene,1
+2,Dexter,2
+3,Pragmata,3
+4,One Piece,4
+5,Limpiar,5
+6,Harry Potter,2
+7,Programar,6
+8,Yakuza 0,3
+9,Fútbol,1
