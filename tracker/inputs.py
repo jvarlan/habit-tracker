@@ -2,12 +2,13 @@ from datetime import datetime
 import time
 import threading
 from .checks import normalizar, validar_horas, comprobar_horas_temp_24, comprobar_registro, validar_borrar_temporizador, comprobar_categoria
-from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv
+from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
+from .guardar import registrar_objetivo
 from .contar import contar_csv_n, contar_csv_id
 from .devolver import dev_habito_id, dev_nombre_habito_id,dev_idhabito_temporizador, dev_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria
-from .utilidades import ROJO, VERDE, CIAN, RESET,print_color, cronometro, esperar_enter, horas_a_segundos
+from .utilidades import ROJO, VERDE, CIAN, RESET,print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir
 
 def pedir_nombre_registro():
      while True:
@@ -19,6 +20,7 @@ def pedir_nombre_registro():
         if comprobado == 0:
             return nombre
         elif comprobado > 0:
+            # aqui no deberia ahora obligar a repetir el nombre, ya que ahora se añadirán nuevos objetivos al introducir uno ya existente.
             print_color("Esté hábito ya está registrado. Por favor, introduce uno nuevo.", ROJO)
             continue     
 def pedir_nombre_temp(lista_minus,lista):
@@ -347,3 +349,47 @@ def pedir_categoria_modi(lista_todo):
                         print_color("No se ha modificado nada.",ROJO)
                         return
                 
+def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
+        while True:
+            
+            lista_objetivos = mostrar_csv_diccionario("objetivos")
+
+            tipos_usados = []
+
+            for lista_o in lista_objetivos:
+                if int(lista_o['id_habito']) == int(id_habito):
+                    tipos_usados.append(lista_o['tipo'].strip().lower())
+            
+            tipos_usados.append(tipo)
+            
+            tipos_restantes = []
+
+            for ltipos in lista_tipos:
+                if ltipos.strip().lower() not in tipos_usados:
+                    tipos_restantes.append(ltipos)
+
+            if not tipos_restantes:
+                print("\nNo quedan más tipos disponibles para este hábito.")
+                break
+
+            otro_habito = input("\n¿Quieres añadir un objetivo diferente para este hábito? s/n: ")
+
+            if not preguntar_seguir(otro_habito):
+                break
+            while True:
+                tipo_ad = normalizar(input(f"Otro tipo ({tipos_restantes}): "))
+                
+                if tipo_ad not in tipos_restantes:
+                    continue
+                else:
+                    break
+            while True:
+                objetivo_ad = input("Otro objetivo (horas): ")
+                if validar_horas(objetivo_ad):
+                    registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
+                    print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.",VERDE)
+                else:
+                    continue
+                break
+
+        

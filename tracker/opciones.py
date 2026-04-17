@@ -3,14 +3,13 @@ from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, va
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id
-from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi
+from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo
 from .borrar import borrar_csv, borrar_temporizador
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias
 from datetime import datetime
 
 volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
 volver2 = f"\n............................................................................"
-
 
 def opcion_registro():
 
@@ -23,8 +22,11 @@ def opcion_registro():
                 for i, item in enumerate(sorted(lista), start=1):
                     print(f"👉 {item}")
             print_color(volver, CIAN)
+            print_color("\nSi quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
 
             nombre = pedir_nombre_registro()
+
+            
             
             # da la opción de introducir volver y salir en todas sus variables
             if normalizar(nombre) in ("volver","salir",""):
@@ -51,12 +53,11 @@ def opcion_registro():
             else:
                 emoticono = input("Introduce un emoticono asociado: ")
 
-            tipo_valido = ["diario", "semanal","mensual","anual"]
             while True:
                 lista_tipos = ["diario","semanal","mensual","anual"]
                 tipo = input(f"Objetivo ({lista_tipos}): ")
                 tipo = normalizar(tipo)
-                if tipo not in tipo_valido:
+                if tipo not in lista_tipos:
                     continue
                 break
             
@@ -72,30 +73,7 @@ def opcion_registro():
                     registrar_objetivo(id_habito, tipo, objetivo)
                     print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo+" de "+objetivo+" horas.",VERDE)
 
-                    otro_habito = input("\n¿Quieres añadir un objetivo diferente para este hábito? s/n: ")
-                    lista_objetivos = mostrar_csv_diccionario("objetivos")
-
-                    tipos_usados = []
-
-                    for lista_o in lista_objetivos:
-                        if lista_o['id_habito'] == id_habito:
-                            tipos_usados.append(lista_o['tipo'])
-                    tipos_usados.append(tipo)
-                    
-                    tipos_restantes = []
-
-                    for ltipos in lista_tipos:
-                        if ltipos not in tipos_usados:
-                            tipos_restantes.append(ltipos)
-
-                    if preguntar_seguir(otro_habito):
-                        tipo_ad = input(f"Otro tipo ({tipos_restantes}): ")
-                        objetivo_ad = input("Otro objetivo (horas): ")
-                        registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
-                        print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.",VERDE)
-
-                    else:
-                        print("holas")
+                    otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria)
                 else:
                     continue
                 break
