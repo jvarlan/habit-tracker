@@ -3,7 +3,7 @@ from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, va
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id
-from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo
+from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_tipo_habito, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo
 from .borrar import borrar_csv, borrar_temporizador
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias
 from datetime import datetime
@@ -60,7 +60,7 @@ def opcion_registro():
                 if tipo not in lista_tipos:
                     continue
                 break
-            
+                    
             while True:
                 objetivo = input("Objetivo (horas): ")
                 

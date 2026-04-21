@@ -5,7 +5,7 @@ from .checks import normalizar, validar_horas, comprobar_horas_temp_24, comproba
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
 from .guardar import registrar_objetivo
 from .contar import contar_csv_n, contar_csv_id
-from .devolver import dev_habito_id, dev_nombre_habito_id,dev_idhabito_temporizador, dev_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
+from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria
 from .utilidades import ROJO, VERDE, CIAN, RESET,print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir
@@ -21,8 +21,24 @@ def pedir_nombre_registro():
             return nombre
         elif comprobado > 0:
             # aqui no deberia ahora obligar a repetir el nombre, ya que ahora se añadirán nuevos objetivos al introducir uno ya existente.
-            print_color("Esté hábito ya está registrado. Por favor, introduce uno nuevo.", ROJO)
+
+            datos_habito = dev_habito_datos(nombre)
+            id_habito = datos_habito['id']
+            categoria = dev_nombre_categoria_id(datos_habito['id_categoria'])
+            lista_tipos_usados = dev_tipo_objetivo(id_habito)
+            lista_tipos = ['diario','semanal','mensual','anual']
+
+            otro_objetivo(id_habito, lista_tipos_usados, lista_tipos, nombre, categoria)
             continue     
+def pedir_tipo_habito():
+    while True:
+        lista_tipos = ["diario","semanal","mensual","anual"]
+        tipo = input(f"Objetivo ({lista_tipos}): ")
+        tipo = normalizar(tipo)
+        if tipo not in lista_tipos:
+            continue
+        break
+    return lista_tipos, tipo
 def pedir_nombre_temp(lista_minus,lista):
     while True:
         nombre = input("Nombre a temporizar: ")

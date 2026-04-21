@@ -13,6 +13,35 @@ def dev_habito_id(habito):
         for fila in lector:
             if fila[1].lower() == habito.lower():
                 return fila[0]
+            
+def dev_habito_datos(habito):
+    ruta = BASE_DIR / "datos" / "habitos.csv"
+    if not ruta.exists():
+        return 0
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.DictReader(archivo)
+       
+        for fila in lector:
+            if fila['habito'].lower() == habito.lower():
+                return fila
+            
+def dev_tipo_objetivo(id_habito):
+
+    ruta = BASE_DIR / "datos" / "objetivos.csv"
+    if not ruta.exists():
+        return 0
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        next(lector, None)
+        lista = []
+        for fila in lector:
+            if fila[1].lower() == id_habito:
+                lista.append(fila[2])
+        return lista
+
+
 def dev_nombre_habito_id(id_habito):
 
     ruta = BASE_DIR / "datos" / "habitos.csv"
@@ -100,3 +129,16 @@ def dev_categoria_id(categoria):
             if fila[1].lower() == categoria.lower():
                 return fila[0]
 
+def dev_nombre_categoria_id(id_categoria):
+
+    ruta = BASE_DIR / "datos" / "categorias.csv"
+    if not ruta.exists():
+        return 0
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        next(lector, None)
+       
+        for fila in lector:
+            if fila[0].lower() == id_categoria:
+                return fila[1]

@@ -48,3 +48,7 @@ id,id_habito,tipo,objetivo
 47,24,semanal,01:00:00
 48,24,mensual,01:00:00
 49,24,anual,02:00:00
+50,25,diario,10:00:00
+51,25,semanal,100:00:00
+52,25,mensual,200:00:00
+53,25,anual,400:00:00
