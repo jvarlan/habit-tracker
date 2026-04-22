@@ -19,14 +19,12 @@ def opcion_registro():
             if lista:
                 print("\nHábitos registrados: \n")
                 # recorre el listado, numerandolo con el nombre al lado
-                for i, item in enumerate(sorted(lista), start=1):
+                for i, item in enumerate(sorted(lista, key=lambda x: x.strip().lower()), start=1):
                     print(f"👉 {item}")
             print_color(volver, CIAN)
             print_color("\nSi quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
 
             nombre = pedir_nombre_registro()
-
-            
             
             # da la opción de introducir volver y salir en todas sus variables
             if normalizar(nombre) in ("volver","salir",""):
@@ -56,8 +54,7 @@ def opcion_registro():
             while True:
                 lista_tipos = ["diario","semanal","mensual","anual"]
                 tipo = input(f"Objetivo ({lista_tipos}): ")
-                tipo = normalizar(tipo)
-                if tipo not in lista_tipos:
+                if normalizar(tipo) not in lista_tipos:
                     continue
                 break
                     
@@ -67,6 +64,7 @@ def opcion_registro():
                 # comprueba que las horas sean mayores que 0 y no contengan letras u otros caracteres
                 
                 if validar_horas(objetivo):
+                    objetivo = validar_horas(objetivo)
                     registrar_categoria(categoria, emoticono)
                     id_categoria = dev_categoria_id(categoria)
                     id_habito = registrar(nombre, id_categoria)
@@ -77,8 +75,6 @@ def opcion_registro():
                 else:
                     continue
                 break
-
-
 
             seguir = input("\n¿Quieres introducir un nuevo hábito? s/n: ")
             lista = mostrar_registros()

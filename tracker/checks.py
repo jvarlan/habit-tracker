@@ -6,6 +6,8 @@ from .mostrar import mostrar_temporizadores
 import unicodedata
 
 def normalizar(texto):
+    if not isinstance(texto, str):
+        return ""
     texto = texto.lower()
     texto = unicodedata.normalize("NFD",texto)
     texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
@@ -70,18 +72,35 @@ def comprobar_horas_temp_24(fecha, id_habito):
     return contador_segundos
 
 def validar_horas(numero):
+
     partes = numero.split(":")
-    if len(partes) != 3:
+
+    if len(partes) not in (1,2,3):
         return False
     try:
-        h, m, s = map(int, partes)
+        valores = list(map(int, partes))
+    except ValueError:
+            print_color("Introduce un número de horas válido.",ROJO)
+            return False
+    #horas
+    if len(valores) == 1:
+        h = valores[0]
+        if h <0:
+            return False
+        return f"{h:02d}:00:00"
+    #horas y minutos
+    elif len(valores) == 2:
+        h, m = valores
+        if h <0 or not (0 <=m < 60):
+            return False
+        return f"{h:02d}:{m:02d}:00"
+    #horas, minutos y segundos
+    else:
+        h, m, s = valores
         if h <0 or not (0 <=m < 60) or not (0 <= s < 60):
             return False
-        return True
-    except ValueError:
-        print_color("Introduce un número de horas válido.",ROJO)
-        return False
-
+        return f"{h:02d}:{m:02d}:{s:02d}"
+    
 def validar_borrar_temporizador(borrar,lista):
   
     try:

@@ -34,8 +34,7 @@ def pedir_tipo_habito():
     while True:
         lista_tipos = ["diario","semanal","mensual","anual"]
         tipo = input(f"Objetivo ({lista_tipos}): ")
-        tipo = normalizar(tipo)
-        if tipo not in lista_tipos:
+        if normalizar(tipo) not in lista_tipos:
             continue
         break
     return lista_tipos, tipo
@@ -366,32 +365,45 @@ def pedir_categoria_modi(lista_todo):
                         return
                 
 def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
+        
         while True:
             
             lista_objetivos = mostrar_csv_diccionario("objetivos")
-
+           
             tipos_usados = []
 
             for lista_o in lista_objetivos:
                 if int(lista_o['id_habito']) == int(id_habito):
-                    tipos_usados.append(lista_o['tipo'].strip().lower())
+                    tipo_o = lista_o.get('tipo')
+                    if isinstance(tipo_o, str) and tipo_o.strip():
+                        tipos_usados.append(tipo_o.strip().lower())
             
-            tipos_usados.append(tipo)
+            if isinstance(tipo, list):
+                for elemento in tipo:
+                    if isinstance(elemento, str):
+                        tipos_usados.append(elemento.strip().lower())
+            else:
+                if isinstance(tipo, str):
+                    tipos_usados.append(tipo.strip().lower())
             
             tipos_restantes = []
 
             for ltipos in lista_tipos:
-                if ltipos.strip().lower() not in tipos_usados:
-                    tipos_restantes.append(ltipos)
+                if isinstance(ltipos, str):
+                    limpio = ltipos.strip().lower()
+                    if limpio and limpio not in tipos_usados:
+                        tipos_restantes.append(ltipos)
 
             if not tipos_restantes:
-                print("\nNo quedan más tipos disponibles para este hábito.")
+                print_color("\nNo quedan más tipos disponibles para este hábito.",ROJO)
                 break
 
             otro_habito = input("\n¿Quieres añadir un objetivo diferente para este hábito? s/n: ")
 
             if not preguntar_seguir(otro_habito):
                 break
+
+            
             while True:
                 tipo_ad = normalizar(input(f"Otro tipo ({tipos_restantes}): "))
                 
@@ -402,6 +414,7 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
             while True:
                 objetivo_ad = input("Otro objetivo (horas): ")
                 if validar_horas(objetivo_ad):
+                    objetivo_ad = validar_horas(objetivo_ad)
                     registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
                     print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.",VERDE)
                 else:
