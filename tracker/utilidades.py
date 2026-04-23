@@ -29,7 +29,8 @@ def preguntar_seguir(seguir):
             return False
         else:
             print("Respuesta no válida.")
-            break
+            limpiar_pantalla()
+            return False
         
 def id_habito_nombre():
 

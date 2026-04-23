@@ -11,3 +11,6 @@ id,id_habito,tipo,objetivo
 9,2,semanal,02:00:00
 10,2,mensual,03:00:00
 11,2,anual,100:00:00
+12,3,diario,01:00:00
+13,4,diario,01:00:00
+14,5,semanal,03:00:00

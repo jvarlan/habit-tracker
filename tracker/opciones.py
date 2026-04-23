@@ -13,18 +13,9 @@ volver2 = f"\n..................................................................
 
 def opcion_registro():
 
-        while True:
-            lista = mostrar_registros()
-            print_color("\nRegistrar un nuevo hábito",INVERSION)
-            if lista:
-                print("\nHábitos registrados: \n")
-                # recorre el listado, numerandolo con el nombre al lado
-                for i, item in enumerate(sorted(lista, key=lambda x: x.strip().lower()), start=1):
-                    print(f"👉 {item}")
-            print_color(volver, CIAN)
-            print_color("\nSi quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
+    while True:
 
-            nombre = pedir_nombre_registro()
+            nombre = pedir_nombre_registro(volver)
             
             # da la opción de introducir volver y salir en todas sus variables
             if normalizar(nombre) in ("volver","salir",""):
