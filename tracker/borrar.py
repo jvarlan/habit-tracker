@@ -25,7 +25,29 @@ def borrar_habito(borrar,id_borrar):
         return (f"{ROJO}El registro '{borrar}' no existe.{RESET}")
     else:
         return (f"{ROJO}Registro '{borrar}' eliminado.{RESET}")
-    
+def borrar_objetivo(borrar,seleccion):
+    ruta = BASE_DIR / "datos" / "objetivos.csv"
+
+    if not ruta.exists():
+        return 0
+    filas_restantes = []
+    filas_originales = []
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        for fila in lector:
+            filas_originales.append(fila)
+            if normalizar(fila[0]) != borrar:
+                filas_restantes.append(fila)
+    with open(ruta, "w", newline="", encoding="utf-8") as archivo:
+        escritor = csv.writer(archivo)
+        escritor.writerows(filas_restantes)
+
+    if len(filas_originales) == len(filas_restantes):
+        return (f"{ROJO}El registro '{seleccion}' no existe.{RESET}")
+    else:
+        return (f"{VERDE}Registro '{seleccion}' eliminado.{RESET}")
+
 def borrar_temporizador(borrar,seleccion):
     ruta = BASE_DIR / "datos" / "temporizadores.csv"
 

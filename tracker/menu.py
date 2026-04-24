@@ -1,5 +1,5 @@
-from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores
-from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria
+from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores, mostrar_objetivos
+from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria
 from .utilidades import limpiar_pantalla
 from .checks import normalizar
 from .utilidades import ROJO, VERDE, CIAN, print_color
@@ -108,21 +108,27 @@ def mostrar_menu_borrar():
         categorias = mostrar_categorias()
         if categorias:
             habitos = mostrar_registros()
+            objetivos = mostrar_objetivos()
             temporizadores = mostrar_temporizadores()
             categorias = mostrar_categorias()
+            
         # se repite en bucle hasta que se pulse Salir
             print_color("\n========= MENÚ DE BORRADO =========",VERDE)
             if not habitos:
                 print_color("1. Eliminar un hábito",ROJO)
             else:
                 print("1. Eliminar un hábito")
-            if not temporizadores:
-                print_color("2. Eliminar un temporizador",ROJO)
+            if not objetivos:
+                print_color("2. Eliminar un objetivo",ROJO)
             else:
-                print("2. Eliminar un temporizador")
+                print("2. Eliminar un objetivo")
+            if not temporizadores:
+                print_color("3. Eliminar un temporizador",ROJO)
+            else:
+                print("3. Eliminar un temporizador")
 
-            print("3. Eliminar una categoría")
-            print("4. Eliminar todos los elementos")
+            print("4. Eliminar una categoría")
+            print("5. Eliminar todos los elementos")
             print_color("====================================",VERDE)
             print_color(volver,CIAN)
 
@@ -139,13 +145,16 @@ def borrar_1():
     return True
 def borrar_2():
     limpiar_pantalla()
+    opcion_borrar_obj()
+def borrar_3():
+    limpiar_pantalla()
     opcion_borrar_tempo()
     return True
-def borrar_3():
+def borrar_4():
     limpiar_pantalla()
     opcion_borrar_categoria()
     return True
-def borrar_4():
+def borrar_5():
     opcion_borrar_todo()
     return True
 

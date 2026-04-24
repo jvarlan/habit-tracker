@@ -1,10 +1,10 @@
 from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
-from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
+from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id
-from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_tipo_habito, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo
-from .borrar import borrar_csv, borrar_temporizador
+from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo
+from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias
 from datetime import datetime
 
@@ -145,6 +145,49 @@ def opcion_borrar():
 
     else:
         print_color("\nNo existe ningún hábito a eliminar.",CIAN)
+
+def opcion_borrar_obj():
+    # muestra previamente todos los registros a eliminar
+    lista = mostrar_objetivos()
+
+    if lista:
+        while True:
+            lista = mostrar_objetivos()
+            #dev_habito_id
+            #obtener_nombre_idhabito = id_habito_nombre()
+            print("\nEstos son los objetivos ya registrados: \n")
+            for i, item in enumerate(lista, start=1):
+                   
+                    nombre = dev_nombre_habito_id(item["id_habito"])
+                    print(f"{i} - Objetivo {item["tipo"]} de {item["objetivo"]} horas ({nombre}) ")
+            print_color(volver,CIAN)
+            print_color("\nEliminar un objetivo\n",INVERSION)
+            borrar = pedir_objetivo_borrar()
+            
+            if borrar == None:
+                return False
+            else:
+                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el objetivo {borrar["tipo"]} con {borrar["objetivo"]} horas registradas ({dev_nombre_habito_id(borrar["id_habito"])})?\nEsta acción ELIMINARÁ el objetivo de forma PERMANENTE. s/n: {RESET}")
+                seguro = seguro.lower()
+
+                if seguro == "s" or seguro == "si":
+                    borrar_objetivo(borrar["id"],borrar)
+                    print_color(f"\nObjetivo eliminado con éxito.",VERDE)
+                elif seguro == "n" or seguro == "no":
+                    continue
+            lista = mostrar_temporizadores()
+            if lista:
+                seguir = input("\n¿Quieres eliminar otro objetivo? s/n: ")
+                if preguntar_seguir(normalizar(seguir)):
+                    continue
+                else:
+                    break    
+            else:
+                break
+
+    else:
+        print_color("\nNo existe ningún objetivo a eliminar.",CIAN)
+
 
 def opcion_borrar_tempo():
     # muestra previamente todos los registros a eliminar

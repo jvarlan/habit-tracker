@@ -2,7 +2,7 @@ from datetime import datetime
 import time
 import threading
 from .checks import normalizar, validar_horas, comprobar_horas_temp_24, comprobar_registro, validar_borrar_temporizador, comprobar_categoria
-from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario
+from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
 from .guardar import registrar_objetivo
 from .contar import contar_csv_n, contar_csv_id
 from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
@@ -164,7 +164,25 @@ def pedir_categoria_borrar():
                 continue
         else:
             return None
+
+def pedir_objetivo_borrar():
+    while True:
+        lista = mostrar_objetivos()
+        if lista:
         
+            borrar = input("Introduce el número del elemento a borrar: ")
+            if normalizar(borrar) in ("volver","salir",""):
+                return None
+            else:
+                validado = validar_borrar_temporizador(borrar,lista)
+                if validado is None:
+                    continue
+                else:
+                    return validado
+        else:
+            return None
+
+
 def pedir_temporizador_borrar():
     while True:
         lista = mostrar_temporizadores()

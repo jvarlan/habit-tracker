@@ -101,8 +101,10 @@ def validar_horas(numero):
             return False
         return f"{h:02d}:{m:02d}:{s:02d}"
     
+
 def validar_borrar_temporizador(borrar,lista):
   
+  # sirve para validar borrar temporizador y objetivos
     try:
         borrar = int(borrar)
         if borrar >= 1 and borrar <= len(lista):
