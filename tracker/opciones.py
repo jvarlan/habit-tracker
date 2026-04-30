@@ -349,6 +349,43 @@ def opcion_modi_tempo():
     else:
         print_color("\nNo existe ningún hábito a modificar.",CIAN)
 
+def opcion_modi_objetivo():
+    # muestra previamente todos los registros a eliminar
+    lista = mostrar_registros()
+
+    if lista:
+        while True:
+            lista_todo = mostrar_csv("objetivos")
+            #ordena la lista por fecha (el tercer campo del csv)
+            lista_todo = sorted(lista_todo, key=lambda x: x[3])
+
+            print("\nEstos son los objetivos ya registrados: \n")
+            for i, item in enumerate(lista_todo, start=1):
+                habito = dev_nombre_habito_id(item[1])
+                tipo = item[2]
+                objetivo = item[3]
+                print(f"{i} - Objetivo {tipo} de {objetivo} horas ({habito})")
+
+            print_color(volver, CIAN)
+            print_color("\nModificar un objetivo\n",INVERSION)
+            exit()
+            modificar = pedir_tempo_modi(lista_todo)
+           
+            if modificar == "":
+                break
+            lista = mostrar_registros()
+            if lista:
+                seguir = input("\n¿Quieres modificar otro hábito? s/n: ")
+                if preguntar_seguir(normalizar(seguir)):
+                    continue
+                else:
+                    break    
+            else:
+                break
+    else:
+        print_color("\nNo existe ningún objetivo a modificar.",CIAN)
+
+
 def opcion_modi_categoria():
     lista = mostrar_categorias()
 

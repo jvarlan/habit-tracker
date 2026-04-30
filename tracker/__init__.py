@@ -7,4 +7,5 @@ from .menu import mostrar_menu, seleccionar
 
 
 
+from .opciones import opcion_registro
 __all__ = ["escribir", "nuevo", "leer", "mostrar_menu", "seleccionar","comprobar_registro","opcion_registro"]

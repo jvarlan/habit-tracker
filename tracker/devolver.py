@@ -98,7 +98,7 @@ def dev_lista_habitos_cat(id_categoria):
                 lista.append(fila) 
         return lista  
     
-def dev_lista_temporizadores_cat(lista_habitos,id_categoria):
+def dev_lista_temporizadores_cat(lista_habitos):
     ruta = BASE_DIR / "datos" / "temporizadores.csv"
     
     lista_habitos_id = [habito[0] for habito in lista_habitos]
@@ -115,6 +115,24 @@ def dev_lista_temporizadores_cat(lista_habitos,id_categoria):
                 lista.append(fila) 
         return lista  
             
+def dev_lista_objetivos_cat(lista_habitos):
+    ruta = BASE_DIR / "datos" / "objetivos.csv"
+    
+    lista_habitos_id = [habito[0] for habito in lista_habitos]
+
+    if not ruta.exists():
+        return 0
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        next(lector, None)
+        lista = []
+        for fila in lector:
+            if fila[1] in lista_habitos_id:
+                lista.append(fila) 
+        return lista  
+
+
 def dev_categoria_id(categoria):
     ruta = BASE_DIR / "datos" / "categorias.csv"
 

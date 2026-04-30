@@ -1,5 +1,5 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores, mostrar_objetivos
-from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria
+from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria
 from .utilidades import limpiar_pantalla
 from .checks import normalizar
 from .utilidades import ROJO, VERDE, CIAN, print_color
@@ -182,6 +182,7 @@ def mostrar_menu_modificar():
         categorias = mostrar_categorias()
         if categorias:
             habitos = mostrar_registros()
+            objetivos = mostrar_objetivos()
             temporizadores = mostrar_temporizadores()
             categorias = mostrar_categorias()
         # se repite en bucle hasta que se pulse Salir
@@ -190,12 +191,16 @@ def mostrar_menu_modificar():
                 print_color("1. Modificar un hábito",ROJO)
             else:
                 print("1. Modificar un hábito")
-            if not temporizadores:
-                print_color("2. Modificar un temporizador",ROJO)
+            if not objetivos:
+                print_color("2. Modificar un objetivo",ROJO)
             else:
-                print("2. Modificar un temporizador")
+                print("2. Modificar un objetivo")
+            if not temporizadores:
+                print_color("3. Modificar un temporizador",ROJO)
+            else:
+                print("3. Modificar un temporizador")
 
-            print("3. Modificar una categoría")
+            print("4. Modificar una categoría")
             print_color("====================================",VERDE)
             print_color(volver,CIAN)
             
@@ -212,9 +217,12 @@ def modi_1():
     return True
 def modi_2():
     limpiar_pantalla()
+    opcion_modi_objetivo()
+def modi_3():
+    limpiar_pantalla()
     opcion_modi_tempo()
     return True
-def modi_3():
+def modi_4():
     limpiar_pantalla()
     opcion_modi_categoria()
     return True
