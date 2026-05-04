@@ -2,7 +2,7 @@ import csv
 from config import BASE_DIR
 from .checks import normalizar
 
-def contar_csv_n(fichero, nombre):
+def contar_csv_n(fichero, nombre,numero):
         
     ruta = BASE_DIR / "datos" / f"{fichero}.csv"
     if not ruta.exists():
@@ -13,11 +13,11 @@ def contar_csv_n(fichero, nombre):
         next(lector, None)
         contador = 0
         for fila in lector:
-            if fila[0] == nombre:
+            if fila[numero] == nombre:
                 contador = contador + 1
     return contador
 
-def contar_csv_id(fichero,id):
+def contar_csv_id(fichero,id,numero):
     ruta = BASE_DIR / "datos" / f"{fichero}.csv"
     
     if not ruta.exists():
@@ -28,7 +28,7 @@ def contar_csv_id(fichero,id):
         next(lector, None)
         contador = 0
         for fila in lector:
-            if normalizar(fila[0]) == normalizar(id):
+            if normalizar(fila[numero]) == normalizar(id):
                 contador = contador + 1
     return contador
 

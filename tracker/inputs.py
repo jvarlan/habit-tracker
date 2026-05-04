@@ -118,14 +118,15 @@ def pedir_habito_borrar():
                 return None
             
             borrar_id = dev_habito_id(borrar)
-            temporizadores = contar_csv_n("temporizadores",borrar_id)
-            habitos = contar_csv_n("habitos",borrar_id)
+            temporizadores = contar_csv_n("temporizadores",borrar_id,0)
+            objetivos = contar_csv_id("objetivos",borrar_id,1)
+            habitos = contar_csv_n("habitos",borrar_id,0)
 
             if habitos == False:
                 print_color("Este hábito no existe.",ROJO)
                 continue
             else:
-                seguro = input(f"\n{ROJO}Al borrar el hábito {borrar} se eliminarán {temporizadores} registros de horas asociados. Esta acción borrará los DATOS de forma PERMANENTE. ¿Quieres continuar? s/n: {RESET}")
+                seguro = input(f"\n{ROJO}El hábito {borrar} tiene {objetivos} objetivos y {temporizadores} registros de horas asociados. Esta acción borrará los DATOS de forma PERMANENTE. ¿Quieres continuar? s/n: {RESET}")
                 seguro = seguro.lower()
                 
                 if seguro == "s" or seguro == "si":
@@ -152,7 +153,7 @@ def pedir_categoria_borrar():
                 lista_objetivos_categoria = dev_lista_objetivos_cat(lista_habitos)
                 lista_temporizadores = dev_lista_temporizadores_cat(lista_habitos)
 
-                seguro = input(f"{ROJO}\nLa categoria {borrar} tiene {len(lista_habitos)} hábitos asociados, con {len(lista_temporizadores)} registros de tiempo. Esta acción eliminará los DATOS de forma PERMANENTE.\n¿Quieres continuar? s/n: {RESET}")
+                seguro = input(f"{ROJO}\nLa categoria {borrar} tiene {len(lista_objetivos_categoria)} objetivos, {len(lista_habitos)} hábitos, y {len(lista_temporizadores)} registros de tiempo asociados. Esta acción eliminará los DATOS de forma PERMANENTE.\n¿Quieres continuar? s/n: {RESET}")
                 seguro = seguro.lower()
                 
                 if seguro == "s" or seguro == "si":
@@ -210,7 +211,7 @@ def pedir_habito_modi():
         if normalizar(modificar) in ("volver","salir",""):
                 return ""
               
-        habitos = contar_csv_id("habitos",dev_habito_id(modificar))
+        habitos = contar_csv_id("habitos",dev_habito_id(modificar),0)
 
         if habitos == False:
             print_color("Este hábito no existe.",ROJO)
@@ -291,7 +292,7 @@ def pedir_tempo_modi(lista_todo):
 
                 id_temporizador = lista_todo[modificar-1][0]
                 
-                temporizadores = contar_csv_id("temporizadores",id_temporizador)           
+                temporizadores = contar_csv_id("temporizadores",id_temporizador,0)           
             except ValueError:
                 print_color(f"Formato incorrecto. Debes introducir un número de la lista.",ROJO)
                 continue
@@ -364,7 +365,7 @@ def pedir_categoria_modi(lista_todo):
                     if modificar == lista[1]:
                         id_categoria = lista[0]
 
-                categorias = contar_csv_id("categorias",id_categoria)
+                categorias = contar_csv_id("categorias",id_categoria,0)
                 # contador para contabilizar si el usuario modifica algo o no
                 contador = 0
                 seguro = input(f"{ROJO}¿Quieres modificar el nombre de la categoria? s/n: {RESET}")
