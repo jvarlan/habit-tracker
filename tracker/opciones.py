@@ -287,15 +287,28 @@ def opcion_modi_habito():
     if lista:
         while True:
             lista_todo = mostrar_csv("habitos")
+            lista_objetivos = mostrar_csv("objetivos")
             #ordena la lista por nombre (el segundo campo del csv)
+            
+            lista_objetivos = sorted(lista_objetivos, key=lambda x: x[1])
             lista_todo = sorted(lista_todo, key=lambda x: x[1])
 
             print("\nEstos son los hábitos ya registrados: \n")
             for i, item in enumerate(lista_todo, start=1):
-                habito = item[1]
-                tipo_objetivo = item[3]
-                objetivo_horas = item[4]
-                print(f"{i} - {habito} (Objetivo {tipo_objetivo} de {objetivo_horas} horas)")
+                id_habito = item[1]
+                habito = item[2]
+                
+                objetivos_habito = [obj for obj in lista_objetivos if obj[2] == id_habito]
+
+                lista_tipos = []
+                lista_horas = []
+                for objetivo in objetivos_habito:
+                    lista_tipos.append(objetivo[2])
+                    lista_horas.append(objetivo[3])
+                print(f"Hábito: {habito}")
+                print(f"Tipos: {lista_tipos}")
+                print(f"Horas: {lista_horas}")
+                print("====")
             print_color(volver, CIAN)
             print_color("\nModificar un hábito\n",INVERSION)
             modificar = pedir_habito_modi()
