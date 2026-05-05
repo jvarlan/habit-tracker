@@ -2,7 +2,7 @@ from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, pregun
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
-from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id
+from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias
@@ -295,20 +295,19 @@ def opcion_modi_habito():
 
             print("\nEstos son los hábitos ya registrados: \n")
             for i, item in enumerate(lista_todo, start=1):
-                id_habito = item[1]
-                habito = item[2]
+                id_habito = item[0]
+                habito = item[1]
+                categoria = dev_nombre_categoria_id(item[2])
                 
-                objetivos_habito = [obj for obj in lista_objetivos if obj[2] == id_habito]
+                objetivos_habito = [obj for obj in lista_objetivos if obj[1] == id_habito]
 
                 lista_tipos = []
-                lista_horas = []
                 for objetivo in objetivos_habito:
                     lista_tipos.append(objetivo[2])
-                    lista_horas.append(objetivo[3])
                 print(f"Hábito: {habito}")
-                print(f"Tipos: {lista_tipos}")
-                print(f"Horas: {lista_horas}")
-                print("====")
+                print(f"Categoría: {categoria}")
+                print(f"Número objetivos: {len(lista_tipos)}")
+                print("=================================")
             print_color(volver, CIAN)
             print_color("\nModificar un hábito\n",INVERSION)
             modificar = pedir_habito_modi()

@@ -3,7 +3,7 @@ import time
 import threading
 from .checks import normalizar, validar_horas, comprobar_horas_temp_24, comprobar_registro, validar_borrar_temporizador, comprobar_categoria
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
-from .guardar import registrar_objetivo
+from .guardar import registrar_objetivo, registrar_categoria
 from .contar import contar_csv_n, contar_csv_id
 from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_lista_objetivos_cat, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria, borrar_objetivos_id_habito
@@ -207,28 +207,25 @@ def pedir_habito_modi():
     while True:
         lista = mostrar_registros()
         if lista:
-            modificar = input("Introduce el nombre del elemento a modificar: ")
-        if normalizar(modificar) in ("volver","salir",""):
+            habito_modificar = input("Introduce el nombre del elemento a modificar: ")
+        if normalizar(habito_modificar) in ("volver","salir",""):
                 return ""
               
-        habitos = contar_csv_id("habitos",dev_habito_id(modificar),0)
+        habitos = contar_csv_id("habitos",dev_habito_id(habito_modificar),0)
 
         if habitos == False:
             print_color("Este hábito no existe.",ROJO)
             continue
         else:
-            todo_habito = mostrar_csv("habitos")
+            todo_habito = mostrar_csv_diccionario("habitos")
             for fila in todo_habito:
-                if fila[1].lower() == modificar.lower():
-                    habito = fila[1]
-                    tipo_objetivo = fila[3]
-                    objetivo_horas = fila[4]
+                if fila["habito"].lower() == habito_modificar.lower():
+                    habito = fila["habito"]
+                    categoria = dev_nombre_categoria_id(fila["id_categoria"])
             print_color(f"Hábito actual: {habito}",CIAN)
-            print_color(f"Tipo de objetivo actual: {tipo_objetivo}",CIAN)
-            print_color(f"Objectivo actual: {objetivo_horas} ",CIAN)
             contador = 0
 
-            seguro = input(f"{ROJO}¿Quieres modificar el nombre? s/n: {RESET}")
+            seguro = input(f"{ROJO}¿Quieres modificar el nombre del hábito {habito}? s/n: {RESET}")
             seguro = seguro.lower()
             
             if seguro in ("s","si"):
@@ -244,36 +241,30 @@ def pedir_habito_modi():
                         continue
                     else: 
                         break
-
-            seguro = input(f"{ROJO}¿Quieres modificar el tipo de objetivo? s/n: {RESET}")
+            seguro = input(f"{ROJO}¿Quieres modificar la categoría? s/n: {RESET}")
             seguro = seguro.lower()
             
             if seguro in ("s","si"):
                 while True:
-                    tipo_valido = ["diario","semanal","mensual","anual"]
-                    tipo_objetivo = input(f"Nuevo tipo (diario, semanal, mensual, anual): ")
-                    tipo_objetivo = normalizar(tipo_objetivo)
-                    if tipo_objetivo in tipo_valido:
+                    lista_todo = mostrar_csv_diccionario("categorias")
+                    modificar_categoria = input("Nueva categoría: ")
+                    if any(item.get("categoria") == modificar_categoria for item in lista_todo):
+                        id_categoria = dev_categoria_id(modificar_categoria)
                         contador +=1
                         break
                     else:
-                        continue
-
-            seguro = input(f"{ROJO}¿Quieres modificar el objetivo de horas? s/n: {RESET}")
-            seguro = seguro.lower()
-            
-            if seguro in ("s","si"):
-                while True:
-                    objetivo_horas = input(f"Nuevo objetivo (HH:MM:SS): ")
-                    if validar_horas(objetivo_horas):
+                        print_color("Has añadido una nueva categoría.",CIAN)
+                        emoticono = input(f"Introduce un emoticono para la nueva categoría {modificar_categoria}: ")
+                        registrar_categoria(modificar_categoria, emoticono)
+                        id_categoria = dev_categoria_id(modificar_categoria)
                         contador +=1
                         break
-                    else:
-                        continue
-
+            else:
+                modificar_categoria = categoria
+                   
             if contador > 0:
-                modificar_habito(habito,tipo_objetivo,objetivo_horas,dev_habito_id(modificar))
-                print_color(f"\nEl hábito {modificar} ha sido cambiado con éxito por {habito} con un objetivo {tipo_objetivo} de {objetivo_horas} horas.",VERDE)
+                modificar_habito(habito,dev_habito_id(habito_modificar),id_categoria)
+                print_color(f"\nEl hábito {habito} ha sido cambiado con éxito por {habito_modificar}. La categoría {categoria} ha sido cambiada por {modificar_categoria}",VERDE)
                 return
             else:
                 print_color("No se ha modificado nada.",CIAN)
@@ -356,14 +347,21 @@ def pedir_categoria_modi(lista_todo):
         if lista_todo:
                 modificar = input("Introduce el nombre de la categoría a modificar: ")
                 for item in lista_todo:
-                    if item[1] == modificar:
-                        emoticono = item[2]
+                    if item["categoria"] == modificar:
+                        emoticono = item["emoticono"]
                         break
                 if normalizar(modificar) in ("volver","salir",""):
                     return "volver"
-                for lista in lista_todo:
-                    if modificar == lista[1]:
-                        id_categoria = lista[0]
+                if any(item.get("categoria") == modificar for item in lista_todo):
+
+                    for lista in lista_todo:
+                        if modificar == lista["categoria"]:
+                            id_categoria = lista["id"]
+                else:
+                    print_color("Has añadido una nueva categoría.",CIAN)
+                    emoticono = input(f"Introduce un emoticono para la categoría {modificar}: ")
+                    registrar_categoria(modificar, emoticono)
+
 
                 categorias = contar_csv_id("categorias",id_categoria,0)
                 # contador para contabilizar si el usuario modifica algo o no

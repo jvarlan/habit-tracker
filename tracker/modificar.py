@@ -3,7 +3,8 @@ from config import BASE_DIR
 from .checks import normalizar
 from .utilidades import ROJO, VERDE, RESET
 
-def modificar_habito(modificar,tipo_objetivo,objetivo,id_modificar):
+def modificar_habito(modificar,id_modificar,id_categoria):
+    
     ruta = BASE_DIR / "datos" / "habitos.csv"
 
     if not ruta.exists():
@@ -16,7 +17,7 @@ def modificar_habito(modificar,tipo_objetivo,objetivo,id_modificar):
         for fila in lector:
             
             if fila[0] == id_modificar:
-                fila_modificada = [fila[0],modificar,fila[2],tipo_objetivo,objetivo]
+                fila_modificada = [fila[0],modificar,id_categoria]
                 filas_restantes.append(fila_modificada)
             else:
                 filas_restantes.append(fila)
