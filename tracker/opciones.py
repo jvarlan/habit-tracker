@@ -3,7 +3,7 @@ from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, va
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id
-from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo
+from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo, pedir_objetivo_modi
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias
 from datetime import datetime
@@ -327,6 +327,8 @@ def opcion_modi_habito():
         print_color("\nNo existe ningún hábito a modificar.",CIAN)
 
 def opcion_modi_tempo():
+    print("temporizador")
+    exit()
     # muestra previamente todos los registros a eliminar
     lista = mostrar_registros()
 
@@ -362,6 +364,7 @@ def opcion_modi_tempo():
         print_color("\nNo existe ningún hábito a modificar.",CIAN)
 
 def opcion_modi_objetivo():
+    
     # muestra previamente todos los registros a eliminar
     lista = mostrar_registros()
 
@@ -369,7 +372,6 @@ def opcion_modi_objetivo():
         while True:
             lista_todo = mostrar_csv("objetivos")
             #ordena la lista por fecha (el tercer campo del csv)
-            lista_todo = sorted(lista_todo, key=lambda x: x[3])
 
             print("\nEstos son los objetivos ya registrados: \n")
             for i, item in enumerate(lista_todo, start=1):
@@ -380,8 +382,7 @@ def opcion_modi_objetivo():
 
             print_color(volver, CIAN)
             print_color("\nModificar un objetivo\n",INVERSION)
-            exit()
-            modificar = pedir_tempo_modi(lista_todo)
+            modificar = pedir_objetivo_modi(lista_todo)
            
             if modificar == "":
                 break

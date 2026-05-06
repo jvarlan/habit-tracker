@@ -60,6 +60,35 @@ def modificar_temporizador(id_temporizador,horas,fecha):
     else:
         return (f"{VERDE}Registro '{id_temporizador}' eliminado.{RESET}")
 
+def modificar_objetivo(id_temporizador,tipo,objetivo):
+    ruta = BASE_DIR / "datos" / "objetivos.csv"
+
+    if not ruta.exists():
+        return 0
+    filas_restantes = []
+    filas_originales = []
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        for fila in lector:
+            
+            if fila[0] == id_temporizador:
+                fila_modificada = [fila[0],fila[1],tipo,objetivo]
+                filas_restantes.append(fila_modificada)
+            else:
+                filas_restantes.append(fila)
+                filas_originales.append(fila)
+
+    with open(ruta, "w", newline="", encoding="utf-8") as archivo:
+        escritor = csv.writer(archivo)
+        escritor.writerows(filas_restantes)
+
+    if len(filas_originales) == len(filas_restantes):
+        return (f"{ROJO}El registro '{id_temporizador}' no existe.{RESET}")
+    else:
+        return (f"{VERDE}Registro '{id_temporizador}' eliminado.{RESET}")
+
+
 def modificar_categoria(id_categoria,nombre, emoticono):
     ruta = BASE_DIR / "datos" / "categorias.csv"
 

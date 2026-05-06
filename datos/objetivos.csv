@@ -5,8 +5,8 @@ id,id_habito,tipo,objetivo
 3,0,anual,04:00:00
 4,1,diario,01:00:00
 5,1,semanal,02:00:00
-6,1,mensual,04:00:00
+6,1,mensual,06:00:00
 7,1,anual,10:00:00
 8,2,diario,01:00:00
 9,2,semanal,02:00:00
-11,2,anual,100:00:00
+11,2,anual,99:00:00
