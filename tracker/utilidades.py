@@ -113,11 +113,12 @@ def agrupar_datos_csv():
     habitos = mostrar_csv_diccionario("habitos")
     temporizadores = mostrar_csv_diccionario("temporizadores")
     categorias = mostrar_csv_diccionario("categorias")
+    objetivos = mostrar_csv_diccionario("objetivos")
 
-    diarios = [h for h in habitos if h.get("tipo","").strip().lower() == "diario"]
-    semanales = [h for h in habitos if h.get("tipo","").strip().lower() == "semanal"]
-    mensuales = [h for h in habitos if h.get("tipo","").strip().lower() == "mensual"]
-    anuales = [h for h in habitos if h.get("tipo","").strip().lower() == "anual"]
+    diarios = [h for h in objetivos if h.get("tipo","").strip().lower() == "diario"]
+    semanales = [h for h in objetivos if h.get("tipo","").strip().lower() == "semanal"]
+    mensuales = [h for h in objetivos if h.get("tipo","").strip().lower() == "mensual"]
+    anuales = [h for h in objetivos if h.get("tipo","").strip().lower() == "anual"]
 
     return diarios, semanales, mensuales, anuales, habitos, temporizadores, categorias
 

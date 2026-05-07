@@ -473,8 +473,8 @@ def opcion_estadistica_resumen():
         print_color_pausa("  📊 RESUMEN DE HÁBITOS REGISTRADOS    ",CIAN),
         print_color_pausa("=======================================",CIAN),
         
-        *generar_bloque_resumen("DIARIOS", diarios, temporizadores, "dia", categorias),
-        *generar_bloque_resumen("SEMANALES", semanales, temporizadores, "semana", categorias),
+        *generar_bloque_resumen("DIARIOS", diarios, temporizadores, "dia", categorias, habitos),
+        *generar_bloque_resumen("SEMANALES", semanales, temporizadores, "semana", categorias, habitos),
     ]
         imprimir_con_pausa(lineas)
 

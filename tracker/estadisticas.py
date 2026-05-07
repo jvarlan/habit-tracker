@@ -3,6 +3,7 @@ from config import BASE_DIR
 from .utilidades import print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM
 from .mostrar import mostrar_csv_diccionario
 from datetime import datetime, timedelta
+from .checks import normalizar
 
 
 def leer():
@@ -119,7 +120,7 @@ def generar_bloque_categorias(habitos,temporizadores, categorias):
         *categorias_est(habitos, temporizadores, categorias),
     ]
 
-def generar_bloque_resumen(titulo,datos,temporizadores,tipo, categorias):
+def generar_bloque_resumen(titulo,datos,temporizadores,tipo, categorias, habitos):
     
     if not datos:
         print_color(f"No hay objetivos {titulo}",ROJO)
@@ -127,14 +128,15 @@ def generar_bloque_resumen(titulo,datos,temporizadores,tipo, categorias):
     return [
         print_color_pausa(f"\n{titulo}",VERDE),
         print_color_pausa("────────────────────────",VERDE),
-        *resumen_est(datos, categorias, temporizadores, tipo, 0),
+        *resumen_est(datos, categorias, temporizadores, tipo, habitos, 0),
     ]
 
-def resumen_est(tipos, categorias, temporizadores, tipo_periodo, offset=0):
+def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, offset=0):
+       
         ahora = datetime.now()
         lineas = []
-        for tipo in tipos:     
-            id_habito = tipo['id']
+        for objetivo in objetivos:     
+            id_habito = objetivo['id']
             segundos_totales = 0
             for temporizador in temporizadores:
                 if temporizador['id_habito'] == id_habito:
@@ -143,11 +145,19 @@ def resumen_est(tipos, categorias, temporizadores, tipo_periodo, offset=0):
                         segundos_totales = segundos_totales + horas_a_segundos(temporizador['tiempo'])
 
             # Icono de la categoría (💪, 🎮, 📖)
-            id_categoria_habito = int(tipo['id_categoria'])-1
+            
+            id_habito = int(objetivo["id_habito"])
+            
+            for habito in habitos:
+             
+                if normalizar(id_habito) == normalizar(habito['id']):
+                   
+                    id_categoria_habito = habito['id_categoria']
            
+         
             emoticono_categoria = categorias[id_categoria_habito]["emoticono"]
 
-            porcentaje = (float(segundos_totales) / (float(horas_a_segundos(tipo['objetivo'])))) * 100
+            porcentaje = (float(segundos_totales) / (float(horas_a_segundos(objetivo['objetivo'])))) * 100
 
             if porcentaje == 0:
                 objetivo = "👎"
