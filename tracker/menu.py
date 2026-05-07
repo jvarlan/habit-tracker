@@ -230,7 +230,8 @@ def modi_4():
 menu_modificar = {
     "1": modi_1,
     "2": modi_2,
-    "3": modi_3
+    "3": modi_3,
+    "4": modi_4
 }
 
 def modificar(opcion):

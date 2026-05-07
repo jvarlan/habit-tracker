@@ -280,7 +280,7 @@ def pedir_tempo_modi(lista_todo):
                 if normalizar(modificar) in ("volver","salir"):
                     return ""
                 modificar = int(modificar)-1
-                
+
                 id_temporizador = lista_todo[modificar][0]
                 
                 temporizadores = contar_csv_id("temporizadores",id_temporizador,0)           
@@ -438,18 +438,17 @@ def pedir_categoria_modi(lista_todo):
         if lista_todo:
                 modificar = input("Introduce el nombre de la categoría a modificar: ")
                 for item in lista_todo:
-                    if item["categoria"] == modificar:
-                        emoticono = item["emoticono"]
+                    if normalizar(item["categoria"]) == normalizar(modificar):
+                        categoria_encontrada = item
                         break
                 if normalizar(modificar) in ("volver","salir",""):
                     return "volver"
-                if any(item.get("categoria") == modificar for item in lista_todo):
-
-                    for lista in lista_todo:
-                        if modificar == lista["categoria"]:
-                            id_categoria = lista["id"]
+                if categoria_encontrada:
+                    categoria = categoria_encontrada["categoria"]
+                    emoticono = categoria_encontrada["emoticono"]
+                    id_categoria = categoria_encontrada["id"]
                 else:
-                    print_color("Has añadido una nueva categoría.",CIAN)
+                    print_color("Aviso: Esta categoría no está introducida, así que se va a proceder a añadirla.",CIAN)
                     emoticono = input(f"Introduce un emoticono para la categoría {modificar}: ")
                     registrar_categoria(modificar, emoticono)
 
@@ -457,12 +456,19 @@ def pedir_categoria_modi(lista_todo):
                 categorias = contar_csv_id("categorias",id_categoria,0)
                 # contador para contabilizar si el usuario modifica algo o no
                 contador = 0
+                
                 seguro = input(f"{ROJO}¿Quieres modificar el nombre de la categoria? s/n: {RESET}")
                 seguro = seguro.lower()
                 
                 if seguro in ("s","si"):
-                    nueva_categoria = input("Introduce el nuevo nombre para la categoria: ")
-                    contador +=1
+                    while True:
+                        nueva_categoria = input("Introduce el nuevo nombre para la categoria: ")
+                        if normalizar(nueva_categoria) == normalizar(categoria):
+                            print_color("No puedes introducir el mismo nombre.",ROJO)
+                            continue
+                        else:
+                            contador +=1
+                            break
                 else:
                     nueva_categoria = modificar
                 seguro = input(f"{ROJO}¿Quieres modificar el emoticono asociado? s/n: {RESET}")

@@ -399,20 +399,21 @@ def opcion_modi_objetivo():
 
 
 def opcion_modi_categoria():
+  
     lista = mostrar_categorias()
 
     if lista:
         while True:
-            lista_todo = mostrar_csv("categorias")
+            lista_todo = mostrar_csv_diccionario("categorias")
 
 
-            lista_todo = sorted(lista_todo, key=lambda x: x[1])
+            lista_todo = sorted(lista_todo, key=lambda x: x["categoria"])
             print("\nEstos son las categorias ya registradas: \n")
 
             for i, item in enumerate(lista_todo, start=1):
-                id_categoria = item[0]
-                categoria = item[1]
-                emoticono = item[2]
+                id_categoria = item["id"]
+                categoria = item["categoria"]
+                emoticono = item["emoticono"]
                 print(f"{i} - {categoria} {emoticono}")
 
             print_color(volver, CIAN)
