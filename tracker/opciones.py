@@ -327,8 +327,7 @@ def opcion_modi_habito():
         print_color("\nNo existe ningún hábito a modificar.",CIAN)
 
 def opcion_modi_tempo():
-    print("temporizador")
-    exit()
+   
     # muestra previamente todos los registros a eliminar
     lista = mostrar_registros()
 

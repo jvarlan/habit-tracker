@@ -279,8 +279,8 @@ def pedir_tempo_modi(lista_todo):
                 
                 if normalizar(modificar) in ("volver","salir"):
                     return ""
-                modificar = int(modificar) 
-
+                modificar = int(modificar)-1
+                
                 id_temporizador = lista_todo[modificar][0]
                 
                 temporizadores = contar_csv_id("temporizadores",id_temporizador,0)           
@@ -292,6 +292,7 @@ def pedir_tempo_modi(lista_todo):
                 continue
 
             todo_habito = mostrar_csv("temporizadores")
+            todo_habito = sorted(todo_habito, key=lambda x: x[3])
             for fila in todo_habito:
                 if fila[0] == id_temporizador:
                     
