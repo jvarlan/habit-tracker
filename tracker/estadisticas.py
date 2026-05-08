@@ -120,59 +120,62 @@ def generar_bloque_categorias(habitos,temporizadores, categorias):
         *categorias_est(habitos, temporizadores, categorias),
     ]
 
-def generar_bloque_resumen(titulo,datos,temporizadores,tipo, categorias, habitos):
-    
-    if not datos:
+def generar_bloque_resumen(titulo,objetivos,temporizadores,tipo, categorias, habitos):
+
+    if not objetivos:
         print_color(f"No hay objetivos {titulo}",ROJO)
         return []
     return [
         print_color_pausa(f"\n{titulo}",VERDE),
         print_color_pausa("────────────────────────",VERDE),
-        *resumen_est(datos, categorias, temporizadores, tipo, habitos, 0),
+        *resumen_est(objetivos, categorias, temporizadores, tipo, habitos, 0),
     ]
 
 def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, offset=0):
        
         ahora = datetime.now()
         lineas = []
+
         for objetivo in objetivos:     
             id_habito = objetivo['id']
             segundos_totales = 0
             for temporizador in temporizadores:
                 if temporizador['id_habito'] == id_habito:
-                    fecha_temp = datetime.strptime(temporizador['fecha'], "%Y-%m-%d")
+                    fecha_temp = datetime.strptime(temporizador['fecha'], "%Y-%m-%d").date()
+                  
                     if cumple_periodo(fecha_temp, ahora, tipo_periodo, offset):
                         segundos_totales = segundos_totales + horas_a_segundos(temporizador['tiempo'])
+            
 
             # Icono de la categoría (💪, 🎮, 📖)
             
-            id_habito = int(objetivo["id_habito"])
-            
+            id_habito_obj = int(objetivo["id_habito"])
+            id_categoria_habito = None
+            contador = 0
             for habito in habitos:
-             
-                if normalizar(id_habito) == normalizar(habito['id']):
-                   
+                contador +=1
+                if habito['id'] == objetivo['id_habito']:
                     id_categoria_habito = habito['id_categoria']
-           
-         
-            emoticono_categoria = categorias[id_categoria_habito]["emoticono"]
+                    break
+            emoticono_categoria = categorias[contador]["emoticono"]
+            
 
             porcentaje = (float(segundos_totales) / (float(horas_a_segundos(objetivo['objetivo'])))) * 100
 
             if porcentaje == 0:
-                objetivo = "👎"
+                emoti_objetivo = "👎"
             elif porcentaje > 0 and porcentaje <= 50:
-                objetivo = "📈"
+                emoti_objetivo = "📈"
             elif porcentaje > 50 and porcentaje <= 80:
-                objetivo = "💪"
+                emoti_objetivo = "💪"
             elif porcentaje > 80 and porcentaje < 100:
-                objetivo = "🚀"
+                emoti_objetivo = "🚀"
             else:
-                objetivo = "💯"
+                emoti_objetivo = "💯"
             
             horas_totales = segundos_totales / 3600     
 
-            linea = f"{emoticono_categoria} {tipo['habito']} -> {horas_string_a_HHMM(horas_totales)}/{tipo['objetivo']} horas ({porcentaje:.2f}%) {objetivo}"
+            linea = f"{emoticono_categoria} {habito['habito']} -> {horas_string_a_HHMM(horas_totales)}/{objetivo['objetivo']} horas ({porcentaje:.2f}%) {emoti_objetivo}"
             lineas.append(linea)
 
         return lineas

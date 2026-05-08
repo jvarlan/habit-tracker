@@ -487,10 +487,10 @@ def opcion_estadistica_resumen():
                 salir = True  # Indicamos que queremos salir de todo
                 break  # Salimos del bucle interno
             if mostrar_mas == "m":
-                lineas_mes = generar_bloque_resumen("MENSUALES", mensuales, temporizadores, "mes",categorias)
+                lineas_mes = generar_bloque_resumen("MENSUALES", mensuales, temporizadores, "mes",categorias, habitos)
                 imprimir_con_pausa(lineas_mes)
             elif mostrar_mas == "a":
-                lineas_año = generar_bloque_resumen("ANUALES", anuales, temporizadores, "año",categorias)
+                lineas_año = generar_bloque_resumen("ANUALES", anuales, temporizadores, "año",categorias, habitos)
                 imprimir_con_pausa(lineas_año)
 
 def opcion_estadistica_categoria():
