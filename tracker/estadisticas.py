@@ -133,13 +133,13 @@ def generar_bloque_resumen(titulo,objetivos,temporizadores,tipo, categorias, hab
 
 def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, offset=0):
        
-        ahora = datetime.now()
+        ahora = datetime.now().date()
         lineas = []
 
         for objetivo in objetivos:     
-            id_habito = objetivo['id']
-            segundos_totales = 0
+            id_habito = objetivo['id_habito']
             for temporizador in temporizadores:
+                segundos_totales = 0
                 if temporizador['id_habito'] == id_habito:
                     fecha_temp = datetime.strptime(temporizador['fecha'], "%Y-%m-%d").date()
                   

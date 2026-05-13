@@ -71,6 +71,7 @@ def cumple_periodo(fecha, ahora, tipo, offset=0):
         return fecha.isocalendar()[0:2] == referencia.isocalendar()[0:2]
    
     elif tipo == "mes":
+
         mes = ahora.month - offset
         año = ahora.year
 
@@ -81,9 +82,9 @@ def cumple_periodo(fecha, ahora, tipo, offset=0):
         return fecha.year == año and fecha.month == mes
 
     elif tipo == "año":
+
         return fecha.year == (ahora.year - offset)
 
-    return False
 
 def imprimir_con_pausa(lineas):
     try:
