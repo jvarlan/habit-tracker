@@ -1,5 +1,6 @@
 import csv
 from config import BASE_DIR
+from .devolver import dev_nombre_habito_id
 from .utilidades import print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM
 from .mostrar import mostrar_csv_diccionario
 from datetime import datetime, timedelta
@@ -27,15 +28,23 @@ def objetivos(tipos,temporizadores, tipo_periodo, offset=0):
         # saca los datos de los objetivos
         ahora = datetime.now()
         lineas = []
-        for tipo in tipos:  
+        for tipo in tipos:
              
-            id_habito = tipo['id']
+            id_habito = tipo['id_habito']
             segundos_totales = 0
 
+            habitos = mostrar_csv_diccionario("habitos")
+
+            for habito in habitos:
+                if habito['id'] == id_habito:
+                    id_categoria = habito['id_categoria']
+           
+
             categorias = mostrar_csv_diccionario("categorias")  
-                   
-            id_categoria = int(tipo['id_categoria'])-1  
-            emoticono_categoria = categorias[id_categoria]["emoticono"]
+           
+            for categoria in categorias:
+                if categoria['id'] == id_categoria:
+                    emoticono_categoria = categoria["emoticono"]
             
             for temporizador in temporizadores:
                 if temporizador['id_habito'] == id_habito:
@@ -50,8 +59,8 @@ def objetivos(tipos,temporizadores, tipo_periodo, offset=0):
                 conseguido = "✔️"
             else:
                 conseguido = "❌"
-            
-            linea = f"{emoticono_categoria} {tipo['habito']} -> {numero_string_a_HHMM(segundos_totales)}/{tipo['objetivo']} horas {conseguido}"
+            habito = dev_nombre_habito_id(tipo['id_habito'])
+            linea = f"{emoticono_categoria} {habito} -> {numero_string_a_HHMM(segundos_totales)}/{tipo['objetivo']} horas {conseguido}"
             lineas.append(linea)
 
         return lineas
@@ -60,8 +69,20 @@ def media_objetivos(tipos,temporizadores, tipo_periodo, num_periodos):
         ahora = datetime.now()
         lineas = []
         for tipo in tipos:     
-            id_habito = tipo['id']
+            id_habito = tipo['id_habito']
             segundos_totales = 0
+            habitos = mostrar_csv_diccionario("habitos")
+
+            for habito in habitos:
+                if habito['id'] == id_habito:
+                    id_categoria = habito['id_categoria']
+           
+
+            categorias = mostrar_csv_diccionario("categorias")  
+            for categoria in categorias:
+                if categoria['id'] == id_categoria:
+                    emoticono_categoria = categoria["emoticono"]
+            
             for offset in range(num_periodos):
                 for temporizador in temporizadores:
                     if temporizador['id_habito'] == id_habito:
@@ -74,8 +95,8 @@ def media_objetivos(tipos,temporizadores, tipo_periodo, num_periodos):
                 conseguido = "✔️"
             else:
                 conseguido = "❌"
-            
-            linea = f"{tipo['habito']} -> {numero_string_a_HHMM(segundos_totales)}/{tipo['objetivo']} horas {conseguido}"
+            habito = dev_nombre_habito_id(tipo['id_habito'])
+            linea = f"{emoticono_categoria} {habito} -> {numero_string_a_HHMM(segundos_totales)}/{tipo['objetivo']} horas {conseguido}"
             lineas.append(linea)
 
         return lineas
