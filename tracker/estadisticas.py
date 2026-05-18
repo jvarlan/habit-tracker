@@ -154,14 +154,14 @@ def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, of
        
         ahora = datetime.now().date()
         lineas = []
-
+        
         for objetivo in objetivos:     
             id_habito = objetivo['id_habito']
             for temporizador in temporizadores:
-                segundos_totales = 0
+                
                 if temporizador['id_habito'] == id_habito:
                     fecha_temp = datetime.strptime(temporizador['fecha'], "%Y-%m-%d").date()
-                  
+                    segundos_totales = 0
                     if cumple_periodo(fecha_temp, ahora, tipo_periodo, offset):
                         segundos_totales = segundos_totales + horas_a_segundos(temporizador['tiempo'])
             
@@ -176,10 +176,19 @@ def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, of
                 if habito['id'] == objetivo['id_habito']:
                     id_categoria_habito = habito['id_categoria']
                     break
-            emoticono_categoria = categorias[contador]["emoticono"]
+            try:
+                for categoria in categorias:
+                    if id_categoria_habito == categoria['id']:
+                        emoticono_categoria = categoria['emoticono']
+            except IndexError:
+                emoticono_categoria = "❓"
             
+            try:
+                porcentaje = (float(segundos_totales) / (float(horas_a_segundos(objetivo['objetivo'])))) * 100
+            except NameError:
+                segundos_totales = 0
+                porcentaje = (float(segundos_totales) / (float(horas_a_segundos(objetivo['objetivo'])))) * 100
 
-            porcentaje = (float(segundos_totales) / (float(horas_a_segundos(objetivo['objetivo'])))) * 100
 
             if porcentaje == 0:
                 emoti_objetivo = "👎"
@@ -191,9 +200,9 @@ def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, of
                 emoti_objetivo = "🚀"
             else:
                 emoti_objetivo = "💯"
-            
+         
             horas_totales = segundos_totales / 3600     
-
+            
             linea = f"{emoticono_categoria} {habito['habito']} -> {horas_string_a_HHMM(horas_totales)}/{objetivo['objetivo']} horas ({porcentaje:.2f}%) {emoti_objetivo}"
             lineas.append(linea)
 
