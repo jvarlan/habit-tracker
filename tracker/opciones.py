@@ -1,4 +1,4 @@
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro
+from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
@@ -6,7 +6,7 @@ from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo, pedir_objetivo_modi
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias
-from datetime import datetime
+from datetime import datetime, timedelta
 
 volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
 volver2 = f"\n............................................................................"
@@ -514,3 +514,78 @@ def opcion_estadistica_categoria():
 
         if mostrar_mas in ("","volver","salir"):
             mostrar_mas = True
+
+def opcion_estadistica_rachas():
+    salir = False
+
+    while not salir:
+
+        temporizadores = mostrar_csv_diccionario("temporizadores")
+        habitos = mostrar_csv_diccionario("habitos")
+        categorias = mostrar_csv_diccionario("categorias")
+
+        habitos_dict = {h['id']: h for h in habitos}
+        categorias_dict = {c['id']: c for c in categorias}
+        record_horas_dia = 0
+        horas_totales = 0
+        lista_fechas_global = []
+        for t in temporizadores:
+            
+            h = habitos_dict.get(t['id_habito'])
+            if not h:
+                continue
+           
+            c = categorias_dict.get(h['id_categoria'])
+
+            if not c:
+                continue
+
+            habito = h['habito']
+            tiempo = t['tiempo']
+            tiempo_s = horas_a_segundos(tiempo)
+            horas_totales = horas_totales + tiempo_s
+            if tiempo_s > record_horas_dia:
+                record_horas_dia = tiempo_s
+                habito_record_horas_dia = habito
+            fecha = datetime.strptime(t['fecha'], "%Y-%m-%d").date()
+            lista_fechas_global.append(fecha)
+
+            categoria = c['categoria']
+            emoticono = c['emoticono']
+
+            print(habito)
+            print(tiempo)
+            print(fecha)
+            print(categoria)
+            print(emoticono)
+
+        record_horas_dia = segundos_a_hhmmss(record_horas_dia)
+        media_horas = horas_totales / len(lista_fechas_global)
+        media_horas = segundos_a_hhmmss(media_horas)
+        horas_totales = segundos_a_hhmmss(horas_totales)
+        lista_fechas_global = sorted(set(lista_fechas_global))
+
+        racha_max = 0
+        racha_actual = 1
+
+        for i in range(1, len(lista_fechas_global)):
+            if (lista_fechas_global[i] - lista_fechas_global[i - 1]) == timedelta(days=1):
+                racha_actual += 1
+            else:
+                racha_max = max(racha_max, racha_actual)
+                racha_actual = 1
+        racha_max = max(racha_max, racha_actual)
+
+        print("Rachas globales: \n")
+        print(f"Máximo de horas registradas en un día: {record_horas_dia} ({habito_record_horas_dia})")
+        print(f"Total de horas registradas: {horas_totales}")
+        print(f"Media de los registros: {media_horas}")
+        print(f"Máximo de registros en un día: ")
+        print(f"Racha máxima: {racha_max}")
+        
+        salir = normalizar(input(
+            "\nPulsa 'ENTER' para salir: "
+        ))
+
+        if salir in ("","volver","salir"):
+            salir = True

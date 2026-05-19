@@ -1,5 +1,5 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores, mostrar_objetivos
-from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria
+from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria, opcion_estadistica_rachas
 from .utilidades import limpiar_pantalla
 from .checks import normalizar
 from .utilidades import ROJO, VERDE, CIAN, print_color
@@ -293,7 +293,7 @@ def estadisticas_3():
     return True
    
 def estadisticas_4():
-    #sale del bucle
+    opcion_estadistica_rachas()
     return True
 # diccionario que contiene la redirección de las funciones
 menu_estadisticas = {
