@@ -6,7 +6,7 @@ from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo, pedir_objetivo_modi
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 
 volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
 volver2 = f"\n............................................................................"
@@ -544,44 +544,66 @@ def opcion_estadistica_rachas():
             tiempo = t['tiempo']
             tiempo_s = horas_a_segundos(tiempo)
             horas_totales = horas_totales + tiempo_s
+            categoria = c['categoria']
+            emoticono = c['emoticono']
             if tiempo_s > record_horas_dia:
                 record_horas_dia = tiempo_s
                 habito_record_horas_dia = habito
+                emoti_record = emoticono
             fecha = datetime.strptime(t['fecha'], "%Y-%m-%d").date()
             lista_fechas_global.append(fecha)
-
-            categoria = c['categoria']
-            emoticono = c['emoticono']
-
-            print(habito)
-            print(tiempo)
-            print(fecha)
-            print(categoria)
-            print(emoticono)
+        
 
         record_horas_dia = segundos_a_hhmmss(record_horas_dia)
         media_horas = horas_totales / len(lista_fechas_global)
         media_horas = segundos_a_hhmmss(media_horas)
         horas_totales = segundos_a_hhmmss(horas_totales)
-        lista_fechas_global = sorted(set(lista_fechas_global))
+        
+        lista_fechas_global_orden = sorted(set(lista_fechas_global))
+        fechas = set(lista_fechas_global_orden)
+
+        hoy = date.today()
+
+        #sacar el historico
 
         racha_max = 0
-        racha_actual = 1
+        racha_temp = 1
+        
 
-        for i in range(1, len(lista_fechas_global)):
-            if (lista_fechas_global[i] - lista_fechas_global[i - 1]) == timedelta(days=1):
-                racha_actual += 1
+        for i in range(1, len(lista_fechas_global_orden)):
+            if (lista_fechas_global_orden[i] - lista_fechas_global_orden[i - 1]) == timedelta(days=1):
+                racha_temp += 1
             else:
-                racha_max = max(racha_max, racha_actual)
-                racha_actual = 1
-        racha_max = max(racha_max, racha_actual)
+                racha_max = max(racha_max, racha_temp)
+                racha_temp = 1
+        racha_max = max(racha_max, racha_temp)
+
+        #sacar racha actual
+        if hoy not in fechas:
+            racha_actual = 0
+        else:
+            racha_actual = 1
+            dia = hoy
+            
+            while (dia - timedelta(days=1)) in fechas:
+                racha_actual += 1
+                dia -= timedelta(days=1)
+
+        dias_activos = len(set(lista_fechas_global_orden))
+        ultima_fecha = max(lista_fechas_global_orden)
+        primera_fecha = min(lista_fechas_global_orden)
+        diferencia_fechas = (ultima_fecha - primera_fecha).days
+    
 
         print("Rachas globales: \n")
-        print(f"Máximo de horas registradas en un día: {record_horas_dia} ({habito_record_horas_dia})")
+        print(f"Día con más horas registradas: {record_horas_dia} ({habito_record_horas_dia} {emoti_record})")
         print(f"Total de horas registradas: {horas_totales}")
         print(f"Media de los registros: {media_horas}")
-        print(f"Máximo de registros en un día: ")
         print(f"Racha máxima: {racha_max}")
+        print(f"Racha actual: {racha_actual}")
+        print(f"Días activos: {dias_activos} / {diferencia_fechas}")
+        print(f"Primer registro: {primera_fecha}")
+        print(f"Último registro: {ultima_fecha}")
         
         salir = normalizar(input(
             "\nPulsa 'ENTER' para salir: "
