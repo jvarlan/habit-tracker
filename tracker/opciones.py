@@ -526,9 +526,12 @@ def opcion_estadistica_rachas():
 
         habitos_dict = {h['id']: h for h in habitos}
         categorias_dict = {c['id']: c for c in categorias}
-        record_horas_dia = 0
+        horas_max = 0
+        fecha_max = "1000-1-1"
         horas_totales = 0
+        fecha_max = datetime.strptime(fecha_max, "%Y-%m-%d").date()
         lista_fechas_global = []
+        diccionario_fechas_horas = {}
         for t in temporizadores:
             
             h = habitos_dict.get(t['id_habito'])
@@ -543,18 +546,23 @@ def opcion_estadistica_rachas():
             habito = h['habito']
             tiempo = t['tiempo']
             tiempo_s = horas_a_segundos(tiempo)
+
             horas_totales = horas_totales + tiempo_s
             categoria = c['categoria']
             emoticono = c['emoticono']
-            if tiempo_s > record_horas_dia:
-                record_horas_dia = tiempo_s
-                habito_record_horas_dia = habito
-                emoti_record = emoticono
             fecha = datetime.strptime(t['fecha'], "%Y-%m-%d").date()
             lista_fechas_global.append(fecha)
-        
 
-        record_horas_dia = segundos_a_hhmmss(record_horas_dia)
+            if fecha not in diccionario_fechas_horas:
+                diccionario_fechas_horas[fecha] = 0
+            diccionario_fechas_horas[fecha] += tiempo_s
+ 
+        for fecha_registro, horas_registro in diccionario_fechas_horas.items():
+            if horas_registro > horas_max:
+                fecha_max = fecha_registro
+                horas_max = horas_registro
+
+        record_horas_dia = segundos_a_hhmmss(horas_max)
         media_horas = horas_totales / len(lista_fechas_global)
         media_horas = segundos_a_hhmmss(media_horas)
         horas_totales = segundos_a_hhmmss(horas_totales)
@@ -588,15 +596,17 @@ def opcion_estadistica_rachas():
             while (dia - timedelta(days=1)) in fechas:
                 racha_actual += 1
                 dia -= timedelta(days=1)
+        lista_fechas_global_orden
 
         dias_activos = len(set(lista_fechas_global_orden))
-        ultima_fecha = max(lista_fechas_global_orden)
         primera_fecha = min(lista_fechas_global_orden)
-        diferencia_fechas = (ultima_fecha - primera_fecha).days
+        ultima_fecha = max(lista_fechas_global_orden)
+        diferencia_fechas = ((hoy - primera_fecha).days)+1
     
 
         print("Rachas globales: \n")
-        print(f"Día con más horas registradas: {record_horas_dia} ({habito_record_horas_dia} {emoti_record})")
+
+        print(f"Día con más horas registradas: {record_horas_dia} ({fecha_max})")
         print(f"Total de horas registradas: {horas_totales}")
         print(f"Media de los registros: {media_horas}")
         print(f"Racha máxima: {racha_max}")
