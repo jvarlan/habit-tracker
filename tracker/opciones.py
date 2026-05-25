@@ -2,10 +2,10 @@ from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, pregun
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
-from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id
+from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id, dev_preparar_datos_estadistica
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo, pedir_objetivo_modi
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
-from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias
+from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales
 from datetime import datetime, date, timedelta
 
 volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
@@ -524,96 +524,10 @@ def opcion_estadistica_rachas():
         habitos = mostrar_csv_diccionario("habitos")
         categorias = mostrar_csv_diccionario("categorias")
 
-        habitos_dict = {h['id']: h for h in habitos}
-        categorias_dict = {c['id']: c for c in categorias}
-        horas_max = 0
-        fecha_max = "1000-1-1"
-        horas_totales = 0
-        fecha_max = datetime.strptime(fecha_max, "%Y-%m-%d").date()
-        lista_fechas_global = []
-        diccionario_fechas_horas = {}
-        for t in temporizadores:
-            
-            h = habitos_dict.get(t['id_habito'])
-            if not h:
-                continue
-           
-            c = categorias_dict.get(h['id_categoria'])
-
-            if not c:
-                continue
-
-            habito = h['habito']
-            tiempo = t['tiempo']
-            tiempo_s = horas_a_segundos(tiempo)
-
-            horas_totales = horas_totales + tiempo_s
-            categoria = c['categoria']
-            emoticono = c['emoticono']
-            fecha = datetime.strptime(t['fecha'], "%Y-%m-%d").date()
-            lista_fechas_global.append(fecha)
-
-            if fecha not in diccionario_fechas_horas:
-                diccionario_fechas_horas[fecha] = 0
-            diccionario_fechas_horas[fecha] += tiempo_s
- 
-        for fecha_registro, horas_registro in diccionario_fechas_horas.items():
-            if horas_registro > horas_max:
-                fecha_max = fecha_registro
-                horas_max = horas_registro
-
-        record_horas_dia = segundos_a_hhmmss(horas_max)
-        media_horas = horas_totales / len(lista_fechas_global)
-        media_horas = segundos_a_hhmmss(media_horas)
-        horas_totales = segundos_a_hhmmss(horas_totales)
+        datos = dev_preparar_datos_estadistica(temporizadores, habitos, categorias)
+        estadisticas = calcular_estadisticas_globales(datos)
         
-        lista_fechas_global_orden = sorted(set(lista_fechas_global))
-        fechas = set(lista_fechas_global_orden)
-
-        hoy = date.today()
-
-        #sacar el historico
-
-        racha_max = 0
-        racha_temp = 1
-        
-
-        for i in range(1, len(lista_fechas_global_orden)):
-            if (lista_fechas_global_orden[i] - lista_fechas_global_orden[i - 1]) == timedelta(days=1):
-                racha_temp += 1
-            else:
-                racha_max = max(racha_max, racha_temp)
-                racha_temp = 1
-        racha_max = max(racha_max, racha_temp)
-
-        #sacar racha actual
-        if hoy not in fechas:
-            racha_actual = 0
-        else:
-            racha_actual = 1
-            dia = hoy
-            
-            while (dia - timedelta(days=1)) in fechas:
-                racha_actual += 1
-                dia -= timedelta(days=1)
-        lista_fechas_global_orden
-
-        dias_activos = len(set(lista_fechas_global_orden))
-        primera_fecha = min(lista_fechas_global_orden)
-        ultima_fecha = max(lista_fechas_global_orden)
-        diferencia_fechas = ((hoy - primera_fecha).days)+1
-    
-
-        print("Rachas globales: \n")
-
-        print(f"Día con más horas registradas: {record_horas_dia} ({fecha_max})")
-        print(f"Total de horas registradas: {horas_totales}")
-        print(f"Media de los registros: {media_horas}")
-        print(f"Racha máxima: {racha_max}")
-        print(f"Racha actual: {racha_actual}")
-        print(f"Días activos: {dias_activos} / {diferencia_fechas}")
-        print(f"Primer registro: {primera_fecha}")
-        print(f"Último registro: {ultima_fecha}")
+        mostrar_estadisticas_globales(estadisticas)
         
         salir = normalizar(input(
             "\nPulsa 'ENTER' para salir: "

@@ -3,7 +3,7 @@ from config import BASE_DIR
 from .devolver import dev_nombre_habito_id
 from .utilidades import print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM
 from .mostrar import mostrar_csv_diccionario
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from .checks import normalizar
 
 
@@ -264,3 +264,121 @@ def categorias_fecha(habitos, temporizadores, categorias, tipo):
             lineas.append(linea)
 
         return lineas
+
+def calcular_estadisticas_globales(datos):
+    hoy = date.today()
+    fechas = sorted(set(datos["fechas"]))
+    horas_totales = datos["horas_totales"]
+    horas_por_fecha = datos["horas_por_fecha"]
+
+    fecha_max = None
+    horas_max = 0
+
+    for fecha, horas in horas_por_fecha.items():
+        if horas > horas_max:
+            horas_max = horas
+            fecha_max = horas
+    
+    media_horas = horas_totales / len(fechas)
+
+    racha_max = calcular_racha_maxima(fechas)
+    racha_actual = calcular_racha_actual(fechas)
+
+    dias_activos = len(fechas)
+    primera_fecha = min(fechas)
+    ultima_fecha = max(fechas)
+    dias_totales = ((hoy - primera_fecha).days) + 1
+
+    porcentaje_actividad = (dias_activos / dias_totales) * 100
+
+    return {
+
+        "horas_totales": segundos_a_hhmmss(horas_totales),
+
+        "media_horas": segundos_a_hhmmss(media_horas),
+
+        "fecha_max": fecha_max,
+
+        "record_horas_dia": segundos_a_hhmmss(horas_max),
+
+        "racha_max": racha_max,
+
+        "racha_actual": racha_actual,
+
+        "dias_activos": dias_activos,
+
+        "dias_totales": dias_totales,
+
+        "porcentaje_actividad": round(porcentaje_actividad, 2),
+
+        "primera_fecha": primera_fecha,
+
+        "ultima_fecha": ultima_fecha
+    }
+
+def calcular_racha_maxima(fechas):
+    if not fechas:
+        return 0
+    
+    racha_max = 1
+    racha_temp = 1
+
+    for i in range(1, len(fechas)):
+        diferencia = fechas[i] - fechas[i-1]
+
+        if diferencia == timedelta(days=1):
+            racha_temp += 1
+        else:
+            racha_max = max(racha_max, racha_temp)
+            racha_temp = 1
+   
+    return max(racha_max, racha_temp)
+
+def calcular_racha_actual(fechas):
+
+    if not fechas:
+        return 0
+    fechas_set = set(fechas)
+
+    hoy = date.today()
+
+    if hoy not in fechas_set:
+        return 0
+    racha_actual = 1
+    dia = hoy
+
+    while(dia - timedelta(days=1)) in fechas_set:
+        racha_actual += 1
+        dia -= timedelta(days=1)
+    return racha_actual
+
+def mostrar_estadisticas_globales(stats):
+
+
+    print("\n=== ESTADÍSTICAS GLOBALES ===\n")
+
+    print(f"Total de horas registradas: {stats['horas_totales']}")
+
+    print(f"Media de los registros: {stats['media_horas']}")
+
+    print(f"Primer registro: {stats['primera_fecha']}")
+
+    print(f"Último registro: {stats['ultima_fecha']}")
+
+    print(
+        f"Días activos: "
+        f"{stats['dias_activos']} / {stats['dias_totales']} "
+        f"({stats['porcentaje_actividad']}%)"
+    )
+
+    print(
+        f"Día con más horas registradas: "
+        f"{stats['record_horas_dia']} "
+        f"({stats['fecha_max']})"
+    )
+
+    print("\n=== RACHAS GLOBALES ===\n")
+
+    print(f"Racha máxima: {stats['racha_max']}")
+
+    print(f"Racha actual: {stats['racha_actual']}")
