@@ -163,37 +163,3 @@ def dev_nombre_categoria_id(id_categoria):
             if fila[0].lower() == id_categoria:
                 return fila[1]
 
-def dev_preparar_datos_estadistica(temporizadores, habitos, categorias):
-    
-    habitos_dict = {h['id']: h for h in habitos}
-    categorias_dict = {c['id']: c for c in categorias}
-
-    horas_totales = 0
-    fechas = []
-    horas_por_fecha = {}
-
-    for t in temporizadores:   
-        h = habitos_dict.get(t['id_habito'])
-    
-        if not h:
-            continue
-           
-        c = categorias_dict.get(h['id_categoria'])
-
-        if not c:
-            continue
-        
-        fecha = datetime.strptime(t['fecha'], "%Y-%m-%d").date()
-        tiempo_segundos = horas_a_segundos(t['tiempo'])
-        horas_totales += tiempo_segundos
-        fechas.append(fecha)
-
-        if fecha not in horas_por_fecha:
-            horas_por_fecha[fecha] = 0
-        horas_por_fecha[fecha] += tiempo_segundos
-
-    return {
-            "horas_totales": horas_totales,
-            "fechas": fechas,
-            "horas_por_fecha": horas_por_fecha
-        }

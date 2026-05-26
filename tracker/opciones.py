@@ -2,10 +2,10 @@ from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, pregun
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
-from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id, dev_preparar_datos_estadistica
+from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo, pedir_objetivo_modi
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
-from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales
+from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos
 from datetime import datetime, date, timedelta
 
 volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
@@ -524,11 +524,28 @@ def opcion_estadistica_rachas():
         habitos = mostrar_csv_diccionario("habitos")
         categorias = mostrar_csv_diccionario("categorias")
 
-        datos = dev_preparar_datos_estadistica(temporizadores, habitos, categorias)
+        datos = preparar_datos_estadistica(temporizadores, habitos, categorias)
         estadisticas = calcular_estadisticas_globales(datos)
         
         mostrar_estadisticas_globales(estadisticas)
         
+        salir = normalizar(input(
+            "\nPulsa 'ENTER' para salir: "
+        ))
+
+        if salir in ("","volver","salir"):
+            salir = True
+
+def opcion_estadistica_habitos():
+    salir = False
+
+    while not salir:
+        temporizadores = mostrar_csv_diccionario("temporizadores")
+        habitos = mostrar_csv_diccionario("habitos")
+        categorias = mostrar_csv_diccionario("categorias")
+ 
+        datos = preparar_datos_habitos(temporizadores, habitos, categorias)
+
         salir = normalizar(input(
             "\nPulsa 'ENTER' para salir: "
         ))

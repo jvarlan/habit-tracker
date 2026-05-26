@@ -1,5 +1,5 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores, mostrar_objetivos
-from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria, opcion_estadistica_rachas
+from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria, opcion_estadistica_rachas, opcion_estadistica_habitos
 from .utilidades import limpiar_pantalla
 from .checks import normalizar
 from .utilidades import ROJO, VERDE, CIAN, print_color
@@ -269,7 +269,8 @@ def mostrar_menu_estadisticas():
                 print("2. Categorías")
 
             print("3. Objetivos")
-            print("4. Rachas")
+            print("4. Constancia")
+            print("5. Hábitos")
             print_color("====================================",VERDE)
 
             opcion = input("\nSelecciona una opción: ")
@@ -293,14 +294,20 @@ def estadisticas_3():
     return True
    
 def estadisticas_4():
+    limpiar_pantalla()
     opcion_estadistica_rachas()
+    return True
+def estadisticas_5():
+    limpiar_pantalla()
+    opcion_estadistica_habitos()
     return True
 # diccionario que contiene la redirección de las funciones
 menu_estadisticas = {
     "1": estadisticas_1,
     "2": estadisticas_2,
     "3": estadisticas_3,
-    "4": estadisticas_4
+    "4": estadisticas_4,
+    "5": estadisticas_5
 }
 
 def estadisticas(opcion):
