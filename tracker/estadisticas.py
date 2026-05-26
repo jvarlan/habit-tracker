@@ -277,7 +277,7 @@ def calcular_estadisticas_globales(datos):
     for fecha, horas in horas_por_fecha.items():
         if horas > horas_max:
             horas_max = horas
-            fecha_max = horas
+            fecha_max = fecha
     
     media_horas = horas_totales / len(fechas)
 

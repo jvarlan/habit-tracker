@@ -172,7 +172,7 @@ def dev_preparar_datos_estadistica(temporizadores, habitos, categorias):
     fechas = []
     horas_por_fecha = {}
 
-    for t in temporizadores:            
+    for t in temporizadores:   
         h = habitos_dict.get(t['id_habito'])
     
         if not h:
@@ -192,7 +192,7 @@ def dev_preparar_datos_estadistica(temporizadores, habitos, categorias):
             horas_por_fecha[fecha] = 0
         horas_por_fecha[fecha] += tiempo_segundos
 
-        return {
+    return {
             "horas_totales": horas_totales,
             "fechas": fechas,
             "horas_por_fecha": horas_por_fecha
