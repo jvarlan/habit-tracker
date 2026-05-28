@@ -19,19 +19,19 @@ def mostrar_menu():
         temporizadores = mostrar_temporizadores()
         categorias = mostrar_categorias()
 
-        print_color("\n======== MENÚ HABIT TRACKER ========",VERDE)
-        print("1. Registrar un nuevo hábito (100%)")
+        print_color("\n======== HABIT TRACKER (FASE PULIDO) ========",VERDE)
+        print("1. Registrar un nuevo hábito (99%)")
         if not habitos:
-            print_color("2. Añadir tiempo (100%)",ROJO)
+            print_color("2. Añadir tiempo (99%)",ROJO)
         else:
-            print("2. Añadir tiempo (100%)")
+            print("2. Añadir tiempo (99%)")
         if not habitos and not temporizadores and not categorias:
-            print_color("3. Eliminar elementos (100%)",ROJO)
+            print_color("3. Eliminar elementos (99%)",ROJO)
         else:
-            print("3. Eliminar elementos (100%)")
-        print("4. Modificar elementos (100%)")
-        print("5. Mostrar estadísticas (En desarrollo)")
-        print_color("====================================",VERDE)
+            print("3. Eliminar elementos (99%)")
+        print("4. Modificar elementos (99%)")
+        print("5. Mostrar estadísticas (99%)")
+        print_color("=============================================",VERDE)
         print_color(volver,CIAN)
 
         opcion = input("\nSelecciona una opción: ")
