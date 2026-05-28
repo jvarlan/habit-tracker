@@ -306,39 +306,47 @@ def preparar_datos_habitos(temporizadores, habitos, categorias):
     habitos_dict = {h['id']: h for h in habitos}
     categorias_dict = {c['id']: c for c in categorias}
 
-    horas_totales = 0
-    fechas = []
-    horas_por_fecha = {}
     habitos_datos = {}
+    for habito in habitos:
+        horas_totales = 0
+        fechas = []
+        horas_por_fecha = {}
 
-    for t in temporizadores:   
-        h = habitos_dict.get(t['id_habito'])
+        for t in temporizadores:   
+            if habito['id'] == t['id_habito']:
 
-        if not h:
-            continue
-           
-        c = categorias_dict.get(h['id_categoria'])
+                h = habitos_dict.get(t['id_habito'])
 
-        if not c:
-            continue
-        
-        fecha = datetime.strptime(t['fecha'], "%Y-%m-%d").date()
-        tiempo_segundos = horas_a_segundos(t['tiempo'])
-        horas_totales += tiempo_segundos
-        fechas.append(fecha)
+                if not h:
+                    continue
+                
+                c = categorias_dict.get(h['id_categoria'])
 
-        if fecha not in horas_por_fecha:
-            horas_por_fecha[fecha] = 0
-        horas_por_fecha[fecha] += tiempo_segundos
+                if not c:
+                    continue
+                
+                fecha = datetime.strptime(t['fecha'], "%Y-%m-%d").date()
+                tiempo_segundos = horas_a_segundos(t['tiempo'])
+                horas_totales += tiempo_segundos
+                fechas.append(fecha)
 
-        if h['id_habito'] not in habitos_datos:
-            habitos_datos[h['id_habito']].append(fechas, horas_totales, horas_por_fecha)
+                if fecha not in horas_por_fecha:
+                    horas_por_fecha[fecha] = 0
+                horas_por_fecha[fecha] += tiempo_segundos
+            nombre = habito["habito"]
+            if nombre not in habitos_datos:
+                habitos_datos[nombre] = {
+                    "horas_totales": 0,
+                    "fechas": [],
+                    "horas_por_fecha": {}
+                }
 
-    return {
-            "horas_totales": horas_totales,
-            "fechas": fechas,
-            "horas_por_fecha": horas_por_fecha
-        }
+            habitos_datos[nombre]["horas_totales"] += horas_totales
+            habitos_datos[nombre]["fechas"] += fechas
+            habitos_datos[nombre]["horas_por_fecha"].update(horas_por_fecha)
+
+
+    return habitos_datos
 
 
 def calcular_estadisticas_globales(datos):
@@ -391,6 +399,59 @@ def calcular_estadisticas_globales(datos):
 
         "ultima_fecha": ultima_fecha
     }
+
+def calcular_estadisticas_habitos(datos, nombre):
+    hoy = date.today()
+    fechas = sorted(set(datos["fechas"]))
+    horas_totales = datos["horas_totales"]
+    horas_por_fecha = datos["horas_por_fecha"]
+
+    fecha_max = None
+    horas_max = 0
+
+    for fecha, horas in horas_por_fecha.items():
+        if horas > horas_max:
+            horas_max = horas
+            fecha_max = fecha
+    
+    media_horas = horas_totales / len(fechas)
+
+    racha_max = calcular_racha_maxima(fechas)
+    racha_actual = calcular_racha_actual(fechas)
+
+    dias_activos = len(fechas)
+    primera_fecha = min(fechas)
+    ultima_fecha = max(fechas)
+    dias_totales = ((hoy - primera_fecha).days) + 1
+
+    porcentaje_actividad = (dias_activos / dias_totales) * 100
+
+    return {
+        "nombre": nombre,
+
+        "horas_totales": segundos_a_hhmmss(horas_totales),
+
+        "media_horas": segundos_a_hhmmss(media_horas),
+
+        "fecha_max": fecha_max,
+
+        "record_horas_dia": segundos_a_hhmmss(horas_max),
+
+        "racha_max": racha_max,
+
+        "racha_actual": racha_actual,
+
+        "dias_activos": dias_activos,
+
+        "dias_totales": dias_totales,
+
+        "porcentaje_actividad": round(porcentaje_actividad, 2),
+
+        "primera_fecha": primera_fecha,
+
+        "ultima_fecha": ultima_fecha
+    }
+
 
 def calcular_racha_maxima(fechas):
     if not fechas:
@@ -450,7 +511,7 @@ def mostrar_estadisticas_globales(stats):
     print(
         f"Día más productivo: "
         f"{stats['fecha_max']} "
-        f"({stats['record_horas_dia']})"
+        f"({stats['record_horas_dia']}\n)"
     )
 
     print("\n=== CONSTANCIA ===\n")
@@ -458,3 +519,34 @@ def mostrar_estadisticas_globales(stats):
     print(f"Racha máxima: {stats['racha_max']}")
 
     print(f"Racha actual: {stats['racha_actual']}")
+
+def mostrar_estadisticas_habitos(stats):
+
+
+    print(f"\n=== {stats['nombre']} ===\n")
+
+    print(f"Total de horas registradas: {stats['horas_totales']}")
+
+    print(f"Media de los registros: {stats['media_horas']}\n")
+
+    print(f"Primer registro: {stats['primera_fecha']}")
+
+    print(f"Último registro: {stats['ultima_fecha']}\n")
+
+    print(
+        f"Días activos: "
+        f"{stats['dias_activos']} / {stats['dias_totales']} "
+        f"({stats['porcentaje_actividad']}%)"
+    )
+
+    print(
+        f"Día más productivo: "
+        f"{stats['fecha_max']} "
+        f"({stats['record_horas_dia']})"
+    )
+    print(
+        f"Racha máxima: {stats['racha_max']}"
+        )
+    print(
+        f"Racha actual: {stats['racha_actual']}"
+        )

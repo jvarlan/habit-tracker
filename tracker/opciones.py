@@ -5,7 +5,7 @@ from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categori
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo, pedir_objetivo_modi
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
-from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos
+from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos, calcular_estadisticas_habitos, mostrar_estadisticas_habitos
 from datetime import datetime, date, timedelta
 
 volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
@@ -544,7 +544,19 @@ def opcion_estadistica_habitos():
         habitos = mostrar_csv_diccionario("habitos")
         categorias = mostrar_csv_diccionario("categorias")
  
-        datos = preparar_datos_habitos(temporizadores, habitos, categorias)
+        habitos_datos = preparar_datos_habitos(temporizadores, habitos, categorias)
+
+
+        for nombre_habito, datos in habitos_datos.items():
+
+            estadisticas = calcular_estadisticas_habitos(datos, nombre_habito)
+        
+            mostrar_estadisticas_habitos(estadisticas)
+        
+            horas_totales = datos['horas_totales']
+            fechas = datos['fechas']
+            horas_por_fecha = datos['horas_por_fecha']
+
 
         salir = normalizar(input(
             "\nPulsa 'ENTER' para salir: "
