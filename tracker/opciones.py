@@ -24,7 +24,6 @@ def opcion_registro():
             categorias = mostrar_csv_diccionario("categorias")
             cat_dict = {cat["categoria"]: cat["emoticono"] for cat in categorias}
             
-            
             categorias_lista = sorted(cat_dict.keys())
             if categorias_lista:
                 # si no está registrado, prosigue con el resto de inputs
@@ -40,8 +39,11 @@ def opcion_registro():
             if categoria in cat_dict:
                 emoticono = cat_dict[categoria]
             else:
-                emoticono = input("Introduce un emoticono asociado: ")
-
+                while True:
+                    emoticono = input("Introduce un emoticono asociado: ")
+                    if emoticono.strip() in cat_dict.values():
+                        continue
+                    break
             while True:
                 lista_tipos = ["diario","semanal","mensual","anual"]
                 tipo = input(f"Objetivo ({lista_tipos}): ")

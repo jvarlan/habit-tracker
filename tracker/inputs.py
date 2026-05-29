@@ -475,8 +475,12 @@ def pedir_categoria_modi(lista_todo):
                 seguro = seguro.lower()
 
                 if seguro in ("s","si"):
-                    nuevo_emoticono = input("Introduce el nuevo emoticono: ")
-                    contador +=1
+                    while True:
+                        nuevo_emoticono = input("Introduce el nuevo emoticono: ").strip()
+                        if any(nuevo_emoticono == lista[1] for lista in lista_todo):
+                            print_color("Introduce un emoticono que no esté usado.","ROJO")
+                            continue
+                        contador +=1
                 else:
                     nuevo_emoticono = emoticono
  
