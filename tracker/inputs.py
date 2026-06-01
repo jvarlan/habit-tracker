@@ -5,20 +5,20 @@ from .checks import normalizar, validar_horas, comprobar_horas_temp_24, comproba
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
 from .guardar import registrar_objetivo, registrar_categoria
 from .contar import contar_csv_n, contar_csv_id
-from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_lista_objetivos_cat, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat
+from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_lista_objetivos_cat, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat, dev_emoticono_categoria_id
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria, borrar_objetivos_id_habito
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria, modificar_objetivo
 from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET,print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla
 
 def pedir_nombre_registro(volver):
     while True:
-        lista = mostrar_registros()
+        diccionario = mostrar_csv_diccionario("habitos")
         print_color("\nRegistrar un nuevo hábito",INVERSION)
-        if lista:
+        if diccionario:
             print("\nHábitos registrados: \n")
             # recorre el listado, numerandolo con el nombre al lado
-            for i, item in enumerate(sorted(lista, key=lambda x: x.strip().lower()), start=1):
-                print(f"👉 {item}")
+            for item in diccionario:
+                print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item["habito"]}")
         print_color(volver, CIAN)
         print_color("\nSi quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
   
@@ -463,7 +463,7 @@ def pedir_categoria_modi(lista_todo):
                 if seguro in ("s","si"):
                     while True:
                         nueva_categoria = input("Introduce el nuevo nombre para la categoria: ")
-                        if normalizar(nueva_categoria) == normalizar(categoria):
+                        if nueva_categoria == categoria:
                             print_color("No puedes introducir el mismo nombre.",ROJO)
                             continue
                         else:
@@ -475,12 +475,15 @@ def pedir_categoria_modi(lista_todo):
                 seguro = seguro.lower()
 
                 if seguro in ("s","si"):
+                    print(lista_todo)
                     while True:
-                        nuevo_emoticono = input("Introduce el nuevo emoticono: ").strip()
-                        if any(nuevo_emoticono == lista[1] for lista in lista_todo):
-                            print_color("Introduce un emoticono que no esté usado.","ROJO")
+                        nuevo_emoticono = normalizar(input("Introduce el nuevo emoticono: "))
+        
+                        if any(nuevo_emoticono == lista["emoticono"] for lista in lista_todo):
+                            print_color("Introduce un emoticono que no esté usado.",ROJO)
                             continue
                         contador +=1
+                        break
                 else:
                     nuevo_emoticono = emoticono
  
@@ -527,29 +530,36 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
                         tipos_restantes.append(ltipos)
 
             if not tipos_restantes:
+                limpiar_pantalla()
                 print_color("\nNo quedan más tipos disponibles para este hábito.",ROJO)
                 return True
-
-            otro_habito = input("\n¿Quieres añadir un objetivo diferente para este hábito? s/n: ")
-
-            if not preguntar_seguir(normalizar(otro_habito)):
-                break
             
             while True:
-                tipo_ad = normalizar(input(f"Otro tipo ({tipos_restantes}): "))
-                if normalizar(tipo_ad) in ("","volver","salir"):
-                    limpiar_pantalla()
-                    return
-                if tipo_ad not in tipos_restantes:
+                otro_habito = input("\n¿Quieres añadir un objetivo diferente para este hábito? s/n: ")
+                resultado = preguntar_seguir(otro_habito)
+                
+                if resultado is None:
+                    print_color("Respuesta no válida.",ROJO)
                     continue
-                break
-
-            while True:
-                objetivo_ad = input("Otro objetivo (horas): ")
-                if validar_horas(objetivo_ad):
-                    objetivo_ad = validar_horas(objetivo_ad)
-                    registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
-                    print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.",VERDE)
+                
+                if resultado is False:
+                    return
+                
+                if resultado is True:
+                    tipo_ad = normalizar(input(f"Elige uno de estos objetivos: ({', '.join(tipos_restantes)}): "))
+                    if normalizar(tipo_ad) in ("","volver","salir"):
+                        limpiar_pantalla()
+                        return
+                    if tipo_ad not in tipos_restantes:
+                        continue
                     break
-                break
-        
+
+                while True:
+                    objetivo_ad = input("Otro objetivo (horas): ")
+                    if validar_horas(objetivo_ad):
+                        objetivo_ad = validar_horas(objetivo_ad)
+                        registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
+                        print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.",VERDE)
+                        break
+            
+                

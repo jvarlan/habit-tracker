@@ -7,6 +7,7 @@ RESET = "\033[0m"
 import os, shutil
 import time
 from .mostrar import mostrar_csv, mostrar_csv_diccionario
+
 from datetime import timedelta, datetime
 
 def print_color(texto,color):
@@ -20,17 +21,13 @@ def limpiar_pantalla():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def preguntar_seguir(seguir):
-    while True:
+        seguir = seguir.lower().strip()
         if seguir in ("s", "si"):
-            limpiar_pantalla()
             return True
         elif seguir in ("n", "no"):
-            limpiar_pantalla()
             return False
         else:
-            print("Respuesta no válida.")
-            limpiar_pantalla()
-            return False
+            return None
         
 def id_habito_nombre():
 
@@ -53,6 +50,7 @@ def nombre_idhabito():
         #guarda en el diccionario el equivalente del id_habito a su nombre
         id_habito_nombre[habito[1]] = habito[0]
     return id_habito_nombre
+
 
 def cumple_periodo(fecha, ahora, tipo, offset):
    

@@ -163,3 +163,17 @@ def dev_nombre_categoria_id(id_categoria):
             if fila[0].lower() == id_categoria:
                 return fila[1]
 
+
+def dev_emoticono_categoria_id(id_categoria):
+
+    ruta = BASE_DIR / "datos" / "categorias.csv"
+    if not ruta.exists():
+        return 0
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        next(lector, None)
+       
+        for fila in lector:
+            if fila[0].lower() == id_categoria:
+                return fila[2]
