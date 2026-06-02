@@ -27,6 +27,7 @@ def opcion_registro():
             categorias_lista = sorted(cat_dict.keys())
             if categorias_lista:
                 # si no está registrado, prosigue con el resto de inputs
+                limpiar_pantalla()
                 print("\nCategorías disponibles:")
                 
                 for i, cat in enumerate(categorias_lista, 1):
@@ -48,6 +49,7 @@ def opcion_registro():
                 lista_tipos = ["diario","semanal","mensual","anual"]
                 tipo = input(f"Objetivo ({lista_tipos}): ")
                 if normalizar(tipo) not in lista_tipos:
+                    print_color("Tipo de objetivo no válido.",ROJO)
                     continue
                 break
                     

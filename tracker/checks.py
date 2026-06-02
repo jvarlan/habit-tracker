@@ -72,9 +72,8 @@ def comprobar_horas_temp_24(fecha, id_habito):
     return contador_segundos
 
 def validar_horas(numero):
-
+    
     partes = numero.split(":")
-
     if len(partes) not in (1,2,3):
         return False
     try:
