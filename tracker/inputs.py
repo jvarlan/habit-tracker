@@ -21,7 +21,7 @@ def pedir_nombre_registro(volver):
                 print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item["habito"]}")
         print_color(volver, CIAN)
         print_color("\nSi quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
-        nombre = input("\nNombre a registrar: ")
+        nombre = input("\nIntroduce el nombre del hábito: ")
        # limpiar_pantalla()
 
      # devuelve el número de veces que el nombre está registrado
@@ -538,10 +538,10 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
                 
             
             while True:
-                otro_habito = input("\n¿Quieres añadir un objetivo diferente para este hábito? s/n: ")
+                otro_habito = input(f"\n¿Quieres añadir un objetivo diferente para el hábito {nombre}? s/n: ")
                 resultado = preguntar_seguir(otro_habito)
                 if resultado is None:
-                    print_color("Respuesta no válida.",ROJO)
+                    print_color('Respuesta no válida. Debes introducir "s" o "n".',ROJO)
                     continue
                 
                 if resultado is False:
@@ -549,10 +549,15 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
                 limpiar_pantalla()
                 if resultado is True:
                     print("===============")
-                    print_color("Añadir otro objetivo",CIAN)
+                    print_color(f"Añadir otro objetivo para el hábito {nombre}",CIAN)
                     print("===============")
                     while True:
-                        tipo_ad = normalizar(input(f"Elige uno de estos objetivos: ({', '.join(tipos_restantes)}): "))
+                        if len(tipos_restantes) > 1:
+                            opciones = ", ".join(tipos_restantes[:-1]) + " o " + tipos_restantes[-1]
+                        else:
+                            opciones = tipos_restantes[0]
+
+                        tipo_ad = normalizar(input(f"Elige uno de estos objetivos: {opciones}: "))
                        
                         if tipo_ad not in tipos_restantes:
                             print_color("Tipo de objetivo no válido.",ROJO)
