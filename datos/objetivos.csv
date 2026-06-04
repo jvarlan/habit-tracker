@@ -38,3 +38,10 @@ id,id_habito,tipo,objetivo
 37,16,diario,01:00:00
 38,17,diario,01:00:00
 39,18,diario,01:00:00
+40,16,mensual,30:00:00
+41,16,semanal,10:00:00
+42,14,mensual,20:00:00
+43,14,semanal,100:00:00
+44,15,semanal,10:00:00
+45,15,mensual,30:00:00
+46,15,anual,40:00:00

@@ -502,77 +502,74 @@ def pedir_categoria_modi(lista_todo):
                 
 def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
         
-        while True:
-            
-            lista_objetivos = mostrar_csv_diccionario("objetivos")
+    lista_objetivos = mostrar_csv_diccionario("objetivos")
            
-            tipos_usados = []
+    tipos_usados = []
 
-            for lista_o in lista_objetivos:
-                if int(lista_o['id_habito']) == int(id_habito):
-                    tipo_o = lista_o.get('tipo')
-                    if isinstance(tipo_o, str) and tipo_o.strip():
-                        tipos_usados.append(tipo_o.strip().lower())
-            
-            if isinstance(tipo, list):
-                for elemento in tipo:
-                    if isinstance(elemento, str):
-                        tipos_usados.append(elemento.strip().lower())
+    for lista_o in lista_objetivos:
+        if int(lista_o['id_habito']) == int(id_habito):
+            tipo_o = lista_o.get('tipo')
+            if isinstance(tipo_o, str) and tipo_o.strip():
+                tipos_usados.append(tipo_o.strip().lower())
+    
+    if isinstance(tipo, list):
+        for elemento in tipo:
+            if isinstance(elemento, str):
+                tipos_usados.append(elemento.strip().lower())
+    else:
+        if isinstance(tipo, str):
+            tipos_usados.append(tipo.strip().lower())
+    while True:
+        
+        tipos_restantes = [
+            ltipos for ltipos in lista_tipos
+            if isinstance(ltipos, str)
+            and ltipos.strip().lower() not in tipos_usados
+        ]
+        if not tipos_restantes:
+            input(f"\n{ROJO}No quedan más tipos. Pulsa ENTER para salir: {RESET}")
+            return True
+                
+        otro_habito = input(f"¿Quieres añadir un objetivo diferente para {nombre}? s/n: ")
+        
+        resultado = preguntar_seguir(otro_habito)
+        
+        if resultado is None:
+            print_color('Respuesta no válida. Debes introducir "s" o "n".',ROJO)
+            continue
+        
+        if resultado is False:
+            return
+        
+        limpiar_pantalla()
+               
+        print("===============")
+        print_color(f"Añadir otro objetivo para el hábito {nombre}",CIAN)
+        print("===============")
+        print()
+        
+        while True:
+            if len(tipos_restantes) > 1:
+                opciones = ", ".join(tipos_restantes[:-1]) + " o " + tipos_restantes[-1]
             else:
-                if isinstance(tipo, str):
-                    tipos_usados.append(tipo.strip().lower())
-            
-            tipos_restantes = []
+                opciones = tipos_restantes[0]
 
-            for ltipos in lista_tipos:
-                if isinstance(ltipos, str):
-                    limpio = ltipos.strip().lower()
-                    if limpio and limpio not in tipos_usados:
-                        tipos_restantes.append(ltipos)
-
-            if not tipos_restantes:
-                no_disponible = input(f"\n{ROJO}No quedan más tipos disponibles para este hábito. Pulsa ENTER para continuar: {RESET}")
-                if normalizar(no_disponible) in ("volver","salir",""):
-                    limpiar_pantalla()
-                    return True
-                
+            tipo_ad = normalizar(input(f"Elige uno de estos objetivos: {opciones}: "))
             
-            while True:
-                otro_habito = input(f"\n¿Quieres añadir un objetivo diferente para el hábito {nombre}? s/n: ")
-                resultado = preguntar_seguir(otro_habito)
-                if resultado is None:
-                    print_color('Respuesta no válida. Debes introducir "s" o "n".',ROJO)
-                    continue
-                
-                if resultado is False:
-                    return
+            if tipo_ad not in tipos_restantes:
+                print_color("Tipo de objetivo no válido.",ROJO)
+                continue
+            if normalizar(tipo_ad) in ("volver","salir"):
                 limpiar_pantalla()
-                if resultado is True:
-                    print("===============")
-                    print_color(f"Añadir otro objetivo para el hábito {nombre}",CIAN)
-                    print("===============")
-                    while True:
-                        if len(tipos_restantes) > 1:
-                            opciones = ", ".join(tipos_restantes[:-1]) + " o " + tipos_restantes[-1]
-                        else:
-                            opciones = tipos_restantes[0]
+                return
+            break
 
-                        tipo_ad = normalizar(input(f"Elige uno de estos objetivos: {opciones}: "))
-                       
-                        if tipo_ad not in tipos_restantes:
-                            print_color("Tipo de objetivo no válido.",ROJO)
-                            continue
-                        if normalizar(tipo_ad) in ("volver","salir"):
-                            limpiar_pantalla()
-                            return
-                        break
-
-                while True:
-                    objetivo_ad = input("Otro objetivo (horas): ")
-                    if validar_horas(objetivo_ad):
-                        objetivo_ad = validar_horas(objetivo_ad)
-                        registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
-                        print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.",VERDE)
-                        break
-            
-                
+        while True:
+            objetivo_ad = input("Otro objetivo (horas): ")
+            if validar_horas(objetivo_ad):
+                objetivo_ad = validar_horas(objetivo_ad)
+                registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
+                print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.\n",VERDE)
+                break
+    
+        tipos_usados.append(tipo_ad.lower())        
