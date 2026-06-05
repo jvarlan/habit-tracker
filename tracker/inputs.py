@@ -17,8 +17,8 @@ def pedir_nombre_registro(volver):
         if diccionario:
             print("\nHábitos registrados: \n")
             # recorre el listado, numerandolo con el nombre al lado
-            for item in diccionario:
-                print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item["habito"]}")
+            for i, item in enumerate(sorted(diccionario, key=lambda x: x['habito']), start=1):
+                print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']}")
         print_color(volver, CIAN)
         print_color("\nSi quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
         nombre = input("\nIntroduce el nombre del hábito: ")
