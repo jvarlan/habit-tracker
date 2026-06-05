@@ -67,10 +67,13 @@ def pedir_horas_temp():
     while True:
         registro = input("Pulsa 'M' para registro manual o 'A' para automático: ")
         if normalizar(registro) == "m":
-            horas = input("Duración de la actividad (HH:MM:SS): ")
-            if validar_horas(horas):
-                horas = validar_horas(horas)
-                return horas
+            while True:
+                horas = input("Duración de la actividad (HH:MM:SS): ")
+                if validar_horas(horas):
+                    horas = validar_horas(horas)
+                    return horas
+                else:
+                    continue
 
         elif normalizar(registro) == "a":
             stop_event = threading.Event()
@@ -91,7 +94,12 @@ def pedir_horas_temp():
             horas = resultado[0]
             if validar_horas(horas):
                 return horas
+        else:
+            print_color("Opción no válida. Pulsa 'M' para manual o 'A' para automático.",ROJO)
+            continue
         return False
+        
+
 def pedir_fecha_temp():
     while True:
             fecha = input("Introduce la fecha (AAAA-MM-DD) o déjalo vacío para hoy: ")

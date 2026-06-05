@@ -2,7 +2,7 @@ from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, pregun
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
-from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id
+from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id, dev_emoticono_categoria_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo, pedir_objetivo_modi
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos, calcular_estadisticas_habitos, mostrar_estadisticas_habitos
@@ -84,21 +84,22 @@ def opcion_temporizador():
     lista = mostrar_temporizadores()
     while True: #empieza el bucle para seguir creando temporizadores
   
-            lista = mostrar_registros() # devuelve el listado de habitos registrados
-            lista_minus = [item.lower() for item in lista]
+            lista = mostrar_csv_diccionario("habitos") # devuelve el listado de habitos registrados
+            lista_minus = [item['habito'].lower() for item in lista] #crea una lista con los nombres de los habitos en minusculas para comparar con el input del usuario
             print_color("\nAñadir un nuevo temporizador",INVERSION)
             print("\nHábitos registrados: \n")
-
+           
             # recorre el listado, numerandolo con el nombre al lado
-            for i, item in enumerate(sorted(lista), start=1):
-                print(f"- {item}")
+            for i, item in enumerate(sorted(lista, key=lambda x: x['habito']), start=1):
+                print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']}")
             print_color(volver, CIAN)
             
-            nombre = pedir_nombre_temp(lista_minus,lista)
-            if nombre == None:
+            atributos_habito = pedir_nombre_temp(lista_minus,lista)
+            if atributos_habito == None:
                 return False
             while True:
                 fecha = pedir_fecha_temp()  
+                nombre = atributos_habito["habito"]
                 id_habito = dev_habito_id(nombre)
                 contador_horas_24 = comprobar_horas_temp_24(fecha, id_habito)
                 if contador_horas_24 >= 24*3600:

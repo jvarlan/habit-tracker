@@ -22,12 +22,9 @@ def limpiar_pantalla():
 
 def preguntar_seguir(seguir):
         seguir = seguir.lower().strip()
-        if seguir in ("s", "si"):
-            return True
-        elif seguir in ("n", "no"):
-            return False
-        else:
-            return None
+        while seguir not in ("s", "si", "n", "no"):
+            seguir = input(f"{ROJO}Opción no válida. Escribe s/n: {RESET}").lower().strip()
+        return seguir in ("s", "si")
         
 def id_habito_nombre():
 

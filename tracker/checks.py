@@ -79,7 +79,7 @@ def validar_horas(numero):
     try:
         valores = list(map(int, partes))
     except ValueError:
-            print_color("Introduce un número de horas válido.",ROJO)
+            print_color("Formato de horas no válido. Debe ser HH:MM:SS, HH:MM o HH.",ROJO)
             return False
     #horas
     if len(valores) == 1:
