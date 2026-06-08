@@ -52,11 +52,12 @@ def pedir_tipo_habito():
     return lista_tipos, tipo
 def pedir_nombre_temp(lista_minus,lista):
     while True:
-        nombre = input("Nombre a temporizar: ")
+        nombre = input("Hábito a temporizar: ")
         nombre = normalizar(nombre)
 
         for i, item in enumerate(lista_minus):
-            if item == nombre:
+            print(item, nombre)
+            if normalizar(item) == nombre:
                 return lista[i]
         if normalizar(nombre) in ("volver","salir",""):
             return None

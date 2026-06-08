@@ -92,7 +92,7 @@ def opcion_temporizador():
             # recorre el listado, numerandolo con el nombre al lado
             for i, item in enumerate(sorted(lista, key=lambda x: x['habito']), start=1):
                 print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']}")
-            print_color(volver, CIAN)
+            print_color(f"{volver}\n", CIAN)
             
             atributos_habito = pedir_nombre_temp(lista_minus,lista)
             if atributos_habito == None:

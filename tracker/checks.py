@@ -8,10 +8,10 @@ import unicodedata
 def normalizar(texto):
     if not isinstance(texto, str):
         return ""
-    texto = texto.lower()
+    texto = texto.casefold()
     texto = unicodedata.normalize("NFD",texto)
     texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
-    return texto
+    return texto.strip()
 
 def comprobar_registro(habito):
 
