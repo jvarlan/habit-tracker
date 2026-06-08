@@ -1,7 +1,6 @@
 import csv
 from config import BASE_DIR
 from datetime import datetime
-from .utilidades import horas_a_segundos
 
 def dev_habito_id(habito):
     ruta = BASE_DIR / "datos" / "habitos.csv"

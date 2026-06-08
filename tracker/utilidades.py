@@ -7,6 +7,7 @@ RESET = "\033[0m"
 import os, shutil
 import time
 from .mostrar import mostrar_csv, mostrar_csv_diccionario
+from .devolver import dev_emoticono_categoria_id
 
 from datetime import timedelta, datetime
 
@@ -167,3 +168,11 @@ def numero_string_a_HHMM(numero_str):
     hhmm = f"{horas:02d}:{minutos:02d}:{segundos:02d}"
 
     return hhmm
+
+def muestra_habitos_registrados(lista, volver):
+    print("\nHábitos registrados: \n")
+           
+    # recorre el listado, numerandolo con el nombre al lado
+    for i, item in enumerate(sorted(lista, key=lambda x: x['habito']), start=1):
+        print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']}")
+    print_color(f"{volver}\n", CIAN)

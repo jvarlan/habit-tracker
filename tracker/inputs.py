@@ -8,19 +8,13 @@ from .contar import contar_csv_n, contar_csv_id
 from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_lista_objetivos_cat, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat, dev_emoticono_categoria_id
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria, borrar_objetivos_id_habito
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria, modificar_objetivo
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET,print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla
+from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET,print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados
 
 def pedir_nombre_registro(volver):
     while True:
         diccionario = mostrar_csv_diccionario("habitos")
-        print_color("\nRegistrar un nuevo hábito",INVERSION)
-        if diccionario:
-            print("\nHábitos registrados: \n")
-            # recorre el listado, numerandolo con el nombre al lado
-            for i, item in enumerate(sorted(diccionario, key=lambda x: x['habito']), start=1):
-                print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']}")
-        print_color(volver, CIAN)
-        print_color("\nSi quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
+        muestra_habitos_registrados(diccionario, volver)
+        print_color("Si quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
         nombre = input("\nIntroduce el nombre del hábito: ")
        # limpiar_pantalla()
 

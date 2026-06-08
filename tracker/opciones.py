@@ -1,4 +1,4 @@
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss
+from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss, muestra_habitos_registrados
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
@@ -87,12 +87,8 @@ def opcion_temporizador():
             lista = mostrar_csv_diccionario("habitos") # devuelve el listado de habitos registrados
             lista_minus = [item['habito'].lower() for item in lista] #crea una lista con los nombres de los habitos en minusculas para comparar con el input del usuario
             print_color("\nAñadir un nuevo temporizador",INVERSION)
-            print("\nHábitos registrados: \n")
-           
-            # recorre el listado, numerandolo con el nombre al lado
-            for i, item in enumerate(sorted(lista, key=lambda x: x['habito']), start=1):
-                print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']}")
-            print_color(f"{volver}\n", CIAN)
+            
+            muestra_habitos_registrados(lista, volver)
             
             atributos_habito = pedir_nombre_temp(lista_minus,lista)
             if atributos_habito == None:
@@ -126,19 +122,16 @@ def opcion_temporizador():
 
 def opcion_borrar():
     # muestra previamente todos los registros a eliminar
-    lista = mostrar_registros()
+    lista = mostrar_csv_diccionario("habitos")
     if lista:
         while True:
-            lista = mostrar_registros()
-            print("\nEstos son los hábitos ya registrados: \n")
-            for i, item in enumerate(lista, start=1):
-                print(f"{i} - {item}")
-            print_color(volver, CIAN)
+            lista = mostrar_csv_diccionario("habitos")
+            muestra_habitos_registrados(lista, volver)
             print_color("\nEliminar un hábito\n",INVERSION)
             borrar = pedir_habito_borrar()
             if borrar == None:
                 break
-            lista = mostrar_registros()
+            lista = mostrar_csv_diccionario("habitos")
             if lista:
                 seguir = input("\n¿Quieres eliminar otro hábito? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
