@@ -56,7 +56,6 @@ def pedir_nombre_temp(lista_minus,lista):
         nombre = normalizar(nombre)
 
         for i, item in enumerate(lista_minus):
-            print(item, nombre)
             if normalizar(item) == nombre:
                 return lista[i]
         if normalizar(nombre) in ("volver","salir",""):
