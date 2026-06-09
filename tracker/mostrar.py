@@ -1,5 +1,6 @@
 import csv
 from config import BASE_DIR
+from .devolver import dev_emoticono_categoria_id
 
 def mostrar_registros(temporizador = None):
     
@@ -118,3 +119,5 @@ def mostrar_csv_diccionario(fichero):
             contador +=1
             lista.append(fila)
     return lista
+
+

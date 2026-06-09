@@ -1,7 +1,6 @@
 import csv
 from config import BASE_DIR
-from .checks import normalizar
-from .utilidades import ROJO, VERDE, RESET
+from .utilidades import ROJO, VERDE, RESET, normalizar
 
 def borrar_habito(borrar,id_borrar):
     ruta = BASE_DIR / "datos" / "habitos.csv"
@@ -37,7 +36,7 @@ def borrar_objetivo(borrar,seleccion):
         lector = csv.reader(archivo)
         for fila in lector:
             filas_originales.append(fila)
-            if normalizar(fila[0]) != borrar:
+            if normalizar(fila[0]) != normalizar(borrar):
                 filas_restantes.append(fila)
     with open(ruta, "w", newline="", encoding="utf-8") as archivo:
         escritor = csv.writer(archivo)

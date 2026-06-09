@@ -1,17 +1,11 @@
 import csv
 from config import BASE_DIR
 from datetime import datetime
-from .utilidades import ROJO, print_color, horas_a_segundos
+from .utilidades import ROJO, print_color, horas_a_segundos, normalizar
 from .mostrar import mostrar_temporizadores
-import unicodedata
 
-def normalizar(texto):
-    if not isinstance(texto, str):
-        return ""
-    texto = texto.casefold()
-    texto = unicodedata.normalize("NFD",texto)
-    texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
-    return texto.strip()
+
+
 
 def comprobar_registro(habito):
 

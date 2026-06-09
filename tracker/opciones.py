@@ -1,5 +1,5 @@
 from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss, muestra_habitos_registrados
-from .checks import comprobar_horas_temp,comprobar_horas_temp_24, normalizar, validar_horas
+from .checks import comprobar_horas_temp,comprobar_horas_temp_24, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
 from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id, dev_emoticono_categoria_id
@@ -126,8 +126,9 @@ def opcion_borrar():
     if lista:
         while True:
             lista = mostrar_csv_diccionario("habitos")
+            
+            print_color("Eliminar un hábito",INVERSION)
             muestra_habitos_registrados(lista, volver)
-            print_color("\nEliminar un hábito\n",INVERSION)
             borrar = pedir_habito_borrar()
             if borrar == None:
                 break

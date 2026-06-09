@@ -1,6 +1,6 @@
 import csv
 from config import BASE_DIR
-from .checks import normalizar
+from .utilidades import normalizar
 
 def contar_csv_n(fichero, nombre,numero):
         
@@ -13,7 +13,7 @@ def contar_csv_n(fichero, nombre,numero):
         next(lector, None)
         contador = 0
         for fila in lector:
-            if fila[numero] == nombre:
+            if normalizar(fila[numero]) == normalizar(nombre):
                 contador = contador + 1
     return contador
 

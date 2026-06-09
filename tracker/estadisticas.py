@@ -1,10 +1,9 @@
 import csv
 from config import BASE_DIR
 from .devolver import dev_nombre_habito_id
-from .utilidades import print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM
+from .utilidades import normalizar, print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM
 from .mostrar import mostrar_csv_diccionario
 from datetime import datetime, timedelta, date
-from .checks import normalizar
 
 
 def leer():

@@ -8,6 +8,7 @@ import os, shutil
 import time
 from .mostrar import mostrar_csv, mostrar_csv_diccionario
 from .devolver import dev_emoticono_categoria_id
+import unicodedata
 
 from datetime import timedelta, datetime
 
@@ -176,3 +177,11 @@ def muestra_habitos_registrados(lista, volver):
     for i, item in enumerate(sorted(lista, key=lambda x: x['habito']), start=1):
         print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']}")
     print_color(f"{volver}\n", CIAN)
+
+def normalizar(texto):
+    if not isinstance(texto, str):
+        return ""
+    texto = texto.casefold()
+    texto = unicodedata.normalize("NFD",texto)
+    texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
+    return texto.strip()

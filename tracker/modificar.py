@@ -1,7 +1,6 @@
 import csv
 from config import BASE_DIR
-from .checks import normalizar
-from .utilidades import ROJO, VERDE, RESET
+from .utilidades import ROJO, VERDE, RESET, normalizar
 
 def modificar_habito(modificar,id_modificar,id_categoria):
     

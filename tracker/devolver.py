@@ -3,6 +3,9 @@ from config import BASE_DIR
 from datetime import datetime
 
 def dev_habito_id(habito):
+    
+    from .utilidades import normalizar
+
     ruta = BASE_DIR / "datos" / "habitos.csv"
     if not ruta.exists():
         return 0
@@ -12,10 +15,12 @@ def dev_habito_id(habito):
         next(lector, None)
        
         for fila in lector:
-            if fila[1].lower() == habito.lower():
+            if normalizar(fila[1]) == normalizar(habito):
                 return fila[0]
             
 def dev_habito_datos(habito):
+    from .utilidades import normalizar
+
     ruta = BASE_DIR / "datos" / "habitos.csv"
     if not ruta.exists():
         return 0
@@ -24,10 +29,11 @@ def dev_habito_datos(habito):
         lector = csv.DictReader(archivo)
        
         for fila in lector:
-            if fila['habito'].lower() == habito.lower():
+            if normalizar(fila['habito']) == normalizar(habito):
                 return fila
             
 def dev_tipo_objetivo(id_habito):
+    from .utilidades import normalizar
 
     ruta = BASE_DIR / "datos" / "objetivos.csv"
     if not ruta.exists():
@@ -38,12 +44,13 @@ def dev_tipo_objetivo(id_habito):
         next(lector, None)
         lista = []
         for fila in lector:
-            if fila[1].lower() == id_habito:
+            if normalizar(fila[1]) == normalizar(id_habito):
                 lista.append(fila[2])
         return lista
 
 
 def dev_nombre_habito_id(id_habito):
+    from .utilidades import normalizar
 
     ruta = BASE_DIR / "datos" / "habitos.csv"
     if not ruta.exists():
@@ -54,10 +61,12 @@ def dev_nombre_habito_id(id_habito):
         next(lector, None)
        
         for fila in lector:
-            if fila[0].lower() == id_habito:
+            if normalizar(fila[0]) == normalizar(id_habito):
                 return fila[1]
                      
 def dev_temporizador_id(temporizador):
+    from .utilidades import normalizar
+
     ruta = BASE_DIR / "datos" / "temporizadores.csv"
 
     if not ruta.exists():
@@ -68,9 +77,10 @@ def dev_temporizador_id(temporizador):
         next(lector, None)
        
         for fila in lector:
-            if fila[2] == temporizador:
+            if normalizar(fila[2]) == normalizar(temporizador):
                 return fila[0]
 def dev_idhabito_temporizador(id_temporizador):
+    from .utilidades import normalizar
 
     ruta = BASE_DIR / "datos" / "temporizadores.csv"
     if not ruta.exists():
@@ -81,10 +91,12 @@ def dev_idhabito_temporizador(id_temporizador):
         next(lector, None)
        
         for fila in lector:
-            if fila[0].lower() == id_temporizador:
+            if normalizar(fila[0]) == normalizar(id_temporizador):
                 return fila[1]
                         
 def dev_lista_habitos_cat(id_categoria):
+    from .utilidades import normalizar
+    
     ruta = BASE_DIR / "datos" / "habitos.csv"
 
     if not ruta.exists():
@@ -95,14 +107,16 @@ def dev_lista_habitos_cat(id_categoria):
         next(lector, None)
         lista = []
         for fila in lector:
-            if fila[2] == id_categoria:
+            if normalizar(fila[2]) == normalizar(id_categoria):
                 lista.append(fila) 
         return lista  
     
 def dev_lista_temporizadores_cat(lista_habitos):
+    from .utilidades import normalizar
+
     ruta = BASE_DIR / "datos" / "temporizadores.csv"
     
-    lista_habitos_id = [habito[0] for habito in lista_habitos]
+    lista_habitos_id = [normalizar(habito[0]) for habito in lista_habitos]
 
     if not ruta.exists():
         return 0
@@ -112,14 +126,16 @@ def dev_lista_temporizadores_cat(lista_habitos):
         next(lector, None)
         lista = []
         for fila in lector:
-            if fila[1] in lista_habitos_id:
+            if normalizar(fila[1]) in lista_habitos_id:
                 lista.append(fila) 
         return lista  
             
 def dev_lista_objetivos_cat(lista_habitos):
+    from .utilidades import normalizar
+    
     ruta = BASE_DIR / "datos" / "objetivos.csv"
     
-    lista_habitos_id = [habito[0] for habito in lista_habitos]
+    lista_habitos_id = [normalizar(habito[0]) for habito in lista_habitos]
 
     if not ruta.exists():
         return 0
@@ -129,12 +145,14 @@ def dev_lista_objetivos_cat(lista_habitos):
         next(lector, None)
         lista = []
         for fila in lector:
-            if fila[1] in lista_habitos_id:
+            if normalizar(fila[1]) in lista_habitos_id:
                 lista.append(fila) 
         return lista  
 
 
 def dev_categoria_id(categoria):
+    from .utilidades import normalizar
+
     ruta = BASE_DIR / "datos" / "categorias.csv"
 
     if not ruta.exists():
@@ -145,10 +163,12 @@ def dev_categoria_id(categoria):
         next(lector, None)
        
         for fila in lector:
-            if fila[1].lower() == categoria.lower():
+            if normalizar(fila[1]) == normalizar(categoria):
                 return fila[0]
 
 def dev_nombre_categoria_id(id_categoria):
+    
+    from .utilidades import normalizar
 
     ruta = BASE_DIR / "datos" / "categorias.csv"
     if not ruta.exists():
@@ -159,11 +179,12 @@ def dev_nombre_categoria_id(id_categoria):
         next(lector, None)
        
         for fila in lector:
-            if fila[0].lower() == id_categoria:
+            if normalizar(fila[0]) == normalizar(id_categoria):
                 return fila[1]
 
 
 def dev_emoticono_categoria_id(id_categoria):
+    from .utilidades import normalizar
 
     ruta = BASE_DIR / "datos" / "categorias.csv"
     if not ruta.exists():
@@ -174,5 +195,5 @@ def dev_emoticono_categoria_id(id_categoria):
         next(lector, None)
        
         for fila in lector:
-            if fila[0].lower() == id_categoria:
+            if normalizar(fila[0]) == normalizar(id_categoria):
                 return fila[2]
