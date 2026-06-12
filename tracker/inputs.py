@@ -118,6 +118,7 @@ def pedir_habito_borrar():
         lista = mostrar_registros()
         if lista:
             borrar = input("Introduce el nombre del elemento a borrar: ")
+            limpiar_pantalla()
             if normalizar(borrar) in ("volver","salir",""):
                 return None
             
@@ -130,18 +131,24 @@ def pedir_habito_borrar():
                 print_color("Este hábito no existe.",ROJO)
                 continue
             else:
-                seguro = input(f"\n{ROJO}El hábito {borrar} tiene {objetivos} objetivos y {temporizadores} registros de horas asociados. Esta acción borrará los DATOS de forma PERMANENTE. ¿Quieres continuar? s/n: {RESET}")
-                seguro = seguro.lower()
+                print_color(f"\nEl hábito {borrar} tiene {objetivos} objetivos y {temporizadores} registros de horas asociados.",CIAN)
+                print_color(f"\nEsta acción borrará los DATOS de forma PERMANENTE.",ROJO)
+                while True:
+                    seguro = input(f"{ROJO}\n¿Quieres continuar? s/n: {RESET}")
+                    seguro = seguro.lower()
                 
-                if seguro == "s" or seguro == "si":
-                    registros = borrar_temporizadores(borrar_id,temporizadores)
-                    habito = borrar_habito(borrar,borrar_id)
-                    borrar_objetivos_id_habito(borrar_id)
-                    print_color(f"\nEl hábito {borrar} se ha eliminado con éxito.",VERDE)
-                    return True
-                elif seguro == "n" or seguro == "no":
-                    return
-        else:
+                    if seguro == "s" or seguro == "si":
+                        registros = borrar_temporizadores(borrar_id,temporizadores)
+                        habito = borrar_habito(borrar,borrar_id)
+                        borrar_objetivos_id_habito(borrar_id)
+                        print_color(f"\nEl hábito {borrar} se ha eliminado con éxito.",VERDE)
+                        return True
+                    elif seguro == "n" or seguro == "no": 
+                        return True
+                    else:
+                        print_color(f"\nDebes introducir 'si' o 'no' para continuar.",CIAN)
+                        continue
+        else:  
             return None
 def pedir_categoria_borrar():
     while True:

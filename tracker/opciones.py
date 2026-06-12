@@ -1,4 +1,4 @@
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss, muestra_habitos_registrados
+from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss, muestra_habitos_registrados, normalizar
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
@@ -136,7 +136,9 @@ def opcion_borrar():
             if lista:
                 seguir = input("\n¿Quieres eliminar otro hábito? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
+                    limpiar_pantalla()
                     continue
+                    
                 else:
                     break    
             else:
