@@ -221,12 +221,31 @@ def opcion_borrar_tempo():
 
     if lista:
         while True:
-            #dev_habito_id
-            #obtener_nombre_idhabito = id_habito_nombre()
-            print("\nEstos son los temporizadores ya registrados: \n")
+            habitos = {}
             for i, item in enumerate(lista, start=1):
-                    nombre = dev_nombre_habito_id(item["id_habito"])
-                    print(f"{i} - {item["fecha"]}, {item["horas"]} horas ({nombre}) ")
+                id_habito = item['id_habito']
+                id_categoria = dev_id_categoria_habito_id(id_habito)
+                emoticono = dev_emoticono_categoria_id(id_categoria)
+
+                nombre = dev_nombre_habito_id(id_habito)
+                
+                if nombre not in habitos:
+                    habitos[nombre] = {
+                        "emoticono": emoticono,
+                        "temporizadores": []
+                    }
+                habitos[nombre]["temporizadores"].append(
+                    f"{i} - Fecha: {item["fecha"]} - {item["horas"]} horas"
+                )
+            print("\nEstos son los temporizadores de cada hábito: \n")
+            
+            for nombre, info in sorted(habitos.items()):
+                print(f"{nombre} {info['emoticono']}")
+                print("===========================")
+                for temporizador in info['temporizadores']:
+                    print(temporizador)
+                print()
+            
             print_color(volver,CIAN)
             print_color("\nEliminar un temporizador\n",INVERSION)
             borrar = pedir_temporizador_borrar()
