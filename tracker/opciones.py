@@ -2,7 +2,7 @@ from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, pregun
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
-from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id, dev_emoticono_categoria_id
+from .devolver import dev_categoria_id, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id, dev_id_categoria_habito_id, dev_emoticono_categoria_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo, pedir_objetivo_modi
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos, calcular_estadisticas_habitos, mostrar_estadisticas_habitos
@@ -156,13 +156,36 @@ def opcion_borrar_obj():
             lista = mostrar_objetivos()
             #dev_habito_id
             #obtener_nombre_idhabito = id_habito_nombre()
-            print("\nEstos son los objetivos ya registrados: \n")
+            habitos = {}
+
             for i, item in enumerate(lista, start=1):
-                   
-                    nombre = dev_nombre_habito_id(item["id_habito"])
-                    print(f"{i} - Objetivo {item["tipo"]} de {item["objetivo"]} horas ({nombre}) ")
+                
+                id_habito = item["id_habito"]
+                id_categoria = dev_id_categoria_habito_id(id_habito)
+                emoticono = dev_emoticono_categoria_id(id_categoria)
+
+                nombre = dev_nombre_habito_id(id_habito)
+
+                if nombre not in habitos:
+                    habitos[nombre] = {
+                        "emoticono": emoticono,
+                        "objetivos": []
+                    }
+                habitos[nombre]["objetivos"].append(
+                    f"{i} - {item["tipo"]} - {item["objetivo"]} horas"
+                    )
+            print("\nEstos son los objetivos de cada hábito: \n")
+            for nombre, info in sorted(habitos.items()):
+                print(f"{nombre} {info['emoticono']}")
+                print("=================================")
+                for objetivo in info['objetivos']:
+                    print(objetivo)
+                print()
+            
             print_color(volver,CIAN)
+
             print_color("\nEliminar un objetivo\n",INVERSION)
+
             borrar = pedir_objetivo_borrar()
             
             if borrar == None:

@@ -1,6 +1,4 @@
 id,id_habito,tipo,objetivo
-0,0,diario,01:00:00
-1,0,semanal,02:00:00
 2,0,mensual,03:00:00
 3,0,anual,04:00:00
 4,1,diario,01:00:00
@@ -20,7 +18,6 @@ id,id_habito,tipo,objetivo
 23,8,mensual,30:00:00
 24,8,anual,100:00:00
 25,9,diario,00:30:00
-28,12,diario,01:00:00
 29,12,semanal,01:00:00
 31,12,mensual,40:00:00
 32,5,diario,01:00:00

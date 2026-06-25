@@ -197,3 +197,19 @@ def dev_emoticono_categoria_id(id_categoria):
         for fila in lector:
             if normalizar(fila[0]) == normalizar(id_categoria):
                 return fila[2]
+            
+def dev_id_categoria_habito_id(id_habito):
+
+    from .utilidades import normalizar
+
+    ruta = BASE_DIR / "datos" / "habitos.csv"
+    if not ruta.exists():
+        return 0
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        next(lector, None)
+       
+        for fila in lector:
+            if normalizar(fila[0]) == normalizar(id_habito):
+                return fila[2]
