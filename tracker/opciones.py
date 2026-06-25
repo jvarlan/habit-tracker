@@ -203,8 +203,10 @@ def opcion_borrar_obj():
             if lista:
                 seguir = input("\n¿Quieres eliminar otro objetivo? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
+                    limpiar_pantalla()
                     continue
                 else:
+                    limpiar_pantalla()
                     break    
             else:
                 break
