@@ -163,16 +163,19 @@ def pedir_categoria_borrar():
                 lista_habitos = dev_lista_habitos_cat(id_categoria)
                 lista_objetivos_categoria = dev_lista_objetivos_cat(lista_habitos)
                 lista_temporizadores = dev_lista_temporizadores_cat(lista_habitos)
-
-                seguro = input(f"{ROJO}\nLa categoria {borrar} tiene {len(lista_objetivos_categoria)} objetivos, {len(lista_habitos)} hábitos, y {len(lista_temporizadores)} registros de tiempo asociados. Esta acción eliminará los DATOS de forma PERMANENTE.\n¿Quieres continuar? s/n: {RESET}")
-                seguro = seguro.lower()
-                
-                if seguro == "s" or seguro == "si":
-                    habito = borrar_categoria(borrar,id_categoria,lista_habitos,lista_temporizadores, lista_objetivos_categoria)
-                    print_color(f"\nLa categoria {borrar} y todos sus elementos relacionados han sido borrados con éxito.",VERDE)
-                    return False
-                elif seguro == "n" or seguro == "no":
-                    return
+                while True:
+                    seguro = input(f"{ROJO}\nLa categoria {borrar} tiene {len(lista_objetivos_categoria)} objetivos, {len(lista_habitos)} hábitos, y {len(lista_temporizadores)} registros de tiempo asociados. Esta acción eliminará los DATOS de forma PERMANENTE.\n¿Quieres continuar? s/n: {RESET}")
+                    seguro = seguro.lower()
+                    
+                    if seguro == "s" or seguro == "si":
+                        habito = borrar_categoria(borrar,id_categoria,lista_habitos,lista_temporizadores, lista_objetivos_categoria)
+                        print_color(f"\nLa categoria {borrar} y todos sus elementos relacionados han sido borrados con éxito.",VERDE)
+                        return False
+                    elif seguro == "n" or seguro == "no":
+                        return
+                    else:
+                        print_color(f"\nDebes introducir 'si' o 'no' para continuar.",CIAN)
+                        continue
             else:
                 print_color("Opción no válida.",ROJO)
                 continue
