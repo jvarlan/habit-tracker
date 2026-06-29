@@ -17,8 +17,6 @@ id,id_habito,tipo,objetivo
 22,8,semanal,10:00:00
 23,8,mensual,30:00:00
 24,8,anual,100:00:00
-29,12,semanal,01:00:00
-31,12,mensual,40:00:00
 32,5,diario,01:00:00
 35,14,diario,01:00:00
 36,15,diario,01:00:00

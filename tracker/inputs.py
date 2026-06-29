@@ -5,10 +5,10 @@ from .checks import normalizar, validar_horas, comprobar_horas_temp_24, comproba
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
 from .guardar import registrar_objetivo, registrar_categoria
 from .contar import contar_csv_n, contar_csv_id
-from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_lista_objetivos_cat, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat, dev_emoticono_categoria_id
+from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_lista_objetivos_cat, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat, dev_emoticono_categoria_id, dev_habito_correcto, dev_categoria_correcta
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria, borrar_objetivos_id_habito
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria, modificar_objetivo
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, normalizar, print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados
+from .utilidades import ROJO, VERDE, CIAN, AMARILLO, INVERSION, ROJO_CRITICO, RESET, normalizar, print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados
 
 def pedir_nombre_registro(volver):
     while True:
@@ -118,7 +118,6 @@ def pedir_habito_borrar():
         lista = mostrar_registros()
         if lista:
             borrar = input("Introduce el nombre del elemento a borrar: ")
-            limpiar_pantalla()
             if normalizar(borrar) in ("volver","salir",""):
                 return None
             
@@ -131,10 +130,11 @@ def pedir_habito_borrar():
                 print_color("Este hábito no existe.",ROJO)
                 continue
             else:
-                print_color(f"\nEl hábito {borrar} tiene {objetivos} objetivos y {temporizadores} registros de horas asociados.",CIAN)
-                print_color(f"\nEsta acción borrará los DATOS de forma PERMANENTE.",ROJO)
+                borrar = dev_habito_correcto(borrar)
+                print(f"\nEl hábito {borrar} tiene {objetivos} objetivos y {temporizadores} registros de horas asociados.")
+                print_color(f"\nEsta acción borrará los DATOS de forma PERMANENTE.",ROJO_CRITICO)
                 while True:
-                    seguro = input(f"{ROJO}\n¿Quieres continuar? s/n: {RESET}")
+                    seguro = input(f"{AMARILLO}\n¿Quieres continuar? s/n: {RESET}")
                     seguro = seguro.lower()
                 
                     if seguro == "s" or seguro == "si":
@@ -146,7 +146,7 @@ def pedir_habito_borrar():
                     elif seguro == "n" or seguro == "no": 
                         return True
                     else:
-                        print_color(f"\nDebes introducir 'si' o 'no' para continuar.",CIAN)
+                        print_color(f"\nDebes introducir 'si' o 'no' para continuar.",ROJO)
                         continue
         else:  
             return None
@@ -164,7 +164,8 @@ def pedir_categoria_borrar():
                 lista_objetivos_categoria = dev_lista_objetivos_cat(lista_habitos)
                 lista_temporizadores = dev_lista_temporizadores_cat(lista_habitos)
                 while True:
-                    seguro = input(f"{ROJO}\nLa categoria {borrar} tiene {len(lista_objetivos_categoria)} objetivos, {len(lista_habitos)} hábitos, y {len(lista_temporizadores)} registros de tiempo asociados. Esta acción eliminará los DATOS de forma PERMANENTE.\n¿Quieres continuar? s/n: {RESET}")
+                    borrar = dev_categoria_correcta(borrar)
+                    seguro = input(f"{ROJO}\nLa categoría {borrar} tiene {len(lista_objetivos_categoria)} objetivos, {len(lista_habitos)} hábitos, y {len(lista_temporizadores)} registros de tiempo asociados. Esta acción eliminará los DATOS de forma PERMANENTE.\n¿Quieres continuar? s/n: {RESET}")
                     seguro = seguro.lower()
                     
                     if seguro == "s" or seguro == "si":
@@ -174,7 +175,7 @@ def pedir_categoria_borrar():
                     elif seguro == "n" or seguro == "no":
                         return
                     else:
-                        print_color(f"\nDebes introducir 'si' o 'no' para continuar.",CIAN)
+                        print_color(f"\nDebes introducir 'si' o 'no' para continuar.",ROJO)
                         continue
             else:
                 print_color("Opción no válida.",ROJO)

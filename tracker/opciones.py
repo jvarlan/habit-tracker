@@ -191,13 +191,17 @@ def opcion_borrar_obj():
             if borrar == None:
                 return False
             else:
+                
                 seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el objetivo {borrar["tipo"]} con {borrar["objetivo"]} horas registradas ({dev_nombre_habito_id(borrar["id_habito"])})?\nEsta acción ELIMINARÁ el objetivo de forma PERMANENTE. s/n: {RESET}")
                 seguro = seguro.lower()
-
+    
                 if seguro == "s" or seguro == "si":
                     borrar_objetivo(borrar["id"],borrar)
                     print_color(f"\nObjetivo eliminado con éxito.",VERDE)
                 elif seguro == "n" or seguro == "no":
+                    continue
+                else:
+                    print_color(f"\nOpción no válida. Por favor, introduce 's' o 'n'.",ROJO)
                     continue
             lista = mostrar_temporizadores()
             if lista:

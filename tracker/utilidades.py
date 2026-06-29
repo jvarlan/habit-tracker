@@ -1,6 +1,8 @@
 ROJO = "\033[31m"
 VERDE = "\033[32m"
 CIAN = "\033[36m"
+ROJO_CRITICO = "\033[38;2;139;0;0m"
+AMARILLO = "\033[93m"
 INVERSION = "\033[7m"
 RESET = "\033[0m"
 
@@ -25,7 +27,7 @@ def limpiar_pantalla():
 def preguntar_seguir(seguir):
         seguir = seguir.lower().strip()
         while seguir not in ("s", "si", "n", "no"):
-            seguir = input(f"{CIAN}\nOpción no válida. Escribe s/n: {RESET}").lower().strip()
+            seguir = input(f"{ROJO}\nOpción no válida. Escribe s/n: {RESET}").lower().strip()
         return seguir in ("s", "si")
         
 def id_habito_nombre():

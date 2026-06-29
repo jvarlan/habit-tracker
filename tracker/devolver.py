@@ -213,3 +213,35 @@ def dev_id_categoria_habito_id(id_habito):
         for fila in lector:
             if normalizar(fila[0]) == normalizar(id_habito):
                 return fila[2]
+
+def dev_habito_correcto(habito):
+    
+    from .utilidades import normalizar
+
+    ruta = BASE_DIR / "datos" / "habitos.csv"
+    if not ruta.exists():
+        return 0
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        next(lector, None)
+       
+        for fila in lector:
+            if normalizar(fila[1]) == normalizar(habito):
+                return fila[1]
+
+def dev_categoria_correcta(categoria):
+    
+    from .utilidades import normalizar
+
+    ruta = BASE_DIR / "datos" / "categorias.csv"
+    if not ruta.exists():
+        return 0
+
+    with open(ruta, newline="", encoding="utf-8") as archivo:
+        lector = csv.reader(archivo)
+        next(lector, None)
+       
+        for fila in lector:
+            if normalizar(fila[1]) == normalizar(categoria):
+                return fila[1]
