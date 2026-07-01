@@ -8,8 +8,8 @@ from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos, calcular_estadisticas_habitos, mostrar_estadisticas_habitos
 from datetime import datetime, date, timedelta
 
-volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
-volver2 = f"\n............................................................................"
+volver = f"Pulsa 'ENTER' si quieres salir al menú de opciones."
+volver2 = f"............................................................................"
 
 def opcion_registro():
 
@@ -64,7 +64,7 @@ def opcion_registro():
                     id_categoria = dev_categoria_id(categoria)
                     id_habito = registrar(nombre, id_categoria)
                     registrar_objetivo(id_habito, tipo, objetivo)
-                    print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo+" de "+objetivo+" horas.",VERDE)
+                    print_color("Se ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo+" de "+objetivo+" horas.",VERDE)
 
                     otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria)
                 else:
@@ -86,7 +86,7 @@ def opcion_temporizador():
   
             lista = mostrar_csv_diccionario("habitos") # devuelve el listado de habitos registrados
             lista_minus = [item['habito'].lower() for item in lista] #crea una lista con los nombres de los habitos en minusculas para comparar con el input del usuario
-            print_color("\nAñadir un nuevo temporizador",INVERSION)
+            print_color("Añadir un nuevo temporizador",INVERSION)
             
             muestra_habitos_registrados(lista, volver)
             
@@ -111,7 +111,7 @@ def opcion_temporizador():
                         continue #si la actividad supera las 24 horas el mismo día, vuelve a pedir las horas
                     else:     
                         habito(id_habito,horas,fecha)
-                        print_color(f"\nSe ha registrado {horas} en el temporizador {nombre} con fecha {fecha}",VERDE)
+                        print_color(f"Se ha registrado {horas} en el temporizador {nombre} con fecha {fecha}",VERDE)
                         break # una vez es correcto, sale del bucle de horas y dias y vuelve al bucle original
                 break
             seguir = input("\n¿Quieres introducir un nuevo temporizador? s/n: ")
@@ -145,7 +145,7 @@ def opcion_borrar():
                 break
 
     else:
-        print_color("\nNo existe ningún hábito a eliminar.",CIAN)
+        print_color("No existe ningún hábito a eliminar.",CIAN)
 
 def opcion_borrar_obj():
     # muestra previamente todos los registros a eliminar
@@ -184,7 +184,7 @@ def opcion_borrar_obj():
             
             print_color(volver,CIAN)
 
-            print_color("\nEliminar un objetivo\n",INVERSION)
+            print_color("Eliminar un objetivo",INVERSION)
 
             borrar = pedir_objetivo_borrar()
             
@@ -201,7 +201,7 @@ def opcion_borrar_obj():
                 elif seguro == "n" or seguro == "no":
                     continue
                 else:
-                    print_color(f"\nOpción no válida. Por favor, introduce 's' o 'n'.",ROJO)
+                    print_color(f"\n❌ Valor inválido. Introduce solo 's' o 'n'",ROJO)
                     continue
             lista = mostrar_temporizadores()
             if lista:
@@ -216,7 +216,7 @@ def opcion_borrar_obj():
                 break
 
     else:
-        print_color("\nNo existe ningún objetivo a eliminar.",CIAN)
+        print_color("No existe ningún objetivo a eliminar.",CIAN)
 
 
 def opcion_borrar_tempo():
@@ -251,7 +251,7 @@ def opcion_borrar_tempo():
                 print()
             
             print_color(volver,CIAN)
-            print_color("\nEliminar un temporizador\n",INVERSION)
+            print_color("Eliminar un temporizador",INVERSION)
             borrar = pedir_temporizador_borrar()
             
             if borrar == None:
@@ -276,7 +276,7 @@ def opcion_borrar_tempo():
                 break
 
     else:
-        print_color("\nNo existe ningún temporizador a eliminar.",CIAN)
+        print_color("No existe ningún temporizador a eliminar.",CIAN)
 
 def opcion_borrar_categoria():
     # muestra previamente todos los registros a eliminar
@@ -285,13 +285,13 @@ def opcion_borrar_categoria():
     if lista:
         while True:
             
-            print("\nEstos son las categorias ya registradas: \n")
+            print("Estos son las categorias ya registradas: ")
             lista = sorted(lista, key=lambda x: x["categoria"])
 
             for i, item in enumerate(lista,start=1):
                 print(f"{i} - {item['categoria']} {item['emoticono']}")
             print_color(volver,CIAN)
-            print_color("\nEliminar una categoría\n",INVERSION)
+            print_color("Eliminar una categoría",INVERSION)
             borrar = pedir_categoria_borrar()
             if borrar == None:
                 return False
@@ -305,7 +305,7 @@ def opcion_borrar_categoria():
             else:
                 break
     else:
-        print_color("\nNo existe ninguna categoria a eliminar.",CIAN)
+        print_color("No existe ninguna categoria a eliminar.",CIAN)
 
 def opcion_borrar_todo():
     lista1 = mostrar_temporizadores()
@@ -360,7 +360,7 @@ def opcion_modi_habito():
                 print(f"Número objetivos: {len(lista_tipos)}")
                 print("=================================")
             print_color(volver, CIAN)
-            print_color("\nModificar un hábito\n",INVERSION)
+            print_color("Modificar un hábito",INVERSION)
             modificar = pedir_habito_modi()
            
             if modificar == "":
@@ -375,7 +375,7 @@ def opcion_modi_habito():
             else:
                 break
     else:
-        print_color("\nNo existe ningún hábito a modificar.",CIAN)
+        print_color("No existe ningún hábito a modificar.",CIAN)
 
 def opcion_modi_tempo():
    
@@ -396,7 +396,7 @@ def opcion_modi_tempo():
                 print(f"{i} - {fecha} - {tiempo} horas ({temporizador})")
 
             print_color(volver, CIAN)
-            print_color("\nModificar un temporizador\n",INVERSION)
+            print_color("Modificar un temporizador",INVERSION)
             modificar = pedir_tempo_modi(lista_todo)
            
             if modificar == "":
@@ -411,7 +411,7 @@ def opcion_modi_tempo():
             else:
                 break
     else:
-        print_color("\nNo existe ningún hábito a modificar.",CIAN)
+        print_color("No existe ningún hábito a modificar.",CIAN)
 
 def opcion_modi_objetivo():
     
@@ -431,7 +431,7 @@ def opcion_modi_objetivo():
                 print(f"{i} - Objetivo {tipo} de {objetivo} horas ({habito})")
 
             print_color(volver, CIAN)
-            print_color("\nModificar un objetivo\n",INVERSION)
+            print_color("Modificar un objetivo",INVERSION)
             modificar = pedir_objetivo_modi(lista_todo)
            
             if modificar == "":
@@ -446,7 +446,7 @@ def opcion_modi_objetivo():
             else:
                 break
     else:
-        print_color("\nNo existe ningún objetivo a modificar.",CIAN)
+        print_color("No existe ningún objetivo a modificar.",CIAN)
 
 
 def opcion_modi_categoria():
@@ -468,7 +468,7 @@ def opcion_modi_categoria():
                 print(f"{i} - {categoria} {emoticono}")
 
             print_color(volver, CIAN)
-            print_color("\n Modificar una categoria\n",INVERSION)
+            print_color("Modificar una categoria",INVERSION)
 
             modificar = pedir_categoria_modi(lista_todo)
 
@@ -477,7 +477,7 @@ def opcion_modi_categoria():
             lista = mostrar_registros()
             
             if lista:
-                seguir = input("\n¿Quieres modificar otro hábito? s/n: ")
+                seguir = input("¿Quieres modificar otro hábito? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
                     continue
                 else:

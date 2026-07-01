@@ -8,7 +8,7 @@ from .contar import contar_csv_n, contar_csv_id
 from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_lista_objetivos_cat, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat, dev_emoticono_categoria_id, dev_habito_correcto, dev_categoria_correcta
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria, borrar_objetivos_id_habito
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria, modificar_objetivo
-from .utilidades import ROJO, VERDE, CIAN, AMARILLO, INVERSION, ROJO_CRITICO, RESET, normalizar, print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados
+from .utilidades import ROJO, VERDE, CIAN, AMARILLO, NARANJA, RESET, normalizar, print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados
 
 def pedir_nombre_registro(volver):
     while True:
@@ -90,7 +90,7 @@ def pedir_horas_temp():
             if validar_horas(horas):
                 return horas
         else:
-            print_color("Opción no válida. Pulsa 'M' para manual o 'A' para automático.",ROJO)
+            print_color("❌ Opción no válida. Pulsa 'M' para manual o 'A' para automático.",ROJO)
             continue
         return False
         
@@ -127,26 +127,26 @@ def pedir_habito_borrar():
             habitos = contar_csv_n("habitos",borrar_id,0)
 
             if habitos == False:
-                print_color("Este hábito no existe.",ROJO)
+                print_color("Este hábito no existe",NARANJA)
                 continue
             else:
                 borrar = dev_habito_correcto(borrar)
                 print(f"\nEl hábito {borrar} tiene {objetivos} objetivos y {temporizadores} registros de horas asociados.")
-                print_color(f"\nEsta acción borrará los DATOS de forma PERMANENTE.",ROJO_CRITICO)
+                print_color(f"⚠️  Esta acción borrará los DATOS de forma PERMANENTE.",ROJO)
                 while True:
-                    seguro = input(f"{AMARILLO}\n¿Quieres continuar? s/n: {RESET}")
+                    seguro = input(f"{AMARILLO}¿Quieres continuar? s/n: {RESET}")
                     seguro = seguro.lower()
                 
                     if seguro == "s" or seguro == "si":
                         registros = borrar_temporizadores(borrar_id,temporizadores)
                         habito = borrar_habito(borrar,borrar_id)
                         borrar_objetivos_id_habito(borrar_id)
-                        print_color(f"\nEl hábito {borrar} se ha eliminado con éxito.",VERDE)
+                        print_color(f"El hábito {borrar} se ha eliminado con éxito.",VERDE)
                         return True
                     elif seguro == "n" or seguro == "no": 
                         return True
                     else:
-                        print_color(f"\nDebes introducir 'si' o 'no' para continuar.",ROJO)
+                        print_color(f"\n❌ Valor inválido. Introduce 's' o 'n'",CIAN)
                         continue
         else:  
             return None
@@ -165,17 +165,17 @@ def pedir_categoria_borrar():
                 lista_temporizadores = dev_lista_temporizadores_cat(lista_habitos)
                 while True:
                     borrar = dev_categoria_correcta(borrar)
-                    seguro = input(f"{ROJO}\nLa categoría {borrar} tiene {len(lista_objetivos_categoria)} objetivos, {len(lista_habitos)} hábitos, y {len(lista_temporizadores)} registros de tiempo asociados. Esta acción eliminará los DATOS de forma PERMANENTE.\n¿Quieres continuar? s/n: {RESET}")
+                    seguro = input(f"{ROJO}\nLa categoría {borrar} tiene {len(lista_objetivos_categoria)} objetivos, {len(lista_habitos)} hábitos, y {len(lista_temporizadores)} registros de tiempo asociados. ⚠️ Esta acción eliminará los DATOS de forma PERMANENTE.\n¿Quieres continuar? s/n: {RESET}")
                     seguro = seguro.lower()
                     
                     if seguro == "s" or seguro == "si":
                         habito = borrar_categoria(borrar,id_categoria,lista_habitos,lista_temporizadores, lista_objetivos_categoria)
-                        print_color(f"\nLa categoria {borrar} y todos sus elementos relacionados han sido borrados con éxito.",VERDE)
+                        print_color(f"La categoria {borrar} y todos sus elementos relacionados han sido borrados con éxito.",VERDE)
                         return False
                     elif seguro == "n" or seguro == "no":
                         return
                     else:
-                        print_color(f"\nDebes introducir 'si' o 'no' para continuar.",ROJO)
+                        print_color(f"❌ Valor inválido. Introduce 's' o 'n'",ROJO)
                         continue
             else:
                 print_color("Opción no válida.",ROJO)
@@ -279,7 +279,7 @@ def pedir_habito_modi():
                    
             if contador > 0:
                 modificar_habito(habito,dev_habito_id(habito_modificar),id_categoria)
-                print_color(f"\nEl hábito {habito} ha sido cambiado con éxito por {habito_modificar}. La categoría {categoria} ha sido cambiada por {modificar_categoria}",VERDE)
+                print_color(f"El hábito {habito} ha sido cambiado con éxito por {habito_modificar}. La categoría {categoria} ha sido cambiada por {modificar_categoria}",VERDE)
                 return
             else:
                 print_color("No se ha modificado nada.",CIAN)
@@ -300,7 +300,7 @@ def pedir_tempo_modi(lista_todo):
                 
                 temporizadores = contar_csv_id("temporizadores",id_temporizador,0)           
             except ValueError:
-                print_color(f"Formato incorrecto. Debes introducir un número de la lista.",ROJO)
+                print_color(f"Formato incorrecto. Debes introducir un número de la lista.",NARANJA)
                 continue
             except IndexError:
                 print_color("Este temporizador no existe.",ROJO)
@@ -354,7 +354,7 @@ def pedir_tempo_modi(lista_todo):
                 
                 modificar_temporizador(id_temporizador,nueva_hora,nueva_fecha)
                 id_habito = dev_idhabito_temporizador(id_temporizador)
-                print_color(f"\nEl temporizador {dev_nombre_habito_id(id_habito)} con {horas} horas registradas el día {fecha} ha sido cambiado con éxito por {nueva_hora} horas con fecha {nueva_fecha}.",VERDE)
+                print_color(f"El temporizador {dev_nombre_habito_id(id_habito)} con {horas} horas registradas el día {fecha} ha sido cambiado con éxito por {nueva_hora} horas con fecha {nueva_fecha}.",VERDE)
                 return
             else:
                 print_color("No se ha modificado nada.",CIAN)
@@ -375,7 +375,7 @@ def pedir_objetivo_modi(lista_todo):
             
                 temporizadores = contar_csv_id("objetivos",id_temporizador,0)           
             except ValueError:
-                print_color(f"Formato incorrecto. Debes introducir un número de la lista.",ROJO)
+                print_color(f"Formato incorrecto. Debes introducir un número de la lista.",NARANJA)
                 continue
             except IndexError:
                 print_color("Este objetivo no existe.",ROJO)
@@ -395,11 +395,11 @@ def pedir_objetivo_modi(lista_todo):
            
             print_color(f"Hábito actual: {habito}",CIAN)
             print_color(f"Tipo hábito: {tipo_objetivo}",CIAN)
-            print_color(f"Objetivo horas actual: {objetivo_horas} \n",CIAN)
+            print_color(f"Objetivo horas actual: {objetivo_horas} ",CIAN)
 
             contador = 0
             if not lista_tipos_restantes:
-                print_color("No es posible cambiar el tipo de objetivo porque ya están ocupados.\n",ROJO)
+                print_color("No es posible cambiar el tipo de objetivo porque ya están ocupados.",ROJO)
                 nuevo_objetivo = tipo_objetivo
             else:
                 
@@ -441,7 +441,7 @@ def pedir_objetivo_modi(lista_todo):
                 
                 modificar_objetivo(id_temporizador,nuevo_objetivo,nueva_hora)
                 id_habito = dev_idhabito_temporizador(id_temporizador)
-                print_color(f"\nEl hábito {habito} con un objetivo {tipo_objetivo} de {objetivo_horas} se ha cambiado con éxito por un objetivo {nuevo_objetivo} de {nueva_hora}.",VERDE)
+                print_color(f"El hábito {habito} con un objetivo {tipo_objetivo} de {objetivo_horas} se ha cambiado con éxito por un objetivo {nuevo_objetivo} de {nueva_hora}.",VERDE)
                 return
             else:
                 print_color("No se ha modificado nada.",CIAN)
@@ -549,7 +549,7 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
         resultado = preguntar_seguir(otro_habito)
         
         if resultado is None:
-            print_color('Respuesta no válida. Debes introducir "s" o "n".',ROJO)
+            print_color("❌ Valor inválido. Introduce 's' o 'n'.",CIAN)
             continue
         
         if resultado is False:
@@ -583,7 +583,7 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
             if validar_horas(objetivo_ad):
                 objetivo_ad = validar_horas(objetivo_ad)
                 registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
-                print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.\n",VERDE)
+                print_color("Se ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.\n",VERDE)
                 break
     
         tipos_usados.append(tipo_ad.lower())        

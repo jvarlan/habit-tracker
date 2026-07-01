@@ -1,7 +1,7 @@
 import csv
 from config import BASE_DIR
 from datetime import datetime
-from .utilidades import ROJO, print_color, horas_a_segundos, normalizar
+from .utilidades import ROJO, NARANJA, print_color, horas_a_segundos, normalizar
 from .mostrar import mostrar_temporizadores
 
 
@@ -118,5 +118,5 @@ def validar_borrar_temporizador(borrar,lista):
             print_color(f"Opcion no valida",ROJO)
             return None
     except ValueError:
-        print_color("Debes introducir un número válido", ROJO)
+        print_color("\nDebes introducir un número válido\n", NARANJA)
         return None

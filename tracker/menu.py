@@ -1,13 +1,13 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores, mostrar_objetivos
 from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria, opcion_estadistica_rachas, opcion_estadistica_habitos
 from .utilidades import limpiar_pantalla
-from .utilidades import ROJO, VERDE, CIAN, print_color, normalizar
+from .utilidades import ROJO, VERDE, CIAN, print_color, print_color_con_salto_abajo, normalizar
 
 import tkinter as tk
 
 # se guarda en una variable para luego simplemente mostrarlo en pantalla
-volver = f"\nPulsa 'ENTER' si quieres salir del programa."
-volver2 = f"\n..............................................."
+volver = f"Pulsa 'ENTER' si quieres salir del programa."
+volver2 = f"..............................................."
 
 #menu principal
 def mostrar_menu():
@@ -18,7 +18,7 @@ def mostrar_menu():
         temporizadores = mostrar_temporizadores()
         categorias = mostrar_categorias()
 
-        print_color("\n======== HABIT TRACKER (FASE PULIDO) ========",VERDE)
+        print_color("======== HABIT TRACKER (FASE PULIDO) ========",VERDE)
         print("1. Añadir un nuevo hábito (100%)")
         if not habitos:
             print_color("2. Registrar tiempo (100%)",ROJO)
@@ -31,9 +31,9 @@ def mostrar_menu():
         print("4. Modificar elementos (99%)")
         print("5. Mostrar estadísticas (99%)")
         print_color("=============================================",VERDE)
-        print_color(volver,CIAN)
+        print_color_con_salto_abajo(volver,CIAN)
 
-        opcion = input("\nSelecciona una opción: ")
+        opcion = input("Selecciona una opción: ")
 
         if not seleccionar(opcion):
             break
@@ -58,7 +58,7 @@ def opcion_3():
     if lista:
         mostrar_menu_borrar()
     else:
-        print_color("\nActualmente no existe ningún elemento a eliminar.",CIAN)
+        print_color("Actualmente no existe ningún elemento a eliminar.",CIAN)
     return True
 
 def opcion_4():
@@ -67,7 +67,7 @@ def opcion_4():
     if lista:
         mostrar_menu_modificar()
     else:
-        print_color("\nActualmente no existe ningún elemento a modificar.",CIAN)
+        print_color("Actualmente no existe ningún elemento a modificar.",CIAN)
     return True
 
 def opcion_5():
@@ -76,7 +76,7 @@ def opcion_5():
     if lista:
         mostrar_menu_estadisticas()
     else:
-        print_color("\nActualmente no existe ningún elemento.",CIAN)
+        print_color("Actualmente no existe ningún elemento.",CIAN)
     return True
 
 # según la elección escogida en el menú, redirige a las funciones de arriba
@@ -95,7 +95,7 @@ def seleccionar(opcion):
         return menu[opcion]()
     # normaliza tanto volver como salir, y cierra el menú actual
     elif normalizar(opcion) in ("volver","salir",""):
-        print_color("\nCerrando aplicación...",VERDE)
+        print_color("Cerrando aplicación...",VERDE)
         return False 
     else:
         return True
@@ -112,7 +112,7 @@ def mostrar_menu_borrar():
             categorias = mostrar_categorias()
             
         # se repite en bucle hasta que se pulse Salir
-            print_color("\n========= MENÚ DE BORRADO =========",VERDE)
+            print_color("========= MENÚ DE BORRADO =========",VERDE)
             if not habitos:
                 print_color("1. Eliminar un hábito (100%)",ROJO)
             else:
@@ -129,9 +129,9 @@ def mostrar_menu_borrar():
             print("4. Eliminar una categoría")
             print("5. Eliminar todos los elementos")
             print_color("====================================",VERDE)
-            print_color(volver,CIAN)
+            print_color_con_salto_abajo(volver,CIAN)
 
-            opcion = input("\nSelecciona una opción: ")
+            opcion = input("Selecciona una opción: ")
         else:
             break
         if not borrar(opcion):
@@ -185,7 +185,7 @@ def mostrar_menu_modificar():
             temporizadores = mostrar_temporizadores()
             categorias = mostrar_categorias()
         # se repite en bucle hasta que se pulse Salir
-            print_color("\n========= MENÚ DE MODIFICACIÓN =========",VERDE)
+            print_color("========= MENÚ DE MODIFICACIÓN =========",VERDE)
             if not habitos:
                 print_color("1. Modificar un hábito",ROJO)
             else:
@@ -201,9 +201,9 @@ def mostrar_menu_modificar():
 
             print("4. Modificar una categoría")
             print_color("====================================",VERDE)
-            print_color(volver,CIAN)
+            print_color_con_salto_abajo(volver,CIAN)
             
-            opcion = input("\nSelecciona una opción: ")
+            opcion = input("Selecciona una opción: ")
         else:
             break
         if not modificar(opcion):
@@ -245,7 +245,7 @@ def modificar(opcion):
         return False
     else:
         limpiar_pantalla()
-        print_color("\nOpción no válida.\n",ROJO)
+        print_color("Opción no válida.",ROJO)
         return True
 
 def mostrar_menu_estadisticas():
@@ -257,7 +257,7 @@ def mostrar_menu_estadisticas():
             temporizadores = mostrar_temporizadores()
             categorias = mostrar_categorias()
         # se repite en bucle hasta que se pulse Salir
-            print_color("\n========= MENÚ ESTADÍSTICAS =========",VERDE)
+            print_color("========= MENÚ ESTADÍSTICAS =========",VERDE)
             if not habitos:
                 print_color("1. Resumen",ROJO)
             else:
@@ -320,5 +320,5 @@ def estadisticas(opcion):
         return menu_estadisticas[opcion]()
     else:
         limpiar_pantalla()
-        print_color("\nOpción no válida.",ROJO)
+        print_color("Opción no válida.",ROJO)
         return True

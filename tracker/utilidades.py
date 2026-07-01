@@ -1,8 +1,8 @@
-ROJO = "\033[31m"
+ROJO = "\033[38;5;196m"
 VERDE = "\033[32m"
 CIAN = "\033[36m"
-ROJO_CRITICO = "\033[38;2;139;0;0m"
-AMARILLO = "\033[93m"
+AMARILLO = "\033[38;5;226m"
+NARANJA = "\033[38;5;208m"
 INVERSION = "\033[7m"
 RESET = "\033[0m"
 
@@ -16,7 +16,10 @@ from datetime import timedelta, datetime
 
 def print_color(texto,color):
     RESET = "\033[0m"
-    print(f"{color}{texto}{RESET}")
+    print(f"\n{color}{texto}\n{RESET}")
+def print_color_con_salto_abajo(texto,color):
+    RESET = "\033[0m"
+    print(f"{color}{texto}\n\n{RESET}",end="")
 def print_color_pausa(texto,color):
     RESET = "\033[0m"
     return f"{color}{texto}{RESET}"
@@ -178,7 +181,7 @@ def muestra_habitos_registrados(lista, volver):
     # recorre el listado, numerandolo con el nombre al lado
     for i, item in enumerate(sorted(lista, key=lambda x: x['habito']), start=1):
         print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']}")
-    print_color(f"{volver}\n", CIAN)
+    print_color_con_salto_abajo(f"{volver}", CIAN)
 
 def normalizar(texto):
     if not isinstance(texto, str):
