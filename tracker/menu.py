@@ -1,7 +1,7 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores, mostrar_objetivos
 from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria, opcion_estadistica_rachas, opcion_estadistica_habitos
 from .utilidades import limpiar_pantalla
-from .utilidades import ROJO, VERDE, CIAN, print_color, print_color_con_salto_abajo, normalizar
+from .utilidades import ROJO, VERDE, CIAN, print_color, normalizar
 
 import tkinter as tk
 
@@ -18,7 +18,7 @@ def mostrar_menu():
         temporizadores = mostrar_temporizadores()
         categorias = mostrar_categorias()
 
-        print_color("======== HABIT TRACKER (FASE PULIDO) ========",VERDE)
+        print_color("\n======== HABIT TRACKER (FASE PULIDO) ========",VERDE,"\n")
         print("1. Añadir un nuevo hábito (100%)")
         if not habitos:
             print_color("2. Registrar tiempo (100%)",ROJO)
@@ -30,8 +30,8 @@ def mostrar_menu():
             print("3. Eliminar elementos (99%)")
         print("4. Modificar elementos (99%)")
         print("5. Mostrar estadísticas (99%)")
-        print_color("=============================================",VERDE)
-        print_color_con_salto_abajo(volver,CIAN)
+        print_color("=============================================",VERDE,"\n\n")
+        print_color(volver,CIAN,"\n\n")
 
         opcion = input("Selecciona una opción: ")
 
@@ -112,7 +112,7 @@ def mostrar_menu_borrar():
             categorias = mostrar_categorias()
             
         # se repite en bucle hasta que se pulse Salir
-            print_color("========= MENÚ DE BORRADO =========",VERDE)
+            print_color("\n========= MENÚ DE BORRADO =========",VERDE,"\n")
             if not habitos:
                 print_color("1. Eliminar un hábito (100%)",ROJO)
             else:
@@ -129,7 +129,7 @@ def mostrar_menu_borrar():
             print("4. Eliminar una categoría")
             print("5. Eliminar todos los elementos")
             print_color("====================================",VERDE)
-            print_color_con_salto_abajo(volver,CIAN)
+            print_color(volver,CIAN)
 
             opcion = input("Selecciona una opción: ")
         else:
@@ -185,7 +185,7 @@ def mostrar_menu_modificar():
             temporizadores = mostrar_temporizadores()
             categorias = mostrar_categorias()
         # se repite en bucle hasta que se pulse Salir
-            print_color("========= MENÚ DE MODIFICACIÓN =========",VERDE)
+            print_color("\n========= MENÚ DE MODIFICACIÓN =========",VERDE,"\n")
             if not habitos:
                 print_color("1. Modificar un hábito",ROJO)
             else:
@@ -201,7 +201,7 @@ def mostrar_menu_modificar():
 
             print("4. Modificar una categoría")
             print_color("====================================",VERDE)
-            print_color_con_salto_abajo(volver,CIAN)
+            print_color(volver,CIAN)
             
             opcion = input("Selecciona una opción: ")
         else:
@@ -257,7 +257,7 @@ def mostrar_menu_estadisticas():
             temporizadores = mostrar_temporizadores()
             categorias = mostrar_categorias()
         # se repite en bucle hasta que se pulse Salir
-            print_color("========= MENÚ ESTADÍSTICAS =========",VERDE)
+            print_color("\n========= MENÚ ESTADÍSTICAS =========",VERDE,"\n")
             if not habitos:
                 print_color("1. Resumen",ROJO)
             else:
@@ -270,7 +270,7 @@ def mostrar_menu_estadisticas():
             print("3. Objetivos")
             print("4. Constancia")
             print("5. Hábitos")
-            print_color("====================================",VERDE)
+            print_color("====================================",VERDE,"\n")
 
             opcion = input("\nSelecciona una opción: ")
         else:

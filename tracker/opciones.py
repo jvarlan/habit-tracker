@@ -8,7 +8,7 @@ from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos, calcular_estadisticas_habitos, mostrar_estadisticas_habitos
 from datetime import datetime, date, timedelta
 
-volver = f"Pulsa 'ENTER' si quieres salir al menú de opciones."
+volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
 volver2 = f"............................................................................"
 
 def opcion_registro():
@@ -49,7 +49,7 @@ def opcion_registro():
                 lista_tipos = ["diario","semanal","mensual","anual"]
                 tipo = input(f"Objetivo ({lista_tipos}): ")
                 if normalizar(tipo) not in lista_tipos:
-                    print_color("Tipo de objetivo no válido.",ROJO)
+                    print_color("\nTipo de objetivo no válido.",ROJO)
                     continue
                 break
                     
@@ -64,7 +64,7 @@ def opcion_registro():
                     id_categoria = dev_categoria_id(categoria)
                     id_habito = registrar(nombre, id_categoria)
                     registrar_objetivo(id_habito, tipo, objetivo)
-                    print_color("Se ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo+" de "+objetivo+" horas.",VERDE)
+                    print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo+" de "+objetivo+" horas.",VERDE,"\n")
 
                     otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria)
                 else:
@@ -132,12 +132,13 @@ def opcion_borrar():
             borrar = pedir_habito_borrar()
             if borrar == None:
                 break
-            lista = mostrar_csv_diccionario("habitos")
-            if lista:
-                seguir = input("\n¿Quieres eliminar otro hábito? s/n: ")
-                if preguntar_seguir(normalizar(seguir)):
-                    limpiar_pantalla()
-                    continue
+            if borrar == "preguntar":
+                lista = mostrar_csv_diccionario("habitos")
+                if lista:
+                    seguir = input("\n¿Quieres eliminar otro hábito? s/n: ")
+                    if preguntar_seguir(normalizar(seguir)):
+                        limpiar_pantalla()
+                        continue
                     
                 else:
                     break    
@@ -184,7 +185,7 @@ def opcion_borrar_obj():
             
             print_color(volver,CIAN)
 
-            print_color("Eliminar un objetivo",INVERSION)
+            print_color("\nEliminar un objetivo",INVERSION)
 
             borrar = pedir_objetivo_borrar()
             

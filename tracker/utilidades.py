@@ -14,13 +14,10 @@ import unicodedata
 
 from datetime import timedelta, datetime
 
-def print_color(texto,color):
+def print_color(texto,color,end = "\n\n"):
     RESET = "\033[0m"
-    print(f"\n{color}{texto}\n{RESET}")
-def print_color_con_salto_abajo(texto,color):
-    RESET = "\033[0m"
-    print(f"{color}{texto}\n\n{RESET}",end="")
-def print_color_pausa(texto,color):
+    print(f"{color}{texto}{RESET}", end=end)
+def print_color_pausa(texto,color, end="\n"):
     RESET = "\033[0m"
     return f"{color}{texto}{RESET}"
 
@@ -181,7 +178,7 @@ def muestra_habitos_registrados(lista, volver):
     # recorre el listado, numerandolo con el nombre al lado
     for i, item in enumerate(sorted(lista, key=lambda x: x['habito']), start=1):
         print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']}")
-    print_color_con_salto_abajo(f"{volver}", CIAN)
+    print_color(f"{volver}", CIAN)
 
 def normalizar(texto):
     if not isinstance(texto, str):

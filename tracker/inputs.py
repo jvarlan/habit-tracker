@@ -8,14 +8,14 @@ from .contar import contar_csv_n, contar_csv_id
 from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_lista_objetivos_cat, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat, dev_emoticono_categoria_id, dev_habito_correcto, dev_categoria_correcta
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria, borrar_objetivos_id_habito
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria, modificar_objetivo
-from .utilidades import ROJO, VERDE, CIAN, AMARILLO, NARANJA, RESET, normalizar, print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados
+from .utilidades import ROJO, VERDE, CIAN, AMARILLO, NARANJA, RESET, INVERSION, normalizar, print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados
 
 def pedir_nombre_registro(volver):
     while True:
         diccionario = mostrar_csv_diccionario("habitos")
         muestra_habitos_registrados(diccionario, volver)
         print_color("Si quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
-        nombre = input("\nIntroduce el nombre del hábito: ")
+        nombre = input("Introduce el nombre del hábito: ")
         nombre = normalizar(nombre)
        # limpiar_pantalla()
 
@@ -136,18 +136,21 @@ def pedir_habito_borrar():
                 while True:
                     seguro = input(f"{AMARILLO}¿Quieres continuar? s/n: {RESET}")
                     seguro = seguro.lower()
-                
-                    if seguro == "s" or seguro == "si":
-                        registros = borrar_temporizadores(borrar_id,temporizadores)
-                        habito = borrar_habito(borrar,borrar_id)
-                        borrar_objetivos_id_habito(borrar_id)
-                        print_color(f"El hábito {borrar} se ha eliminado con éxito.",VERDE)
-                        return True
-                    elif seguro == "n" or seguro == "no": 
-                        return True
-                    else:
-                        print_color(f"\n❌ Valor inválido. Introduce 's' o 'n'",CIAN)
+
+                    resultado = preguntar_seguir(seguro)
+        
+                    if resultado is None:
+                        print_color("❌ Valor inválido. Introduce 's' o 'n'.",CIAN)
                         continue
+        
+                    if resultado is False:
+                        return
+                
+                    registros = borrar_temporizadores(borrar_id,temporizadores)
+                    habito = borrar_habito(borrar,borrar_id)
+                    borrar_objetivos_id_habito(borrar_id)
+                    print_color(f"El hábito {borrar} se ha eliminado con éxito.",VERDE)
+                    return "preguntar"
         else:  
             return None
 def pedir_categoria_borrar():
@@ -229,7 +232,7 @@ def pedir_habito_modi():
         habitos = contar_csv_id("habitos",dev_habito_id(habito_modificar),0)
 
         if habitos == False:
-            print_color("Este hábito no existe.",ROJO)
+            print_color("\nEste hábito no existe.",ROJO,"\n\n")
             continue
         else:
             todo_habito = mostrar_csv_diccionario("habitos")
@@ -541,7 +544,7 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
             and ltipos.strip().lower() not in tipos_usados
         ]
         if not tipos_restantes:
-            input(f"\n{ROJO}No quedan más tipos. Pulsa ENTER para salir: {RESET}")
+            input(f"{ROJO}No quedan más tipos. Pulsa ENTER para salir: {RESET}")
             return True
                 
         otro_habito = input(f"¿Quieres añadir un objetivo diferente para {nombre}? s/n: ")
@@ -557,10 +560,7 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
         
         limpiar_pantalla()
                
-        print("===============")
-        print_color(f"Añadir otro objetivo para el hábito {nombre}",CIAN)
-        print("===============")
-        print()
+        print_color(f"\nNuevo objetivo ({nombre})",INVERSION,"\n\n")
         
         while True:
             if len(tipos_restantes) > 1:
@@ -568,10 +568,10 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
             else:
                 opciones = tipos_restantes[0]
 
-            tipo_ad = normalizar(input(f"Elige uno de estos objetivos: {opciones}: "))
+            tipo_ad = normalizar(input(f"Elige un objetivo ({opciones}): "))
             
             if tipo_ad not in tipos_restantes:
-                print_color("Tipo de objetivo no válido.",ROJO)
+                print_color("\nTipo de objetivo no válido. Elige uno del paréntesis. ",ROJO,"\n\n")
                 continue
             if normalizar(tipo_ad) in ("volver","salir"):
                 limpiar_pantalla()
@@ -583,7 +583,7 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
             if validar_horas(objetivo_ad):
                 objetivo_ad = validar_horas(objetivo_ad)
                 registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
-                print_color("Se ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.\n",VERDE)
+                print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.",VERDE,"\n\n")
                 break
     
         tipos_usados.append(tipo_ad.lower())        
