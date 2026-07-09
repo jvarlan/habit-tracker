@@ -162,7 +162,8 @@ menu_borrar = {
     "1": borrar_1,
     "2": borrar_2,
     "3": borrar_3,
-    "4": borrar_4
+    "4": borrar_4,
+    "5": borrar_5
 }
     
 def borrar(opcion):

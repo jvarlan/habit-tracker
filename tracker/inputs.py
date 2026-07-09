@@ -13,6 +13,7 @@ from .utilidades import ROJO, VERDE, CIAN, AMARILLO, NARANJA, RESET, INVERSION, 
 def pedir_nombre_registro(volver):
     while True:
         diccionario = mostrar_csv_diccionario("habitos")
+        print_color(f"\nNuevo registro de hábito",INVERSION,"\n")
         muestra_habitos_registrados(diccionario, volver)
         print_color("Si quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
         nombre = input("Introduce el nombre del hábito: ")
@@ -295,7 +296,7 @@ def pedir_tempo_modi(lista_todo):
             try:
                 modificar = input("Introduce el número del temporizador a modificar: ")
                 
-                if normalizar(modificar) in ("volver","salir"):
+                if normalizar(modificar) in ("volver","salir",""):
                     return ""
                 modificar = int(modificar)-1
 
@@ -370,7 +371,7 @@ def pedir_objetivo_modi(lista_todo):
             try:
                 modificar = input("Introduce el número del objetivo a modificar: ")
                 
-                if normalizar(modificar) in ("volver","salir"):
+                if normalizar(modificar) in ("volver","salir",""):
                     return ""
                 modificar = int(modificar) 
 

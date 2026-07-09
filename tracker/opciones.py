@@ -86,7 +86,7 @@ def opcion_temporizador():
   
             lista = mostrar_csv_diccionario("habitos") # devuelve el listado de habitos registrados
             lista_minus = [item['habito'].lower() for item in lista] #crea una lista con los nombres de los habitos en minusculas para comparar con el input del usuario
-            print_color("Añadir un nuevo temporizador",INVERSION)
+            print_color(f"\nAñadir un nuevo temporizador",INVERSION,"\n")
             
             muestra_habitos_registrados(lista, volver)
             
@@ -127,7 +127,7 @@ def opcion_borrar():
         while True:
             lista = mostrar_csv_diccionario("habitos")
             
-            print_color("Eliminar un hábito",INVERSION)
+            print_color(f"\nEliminar un hábito",INVERSION,"\n")
             muestra_habitos_registrados(lista, volver)
             borrar = pedir_habito_borrar()
             if borrar == None:
@@ -175,7 +175,8 @@ def opcion_borrar_obj():
                 habitos[nombre]["objetivos"].append(
                     f"{i} - {item["tipo"]} - {item["objetivo"]} horas"
                     )
-            print("\nEstos son los objetivos de cada hábito: \n")
+            print_color(f"\nEliminar un objetivo",INVERSION,"\n")
+            print("\nLista de objetivos por hábito: \n")
             for nombre, info in sorted(habitos.items()):
                 print(f"{nombre} {info['emoticono']}")
                 print("=================================")
@@ -242,7 +243,8 @@ def opcion_borrar_tempo():
                 habitos[nombre]["temporizadores"].append(
                     f"{i} - Fecha: {item["fecha"]} - {item["horas"]} horas"
                 )
-            print("\nEstos son los temporizadores de cada hábito: \n")
+            print_color(f"\nEliminar un temporizador",INVERSION,"\n")
+            print("\nLista de temporizadores por hábito: \n")
             
             for nombre, info in sorted(habitos.items()):
                 print(f"{nombre} {info['emoticono']}")
@@ -285,14 +287,13 @@ def opcion_borrar_categoria():
 
     if lista:
         while True:
-            
-            print("Estos son las categorias ya registradas: ")
+            print_color(f"\nEliminar una categoría",INVERSION,"\n\n")
+            print("Lista de categorías:\n")
             lista = sorted(lista, key=lambda x: x["categoria"])
 
             for i, item in enumerate(lista,start=1):
                 print(f"{i} - {item['categoria']} {item['emoticono']}")
             print_color(volver,CIAN)
-            print_color("Eliminar una categoría",INVERSION)
             borrar = pedir_categoria_borrar()
             if borrar == None:
                 return False
@@ -309,10 +310,11 @@ def opcion_borrar_categoria():
         print_color("No existe ninguna categoria a eliminar.",CIAN)
 
 def opcion_borrar_todo():
-    lista1 = mostrar_temporizadores()
-    lista2 = mostrar_registros()
-    lista3 = mostrar_categorias()
+    lista1 = mostrar_csv("habitos")
+    lista2 = mostrar_csv("temporizadores")
+    lista3 = mostrar_csv("categorias")
     lista4 = mostrar_csv("objetivos")
+
 
     if lista1 or lista2 or lista3 or lista4:
         seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar todos los registros? s/n:{RESET} ")
@@ -344,8 +346,8 @@ def opcion_modi_habito():
             
             lista_objetivos = sorted(lista_objetivos, key=lambda x: x[1])
             lista_todo = sorted(lista_todo, key=lambda x: x[1])
-
-            print("\nEstos son los hábitos ya registrados: \n")
+            print_color(f"\nModificar un hábito",INVERSION,"\n")
+            print("\nLista de hábitos registrados: \n")
             for i, item in enumerate(lista_todo, start=1):
                 id_habito = item[0]
                 habito = item[1]
@@ -361,7 +363,7 @@ def opcion_modi_habito():
                 print(f"Número objetivos: {len(lista_tipos)}")
                 print("=================================")
             print_color(volver, CIAN)
-            print_color("Modificar un hábito",INVERSION)
+            
             modificar = pedir_habito_modi()
            
             if modificar == "":
@@ -423,8 +425,8 @@ def opcion_modi_objetivo():
         while True:
             lista_todo = mostrar_csv("objetivos")
             #ordena la lista por fecha (el tercer campo del csv)
-
-            print("\nEstos son los objetivos ya registrados: \n")
+            print_color(f"\nModificar un objetivo",INVERSION,"\n")
+            print("\nLista de objetivos registrados: \n")
             for i, item in enumerate(lista_todo, start=1):
                 habito = dev_nombre_habito_id(item[1])
                 tipo = item[2]
@@ -432,7 +434,7 @@ def opcion_modi_objetivo():
                 print(f"{i} - Objetivo {tipo} de {objetivo} horas ({habito})")
 
             print_color(volver, CIAN)
-            print_color("Modificar un objetivo",INVERSION)
+            
             modificar = pedir_objetivo_modi(lista_todo)
            
             if modificar == "":
@@ -460,7 +462,9 @@ def opcion_modi_categoria():
 
 
             lista_todo = sorted(lista_todo, key=lambda x: x["categoria"])
-            print("\nEstos son las categorias ya registradas: \n")
+            print_color(f"\nModificar una categoria",INVERSION,"\n")
+
+            print("\nLista de categorias registradas: \n")
 
             for i, item in enumerate(lista_todo, start=1):
                 id_categoria = item["id"]
@@ -469,7 +473,6 @@ def opcion_modi_categoria():
                 print(f"{i} - {categoria} {emoticono}")
 
             print_color(volver, CIAN)
-            print_color("Modificar una categoria",INVERSION)
 
             modificar = pedir_categoria_modi(lista_todo)
 
