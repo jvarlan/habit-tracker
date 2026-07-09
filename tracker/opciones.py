@@ -28,7 +28,8 @@ def opcion_registro():
             if categorias_lista:
                 # si no está registrado, prosigue con el resto de inputs
                 limpiar_pantalla()
-                print("\nCategorías disponibles:")
+                print_color(f"\nNuevo registro de hábito",INVERSION,"\n")
+                print("\nCategorías disponibles:\n")
                 
                 for i, cat in enumerate(categorias_lista, 1):
                     print(f"{i}. {cat} {cat_dict[cat]}")
@@ -186,8 +187,6 @@ def opcion_borrar_obj():
             
             print_color(volver,CIAN)
 
-            print_color("\nEliminar un objetivo",INVERSION)
-
             borrar = pedir_objetivo_borrar()
             
             if borrar == None:
@@ -199,7 +198,7 @@ def opcion_borrar_obj():
     
                 if seguro == "s" or seguro == "si":
                     borrar_objetivo(borrar["id"],borrar)
-                    print_color(f"\nObjetivo eliminado con éxito.",VERDE)
+                    print_color(f"\nObjetivo eliminado con éxito.",VERDE,"\n")
                 elif seguro == "n" or seguro == "no":
                     continue
                 else:

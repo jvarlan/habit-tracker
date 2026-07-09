@@ -545,7 +545,8 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
             and ltipos.strip().lower() not in tipos_usados
         ]
         if not tipos_restantes:
-            input(f"{ROJO}No quedan más tipos. Pulsa ENTER para salir: {RESET}")
+            input(f"{ROJO}\nNo quedan más tipos. Pulsa ENTER para salir: {RESET}")
+            limpiar_pantalla()
             return True
                 
         otro_habito = input(f"¿Quieres añadir un objetivo diferente para {nombre}? s/n: ")

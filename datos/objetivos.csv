@@ -31,5 +31,6 @@ id,id_habito,tipo,objetivo
 49,20,diario,02:00:00
 50,16,anual,01:00:00
 51,20,semanal,05:00:00
-52,20,mensual,02:00:00
-53,20,anual,100:00:00
+54,19,semanal,02:00:00
+55,19,mensual,05:00:00
+56,19,anual,10:00:00
