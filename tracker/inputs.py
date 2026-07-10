@@ -8,20 +8,19 @@ from .contar import contar_csv_n, contar_csv_id
 from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_lista_objetivos_cat, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat, dev_emoticono_categoria_id, dev_habito_correcto, dev_categoria_correcta
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria, borrar_objetivos_id_habito
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria, modificar_objetivo
-from .utilidades import ROJO, VERDE, CIAN, AMARILLO, NARANJA, RESET, INVERSION, normalizar, print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados
+from .utilidades import ROJO, VERDE, CIAN, AMARILLO, NARANJA, RESET, INVERSION, normalizar, print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados, muestra_habitos_registrados_color
 
 def pedir_nombre_registro(volver):
     while True:
         diccionario = mostrar_csv_diccionario("habitos")
         print_color(f"\nNuevo registro de hábito",INVERSION,"\n")
-        muestra_habitos_registrados(diccionario, volver)
+        muestra_habitos_registrados_color(diccionario, volver)
         print_color("Si quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
         nombre = input("Introduce el nombre del hábito: ")
-        nombre = normalizar(nombre)
        # limpiar_pantalla()
 
      # devuelve el número de veces que el nombre está registrado
-        comprobado = comprobar_registro(nombre)
+        comprobado = comprobar_registro(normalizar(nombre))
 
         # si está registrado, vuelve a pedir el nombre
         if comprobado == 0:
@@ -30,12 +29,13 @@ def pedir_nombre_registro(volver):
             # aqui no deberia ahora obligar a repetir el nombre, ya que ahora se añadirán nuevos objetivos al introducir uno ya existente.
 
             datos_habito = dev_habito_datos(nombre)
+            nombre_real = datos_habito['habito']
             id_habito = datos_habito['id']
             categoria = dev_nombre_categoria_id(datos_habito['id_categoria'])
             lista_tipos_usados = dev_tipo_objetivo(id_habito)
             lista_tipos = ['diario','semanal','mensual','anual']
 
-            resultado = otro_objetivo(id_habito, lista_tipos_usados, lista_tipos, nombre, categoria)
+            resultado = otro_objetivo(id_habito, lista_tipos_usados, lista_tipos, nombre_real, categoria)
             if resultado is False:
                 return     
 def pedir_tipo_habito():
@@ -549,7 +549,7 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
             limpiar_pantalla()
             return True
                 
-        otro_habito = input(f"¿Quieres añadir un objetivo diferente para {nombre}? s/n: ")
+        otro_habito = input(f"\n¿Quieres añadir un objetivo diferente para {nombre}? s/n: ")
         
         resultado = preguntar_seguir(otro_habito)
         
@@ -585,7 +585,7 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
             if validar_horas(objetivo_ad):
                 objetivo_ad = validar_horas(objetivo_ad)
                 registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
-                print_color("\nSe ha añadido el hábito "+nombre+" en la categoría "+categoria+" con un objetivo "+tipo_ad+" de "+objetivo_ad+" horas.",VERDE,"\n\n")
+                print_color(f"\nSe ha añadido el hábito {nombre} en la categoría {categoria} con un objetivo {tipo_ad} de {objetivo_ad} horas.",VERDE,"\n")
                 break
     
         tipos_usados.append(tipo_ad.lower())        

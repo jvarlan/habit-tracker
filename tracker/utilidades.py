@@ -3,13 +3,14 @@ VERDE = "\033[32m"
 CIAN = "\033[36m"
 AMARILLO = "\033[38;5;226m"
 NARANJA = "\033[38;5;208m"
+GRIS = "\033[90m"
 INVERSION = "\033[7m"
 RESET = "\033[0m"
 
 import os, shutil
 import time
 from .mostrar import mostrar_csv, mostrar_csv_diccionario
-from .devolver import dev_emoticono_categoria_id
+from .devolver import dev_emoticono_categoria_id, dev_tipo_objetivo
 import unicodedata
 
 from datetime import timedelta, datetime
@@ -28,6 +29,10 @@ def preguntar_seguir(seguir):
         seguir = seguir.lower().strip()
         while seguir not in ("s", "si", "n", "no"):
             seguir = input(f"{ROJO}\nOpción no válida. Escribe s/n: {RESET}").lower().strip()
+        if seguir in ("n", "no"):
+            return False
+        else:
+            limpiar_pantalla()
         return seguir in ("s", "si")
         
 def id_habito_nombre():
@@ -178,6 +183,21 @@ def muestra_habitos_registrados(lista, volver):
     # recorre el listado, numerandolo con el nombre al lado
     for i, item in enumerate(sorted(lista, key=lambda x: x['habito']), start=1):
         print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']}")
+    print_color(f"{volver}", CIAN)
+
+def muestra_habitos_registrados_color(lista, volver):
+
+    print("\nHábitos registrados: \n")
+           
+    # recorre el listado, numerandolo con el nombre al lado
+    for i, item in enumerate(sorted(lista, key=lambda x: x['habito']), start=1):
+       
+        numero_objetivos = len(dev_tipo_objetivo(item['id']))
+        if numero_objetivos >= 4:
+            print_color(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']} (no quedan objetivos)",GRIS,"\n")
+        elif numero_objetivos == 1:
+            print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']} (1 objetivo)")
+        else:print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']} ({numero_objetivos} objetivos)")
     print_color(f"{volver}", CIAN)
 
 def normalizar(texto):

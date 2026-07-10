@@ -115,7 +115,7 @@ def validar_borrar_temporizador(borrar,lista):
         if borrar >= 1 and borrar <= len(lista):
             return lista[borrar - 1]
         else:
-            print_color(f"Opcion no valida",ROJO)
+            print_color(f"Opción no valida",ROJO)
             return None
     except ValueError:
         print_color("\nDebes introducir un número válido\n", NARANJA)
