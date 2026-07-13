@@ -8,7 +8,7 @@ from .contar import contar_csv_n, contar_csv_id
 from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_lista_objetivos_cat, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat, dev_emoticono_categoria_id, dev_habito_correcto, dev_categoria_correcta
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria, borrar_objetivos_id_habito
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria, modificar_objetivo
-from .utilidades import ROJO, VERDE, CIAN, AMARILLO, NARANJA, RESET, INVERSION, normalizar, print_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados, muestra_habitos_registrados_color
+from .utilidades import ROJO, VERDE, CIAN, AMARILLO, NARANJA, RESET, INVERSION, normalizar, print_color, input_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados, muestra_habitos_registrados_color
 
 def pedir_nombre_registro(volver):
     while True:
@@ -47,8 +47,8 @@ def pedir_tipo_habito():
         break
     return lista_tipos, tipo
 def pedir_nombre_temp(lista_minus,lista):
+    nombre = input("Hábito a temporizar: ")
     while True:
-        nombre = input("Hábito a temporizar: ")
         nombre = normalizar(nombre)
 
         for i, item in enumerate(lista_minus):
@@ -57,25 +57,30 @@ def pedir_nombre_temp(lista_minus,lista):
         if normalizar(nombre) in ("volver","salir",""):
             return None
         else:
-            print_color(f"Introduce un temporizador de la lista.",ROJO)
+            nombre = input_color(f"\nIntroduce un temporizador de la lista: ",ROJO)
 
 def pedir_horas_temp():
+    registro = input("Pulsa 'M' para registro manual o 'A' para automático: ")
     while True:
-        registro = input("Pulsa 'M' para registro manual o 'A' para automático: ")
+        if registro.lower().strip() not in ("m", "a"):
+            registro = input(f"{ROJO}\nOpción no válida. Pulsa 'M' para manual o 'A' para automático: {RESET}").lower().strip()
+            continue
         if normalizar(registro) == "m":
+            horas = input("Duración de la actividad (HH:MM:SS): ")
             while True:
-                horas = input("Duración de la actividad (HH:MM:SS): ")
                 if validar_horas(horas):
-                    horas = validar_horas(horas)
-                    return horas
+                        horas = validar_horas(horas)
+                        print()
+                        return horas
                 else:
+                    horas = input_color(f"\nIntroduce un valor válido (HH:MM:SS): ",ROJO)
                     continue
 
         elif normalizar(registro) == "a":
             stop_event = threading.Event()
             resultado = []
 
-            print_color("Pulsa ENTER cuando quieras parar el cronómetro... ",CIAN)
+            print_color("\nPulsa ENTER cuando quieras parar el cronómetro... ",CIAN)
             
             
             hilo_input = threading.Thread(target=esperar_enter, args=(stop_event,))
@@ -90,30 +95,26 @@ def pedir_horas_temp():
             horas = resultado[0]
             if validar_horas(horas):
                 return horas
-        else:
-            print_color("❌ Opción no válida. Pulsa 'M' para manual o 'A' para automático.",ROJO)
-            continue
-        return False
         
 
 def pedir_fecha_temp():
-    while True:
-            fecha = input("Introduce la fecha (AAAA-MM-DD) o déjalo vacío para hoy: ")
-            
-            if fecha == "":
-                fecha = datetime.now().date()
-            else:
-                try:
-                    fecha = datetime.strptime(fecha, "%Y-%m-%d").date()
-                    fecha_hoy = datetime.now().date()
+    
+    fecha = input("Introduce la fecha (DD/MM/AAAA) o déjalo vacío para hoy: ")
+    while True:       
+        if fecha == "":
+            fecha = datetime.now().date()
+        else:
+            try:
+                fecha = datetime.strptime(fecha, "%d/%m/%Y").date()
+                fecha_hoy = datetime.now().date()
 
-                    if fecha > fecha_hoy:
-                        print_color(f"La fecha no puede ser superior a la fecha actual.",ROJO)
-                        continue
-                except ValueError:
-                    print_color(f"Formato incorrecto. Debe ser AAAA-MM-DD",ROJO)
+                if fecha > fecha_hoy:
+                    fecha = input(f"\n{ROJO}La fecha no puede ser superior a la fecha actual. Introduce una fecha válida: {RESET}")
                     continue
-            return fecha
+            except ValueError:
+                fecha = input(f"\n{ROJO}Formato incorrecto. Debe ser DD/MM/AAAA. Introduce una fecha válida: {RESET}")
+                continue
+        return fecha
 def pedir_habito_borrar():
     while True:
         lista = mostrar_registros()

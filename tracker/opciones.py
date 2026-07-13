@@ -113,7 +113,7 @@ def opcion_temporizador():
                         continue #si la actividad supera las 24 horas el mismo día, vuelve a pedir las horas
                     else:     
                         habito(id_habito,horas,fecha)
-                        print_color(f"Se ha registrado {horas} en el temporizador {nombre} con fecha {fecha}",VERDE)
+                        print_color(f"Se ha registrado {horas} en el temporizador {nombre} con fecha {fecha}",VERDE,"\n")
                         break # una vez es correcto, sale del bucle de horas y dias y vuelve al bucle original
                 break
             seguir = input("\n¿Quieres introducir un nuevo temporizador? s/n: ")

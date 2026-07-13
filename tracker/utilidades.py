@@ -18,6 +18,11 @@ from datetime import timedelta, datetime
 def print_color(texto,color,end = "\n\n"):
     RESET = "\033[0m"
     print(f"{color}{texto}{RESET}", end=end)
+
+def input_color(texto, color):
+    RESET = "\033[0m"
+    return input(f"{color}{texto}{RESET}")
+
 def print_color_pausa(texto,color, end="\n"):
     RESET = "\033[0m"
     return f"{color}{texto}{RESET}"
@@ -178,7 +183,7 @@ def numero_string_a_HHMM(numero_str):
     return hhmm
 
 def muestra_habitos_registrados(lista, volver):
-    print("\nHábitos registrados: \n")
+    print("\nLista de hábitos registrados: \n")
            
     # recorre el listado, numerandolo con el nombre al lado
     for i, item in enumerate(sorted(lista, key=lambda x: x['habito']), start=1):
@@ -187,7 +192,7 @@ def muestra_habitos_registrados(lista, volver):
 
 def muestra_habitos_registrados_color(lista, volver):
 
-    print("\nHábitos registrados: \n")
+    print("\nLista de hábitos registrados: \n")
            
     # recorre el listado, numerandolo con el nombre al lado
     for i, item in enumerate(sorted(lista, key=lambda x: x['habito']), start=1):

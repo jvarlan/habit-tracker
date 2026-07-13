@@ -19,11 +19,11 @@ def mostrar_menu():
         categorias = mostrar_categorias()
 
         print_color("\n======== HABIT TRACKER (FASE PULIDO) ========",VERDE,"\n")
-        print("1. Añadir un nuevo hábito (100%)")
+        print_color("1. Añadir un nuevo hábito (COMPLETADO)",VERDE,"\n")
         if not habitos:
-            print_color("2. Registrar tiempo (100%)",ROJO)
+            print_color("2. Registrar tiempo (100%) (COMPLETADO)",ROJO)
         else:
-            print("2. Registrar tiempo (100%)")
+            print_color("2. Registrar tiempo (100%) (COMPLETADO)",VERDE,"\n")
         if not habitos and not temporizadores and not categorias:
             print_color("3. Eliminar elementos (99%)",ROJO)
         else:
