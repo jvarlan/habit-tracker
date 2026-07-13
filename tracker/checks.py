@@ -78,7 +78,6 @@ def validar_horas(numero):
     if len(valores) == 1:
         h = valores[0]
         if h <=0:
-            print_color("\nFormato de horas no válido. Debe ser superior a 0.",ROJO)
             return False
         return f"{h:02d}:00:00"
     #horas y minutos
@@ -88,7 +87,6 @@ def validar_horas(numero):
             h += 1
             m = 0
         if h <0 or not (0 <=m < 60):
-            print_color("Formato de horas no válido. Debe ser un valor correcto de HH:MM.",ROJO)
             return False
         return f"{h:02d}:{m:02d}:00"
     #horas, minutos y segundos
@@ -101,7 +99,6 @@ def validar_horas(numero):
             m += 1
             s = 0
         if h <0 or not (0 <=m < 60) or not (0 <= s < 60):
-            print_color("Formato de horas no válido. Debe ser un valor correcto de HH:MM:SS.",ROJO)
             return False
         return f"{h:02d}:{m:02d}:{s:02d}"
     

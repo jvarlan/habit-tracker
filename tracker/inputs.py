@@ -546,7 +546,7 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
             and ltipos.strip().lower() not in tipos_usados
         ]
         if not tipos_restantes:
-            input(f"{ROJO}\nNo quedan más tipos. Pulsa ENTER para salir: {RESET}")
+            input(f"{ROJO}\nEste hábito ya tiene todos los objetivos asignados. Pulsa ENTER para salir: {RESET}")
             limpiar_pantalla()
             return True
                 
@@ -563,30 +563,32 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
         
         limpiar_pantalla()
                
-        print_color(f"\nNuevo objetivo ({nombre})",INVERSION,"\n\n")
+        print_color(f"\nAsignación de objetivo para {nombre}",INVERSION,"\n\n")
         
-        while True:
-            if len(tipos_restantes) > 1:
-                opciones = ", ".join(tipos_restantes[:-1]) + " o " + tipos_restantes[-1]
-            else:
-                opciones = tipos_restantes[0]
+        if len(tipos_restantes) > 1:
+            opciones = ", ".join(tipos_restantes[:-1]) + " o " + tipos_restantes[-1]
+        else:
+            opciones = tipos_restantes[0]
 
-            tipo_ad = normalizar(input(f"Elige un objetivo ({opciones}): "))
-            
+        tipo_ad = normalizar(input(f"Elige un objetivo ({opciones}): "))
+        while True:    
             if tipo_ad not in tipos_restantes:
-                print_color("\nTipo de objetivo no válido. Elige uno del paréntesis. ",ROJO,"\n\n")
+                tipo_ad = input_color("\nTipo de objetivo no válido. Elige uno del paréntesis: ",ROJO)
                 continue
             if normalizar(tipo_ad) in ("volver","salir"):
                 limpiar_pantalla()
                 return
             break
 
+        objetivo_ad = input("Otro objetivo (horas): ")
         while True:
-            objetivo_ad = input("Otro objetivo (horas): ")
             if validar_horas(objetivo_ad):
                 objetivo_ad = validar_horas(objetivo_ad)
                 registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
                 print_color(f"\nSe ha añadido el hábito {nombre} en la categoría {categoria} con un objetivo {tipo_ad} de {objetivo_ad} horas.",VERDE,"\n")
                 break
+            else:
+                objetivo_ad = input_color(f"\nIntroduce un valor válido (HH:MM:SS): ",ROJO)
+                continue
     
         tipos_usados.append(tipo_ad.lower())        

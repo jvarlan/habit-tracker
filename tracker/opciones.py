@@ -49,14 +49,16 @@ def opcion_registro():
                     break
             while True:
                 lista_tipos = ["diario","semanal","mensual","anual"]
-                tipo = input(f"Objetivo ({lista_tipos}): ")
+                opciones = ", ".join(lista_tipos[:-1]) + f" o {lista_tipos[-1]}"
+                
+                tipo = input(f"Elige un tipo de objetivo ({opciones}): ")
                 if normalizar(tipo) not in lista_tipos:
                     print_color("\nTipo de objetivo no válido.",ROJO)
                     continue
                 break
                     
             while True:
-                objetivo = input("Objetivo (horas): ")
+                objetivo = input(f"Objetivo (horas): ")
                 
                 # comprueba que las horas sean mayores que 0 y no contengan letras u otros caracteres
                 

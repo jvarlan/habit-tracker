@@ -199,10 +199,14 @@ def muestra_habitos_registrados_color(lista, volver):
        
         numero_objetivos = len(dev_tipo_objetivo(item['id']))
         if numero_objetivos >= 4:
-            print_color(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']} (no quedan objetivos)",GRIS,"\n")
+            print_color(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']}",GRIS,"\n")
         elif numero_objetivos == 1:
-            print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']} (1 objetivo)")
-        else:print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']} ({numero_objetivos} objetivos)")
+            print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']} (3 objetivos restante)")
+        elif numero_objetivos == 2:
+            print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']} (2 objetivos restantes)")
+        elif numero_objetivos == 3:
+            print(f"{dev_emoticono_categoria_id(item['id_categoria'])} {item['habito']} (1 objetivo restante)")
+
     print_color(f"{volver}", CIAN)
 
 def normalizar(texto):
