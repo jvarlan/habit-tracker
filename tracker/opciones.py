@@ -1,4 +1,4 @@
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss, muestra_habitos_registrados, normalizar
+from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, input_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss, muestra_habitos_registrados, normalizar
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
@@ -7,6 +7,8 @@ from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos, calcular_estadisticas_habitos, mostrar_estadisticas_habitos
 from datetime import datetime, date, timedelta
+import emoji
+
 
 volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
 volver2 = f"............................................................................"
@@ -42,26 +44,30 @@ def opcion_registro():
             if categoria_real in cat_dict:
                 emoticono = cat_dict[categoria_real]
             else:
+                emoticono = input("Introduce un emoticono asociado: ")
                 while True:
-                    emoticono = input("Introduce un emoticono asociado: ")
-                    if emoticono.strip() in cat_dict.values():
+                    if not emoji.is_emoji(emoticono):
+                        emoticono = input_color("\nDebes introducir un único emoji: ",ROJO)
+                        continue
+
+                    if emoticono in cat_dict.values():
+                        emoticono = input_color("\nEse emoji ya está en uso: ",ROJO)
                         continue
                     break
-            while True:
-                lista_tipos = ["diario","semanal","mensual","anual"]
-                opciones = ", ".join(lista_tipos[:-1]) + f" o {lista_tipos[-1]}"
+            lista_tipos = ["diario","semanal","mensual","anual"]
+            opciones = ", ".join(lista_tipos[:-1]) + f" o {lista_tipos[-1]}"
                 
-                tipo = input(f"Elige un tipo de objetivo ({opciones}): ")
+            tipo = input(f"Elige un tipo de objetivo ({opciones}): ")
+            while True:
                 if normalizar(tipo) not in lista_tipos:
-                    print_color("\nTipo de objetivo no válido.",ROJO)
+                    tipo = input_color("\nTipo de objetivo no válido. Introduce uno del paréntesis: ",ROJO)
                     continue
                 break
                     
-            while True:
-                objetivo = input(f"Objetivo (horas): ")
+            objetivo = input(f"Objetivo (horas): ")
                 
                 # comprueba que las horas sean mayores que 0 y no contengan letras u otros caracteres
-                
+            while True:   
                 if validar_horas(objetivo):
                     objetivo = validar_horas(objetivo)
                     registrar_categoria(categoria, emoticono)
@@ -72,6 +78,7 @@ def opcion_registro():
 
                     otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria_real)
                 else:
+                    objetivo = input_color("\nEl objetivo debe ser un número mayor que 0. Introduce un valor válido: ",ROJO)
                     continue
                 break
 

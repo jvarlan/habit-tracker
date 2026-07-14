@@ -44,3 +44,9 @@ id,id_habito,tipo,objetivo
 72,19,semanal,01:00:00
 73,0,semanal,01:00:00
 74,20,mensual,01:00:00
+75,20,anual,01:00:00
+76,18,semanal,02:00:00
+77,18,mensual,01:00:00
+78,22,diario,01:00:00
+79,23,diario,01:00:00
+80,24,diario,01:00:00
