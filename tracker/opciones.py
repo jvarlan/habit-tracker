@@ -190,9 +190,16 @@ def opcion_borrar_obj():
             print("\nLista de objetivos por hábito: \n")
             for nombre, info in sorted(habitos.items()):
                 print(f"{nombre} {info['emoticono']}")
-                print("=================================")
+                print("─────────────────────────────")
+                print(f"{'ID':<3} {'TIPO':>3} {'OBJETIVO':>13}")
+                print("─────────────────────────────")
                 for objetivo in info['objetivos']:
-                    print(objetivo)
+                    id, tipo, tiempo = [x.strip() for x in objetivo.split(" - ")]
+                    print(
+                        f"{id:<4}" 
+                        f"{tipo.capitalize():<10}" 
+                        f"{tiempo}"
+                        )
                 print()
             
             print_color(volver,CIAN)

@@ -116,45 +116,45 @@ def pedir_fecha_temp():
                 continue
         return fecha
 def pedir_habito_borrar():
-    while True:
-        lista = mostrar_registros()
-        if lista:
-            borrar = input("Introduce el nombre del elemento a borrar: ")
-            if normalizar(borrar) in ("volver","salir",""):
-                return None
-            
-            borrar_id = dev_habito_id(normalizar(borrar))
-            temporizadores = contar_csv_n("temporizadores",borrar_id,0)
-            objetivos = contar_csv_id("objetivos",borrar_id,1)
-            habitos = contar_csv_n("habitos",borrar_id,0)
 
-            if habitos == False:
-                print_color("Este hábito no existe",NARANJA)
-                continue
-            else:
-                borrar = dev_habito_correcto(borrar)
-                print(f"\nEl hábito {borrar} tiene {objetivos} objetivos y {temporizadores} registros de horas asociados.")
-                print_color(f"⚠️  Esta acción borrará los DATOS de forma PERMANENTE.",ROJO)
-                while True:
-                    seguro = input(f"{AMARILLO}¿Quieres continuar? s/n: {RESET}")
-                    seguro = seguro.lower()
-
-                    resultado = preguntar_seguir(seguro)
-        
-                    if resultado is None:
-                        print_color("❌ Valor inválido. Introduce 's' o 'n'.",CIAN)
-                        continue
-        
-                    if resultado is False:
-                        return
-                
-                    registros = borrar_temporizadores(borrar_id,temporizadores)
-                    habito = borrar_habito(borrar,borrar_id)
-                    borrar_objetivos_id_habito(borrar_id)
-                    print_color(f"El hábito {borrar} se ha eliminado con éxito.",VERDE)
-                    return "preguntar"
-        else:  
+    lista = mostrar_registros()
+    if lista:
+        borrar = input("Introduce el nombre del elemento a borrar: ")
+        if normalizar(borrar) in ("volver","salir",""):
             return None
+    while True:    
+        borrar_id = dev_habito_id(normalizar(borrar))
+        temporizadores = contar_csv_n("temporizadores",borrar_id,0)
+        objetivos = contar_csv_id("objetivos",borrar_id,1)
+        habitos = contar_csv_n("habitos",borrar_id,0)
+    
+        if habitos == False:
+            borrar = input_color("\nEste hábito no existe. Introduce uno de la lista: ",NARANJA)
+            continue
+        else:
+            borrar = dev_habito_correcto(borrar)
+            print(f"\nEl hábito {borrar} tiene {objetivos} objetivos y {temporizadores} registros de horas asociados.")
+            print_color(f"⚠️  Esta acción borrará los DATOS de forma PERMANENTE.",ROJO)
+            while True:
+                seguro = input(f"{AMARILLO}¿Quieres continuar? s/n: {RESET}")
+                seguro = seguro.lower()
+
+                resultado = preguntar_seguir(seguro)
+    
+                if resultado is None:
+                    print_color("❌ Valor inválido. Introduce 's' o 'n'.",CIAN)
+                    continue
+    
+                if resultado is False:
+                    return
+            
+                registros = borrar_temporizadores(borrar_id,temporizadores)
+                habito = borrar_habito(borrar,borrar_id)
+                borrar_objetivos_id_habito(borrar_id)
+                print_color(f"\nEl hábito {borrar} se ha eliminado con éxito.",VERDE)
+                return "preguntar"
+    else:  
+        return None
 def pedir_categoria_borrar():
     while True:
         lista = mostrar_categorias()

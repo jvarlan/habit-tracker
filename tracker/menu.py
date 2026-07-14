@@ -114,9 +114,9 @@ def mostrar_menu_borrar():
         # se repite en bucle hasta que se pulse Salir
             print_color("\n========= MENÚ DE BORRADO =========",VERDE,"\n")
             if not habitos:
-                print_color("1. Eliminar un hábito (100%)",ROJO)
+                print_color("1. Eliminar un hábito (COMPLETADO)",VERDE,"\n")
             else:
-                print("1. Eliminar un hábito (100%)")
+                print_color("1. Eliminar un hábito (COMPLETADO)",VERDE,"\n")
             if not objetivos:
                 print_color("2. Eliminar un objetivo",ROJO)
             else:
