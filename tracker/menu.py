@@ -8,6 +8,7 @@ import tkinter as tk
 # se guarda en una variable para luego simplemente mostrarlo en pantalla
 volver = f"Pulsa 'ENTER' si quieres salir del programa."
 volver2 = f"..............................................."
+volver_principal = f"Pulsa 'ENTER' si quieres volver al menú principal."
 
 #menu principal
 def mostrar_menu():
@@ -118,9 +119,9 @@ def mostrar_menu_borrar():
             else:
                 print_color("1. Eliminar un hábito (COMPLETADO)",VERDE,"\n")
             if not objetivos:
-                print_color("2. Eliminar un objetivo",ROJO)
+                print_color("2. Eliminar un objetivo",ROJO,"\n")
             else:
-                print("2. Eliminar un objetivo")
+                print_color("2. Eliminar un objetivo (COMPLETADO)",VERDE,"\n")
             if not temporizadores:
                 print_color("3. Eliminar un temporizador",ROJO)
             else:
@@ -129,7 +130,7 @@ def mostrar_menu_borrar():
             print("4. Eliminar una categoría")
             print("5. Eliminar todos los elementos")
             print_color("====================================",VERDE)
-            print_color(volver,CIAN)
+            print_color(volver_principal,CIAN)
 
             opcion = input("Selecciona una opción: ")
         else:
@@ -145,6 +146,7 @@ def borrar_1():
 def borrar_2():
     limpiar_pantalla()
     opcion_borrar_obj()
+    return True
 def borrar_3():
     limpiar_pantalla()
     opcion_borrar_tempo()
@@ -202,7 +204,7 @@ def mostrar_menu_modificar():
 
             print("4. Modificar una categoría")
             print_color("====================================",VERDE)
-            print_color(volver,CIAN)
+            print_color(volver_principal,CIAN)
             
             opcion = input("Selecciona una opción: ")
         else:
@@ -218,6 +220,7 @@ def modi_1():
 def modi_2():
     limpiar_pantalla()
     opcion_modi_objetivo()
+    return True
 def modi_3():
     limpiar_pantalla()
     opcion_modi_tempo()

@@ -189,19 +189,20 @@ def pedir_categoria_borrar():
             return None
 
 def pedir_objetivo_borrar():
-    while True:
+    
         lista = mostrar_objetivos()
         if lista:
-        
             borrar = input("Introduce el número del elemento a borrar: ")
             if normalizar(borrar) in ("volver","salir",""):
                 return None
             else:
-                validado = validar_borrar_temporizador(borrar,lista)
-                if validado is None:
-                    continue
-                else:
-                    return validado
+                while True:    
+                    borrar = validar_borrar_temporizador(borrar,lista)
+                    if borrar is None:
+                        borrar = input_color("\nDebes introducir un número válido: ", NARANJA)
+                        continue
+                    else:
+                        return borrar
         else:
             return None
 

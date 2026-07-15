@@ -35,7 +35,6 @@ def preguntar_seguir(seguir):
         while seguir not in ("s", "si", "n", "no"):
             seguir = input(f"{ROJO}\nOpción no válida. Escribe s/n: {RESET}").lower().strip()
         if seguir in ("n", "no"):
-            limpiar_pantalla()
             return False
         return seguir in ("s", "si")
         

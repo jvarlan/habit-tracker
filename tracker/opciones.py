@@ -146,16 +146,14 @@ def opcion_borrar():
             if borrar == "preguntar":
                 lista = mostrar_csv_diccionario("habitos")
                 if lista:
-                    seguir = input("\n¿Quieres eliminar otro hábito? s/n: ")
+                    seguir = input("¿Quieres eliminar otro hábito? s/n: ")
                     if preguntar_seguir(normalizar(seguir)):
                         limpiar_pantalla()
                         continue
-                    
-                else:
-                    break    
+                    else:
+                        break   
             else:
                 break
-
     else:
         print_color("No existe ningún hábito a eliminar.",CIAN)
 
@@ -212,27 +210,22 @@ def opcion_borrar_obj():
                 
                 seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el objetivo {borrar["tipo"]} con {borrar["objetivo"]} horas registradas ({dev_nombre_habito_id(borrar["id_habito"])})?\nEsta acción ELIMINARÁ el objetivo de forma PERMANENTE. s/n: {RESET}")
                 seguro = seguro.lower()
-    
-                if seguro == "s" or seguro == "si":
+
+                if preguntar_seguir(normalizar(seguro)):
                     borrar_objetivo(borrar["id"],borrar)
                     print_color(f"\nObjetivo eliminado con éxito.",VERDE,"\n")
-                elif seguro == "n" or seguro == "no":
-                    continue
                 else:
-                    print_color(f"\n❌ Valor inválido. Introduce solo 's' o 'n'",ROJO)
+                    limpiar_pantalla()
                     continue
-            lista = mostrar_temporizadores()
+
+            lista = mostrar_objetivos()
             if lista:
                 seguir = input("\n¿Quieres eliminar otro objetivo? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
                     limpiar_pantalla()
                     continue
                 else:
-                    limpiar_pantalla()
                     break    
-            else:
-                break
-
     else:
         print_color("No existe ningún objetivo a eliminar.",CIAN)
 
@@ -241,7 +234,7 @@ def opcion_borrar_tempo():
     # muestra previamente todos los registros a eliminar
     lista = mostrar_temporizadores()
 
-    if lista:
+    if lista:     
         while True:
             habitos = {}
             for i, item in enumerate(lista, start=1):
@@ -257,20 +250,26 @@ def opcion_borrar_tempo():
                         "temporizadores": []
                     }
                 habitos[nombre]["temporizadores"].append(
-                    f"{i} - Fecha: {item["fecha"]} - {item["horas"]} horas"
+                    f"{i} - {item["fecha"]} - {item["horas"]}"
                 )
+            
             print_color(f"\nEliminar un temporizador",INVERSION,"\n")
             print("\nLista de temporizadores por hábito: \n")
-            
             for nombre, info in sorted(habitos.items()):
                 print(f"{nombre} {info['emoticono']}")
-                print("===========================")
+                print("───────────────────────────")
+                print(f"{'ID':<3} {'FECHA':>3} {'HORAS':>13}")
+                print("───────────────────────────")
                 for temporizador in info['temporizadores']:
-                    print(temporizador)
+                    id, fecha, tiempo = [x.strip() for x in temporizador.split(" - ")]
+                    print(
+                        f"{id:<4}"
+                        f"{fecha:<14}"
+                        f"{tiempo}"
+                    )
                 print()
             
             print_color(volver,CIAN)
-            print_color("Eliminar un temporizador",INVERSION)
             borrar = pedir_temporizador_borrar()
             
             if borrar == None:
@@ -281,12 +280,12 @@ def opcion_borrar_tempo():
 
                 if seguro == "s" or seguro == "si":
                     habito = borrar_temporizador(borrar["id"],borrar)
-                    print_color(f"\nTemporizador eliminado con éxito.",VERDE)
+                    print_color(f"\nTemporizador eliminado con éxito.",VERDE,"\n")
                 elif seguro == "n" or seguro == "no":
                     continue
             lista = mostrar_temporizadores()
             if lista:
-                seguir = input("\n¿Quieres eliminar otro temporizador? s/n: ")
+                seguir = input("¿Quieres eliminar otro temporizador? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
                     continue
                 else:

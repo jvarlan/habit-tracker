@@ -104,7 +104,7 @@ def validar_horas(numero):
     
 
 def validar_borrar_temporizador(borrar,lista):
-  
+    
   # sirve para validar borrar temporizador y objetivos
     try:
         borrar = int(borrar)
@@ -114,5 +114,4 @@ def validar_borrar_temporizador(borrar,lista):
             print_color(f"Opción no valida",ROJO)
             return None
     except ValueError:
-        print_color("\nDebes introducir un número válido: ", NARANJA)
         return None
