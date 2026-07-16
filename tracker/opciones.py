@@ -299,10 +299,11 @@ def opcion_borrar_tempo():
 
 def opcion_borrar_categoria():
     # muestra previamente todos los registros a eliminar
-    lista = mostrar_csv_diccionario("categorias")
+    while True:
+        lista = mostrar_csv_diccionario("categorias")
 
-    if lista:
-        while True:
+        if lista:
+        
             print_color(f"\nEliminar una categoría",INVERSION,"\n\n")
             print("Lista de categorías:\n")
             lista = sorted(lista, key=lambda x: x["categoria"])
@@ -313,15 +314,17 @@ def opcion_borrar_categoria():
             borrar = pedir_categoria_borrar()
             if borrar == None:
                 return False
-            lista = mostrar_categorias()
-            if lista:
-                seguir = input("\n¿Quieres eliminar otra categoría? s/n: ")
-                if preguntar_seguir(normalizar(seguir)):
-                    continue
-                else:
-                    break    
+            elif borrar == True:
+                lista = mostrar_categorias()
+                if lista:
+                    seguir = input("\n¿Quieres eliminar otra categoría? s/n: ")
+                    if preguntar_seguir(normalizar(seguir)):
+                        limpiar_pantalla()
+                        continue
+                    else:
+                        break    
             else:
-                break
+                continue
     else:
         print_color("No existe ninguna categoria a eliminar.",CIAN)
 

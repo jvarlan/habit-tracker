@@ -125,7 +125,7 @@ def mostrar_menu_borrar():
             if not temporizadores:
                 print_color("3. Eliminar un temporizador",ROJO)
             else:
-                print("3. Eliminar un temporizador")
+                print_color("3. Eliminar un temporizador (COMPLETADO )",VERDE,"\n")
 
             print("4. Eliminar una categoría")
             print("5. Eliminar todos los elementos")

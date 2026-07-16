@@ -153,40 +153,41 @@ def pedir_habito_borrar():
                 borrar_objetivos_id_habito(borrar_id)
                 print_color(f"\nEl hábito {borrar} se ha eliminado con éxito.",VERDE)
                 return "preguntar"
-    else:  
-        return None
+        
 def pedir_categoria_borrar():
-    while True:
-        lista = mostrar_categorias()
-        if lista:
-            borrar = input("Introduce el nombre del elemento a borrar: ")
-            if normalizar(borrar) in ("volver","salir",""):
-                return None
+    lista = mostrar_categorias()
+    if lista:
+        borrar = input("Introduce el nombre de la categoría a borrar: ")
+        if normalizar(borrar) in ("volver","salir",""):
+            return None
+        
+        while True:
             if comprobar_categoria(normalizar(borrar)) is True:
         
                 id_categoria = dev_categoria_id(borrar)
                 lista_habitos = dev_lista_habitos_cat(id_categoria)
                 lista_objetivos_categoria = dev_lista_objetivos_cat(lista_habitos)
                 lista_temporizadores = dev_lista_temporizadores_cat(lista_habitos)
-                while True:
-                    borrar = dev_categoria_correcta(borrar)
-                    seguro = input(f"{ROJO}\nLa categoría {borrar} tiene {len(lista_objetivos_categoria)} objetivos, {len(lista_habitos)} hábitos, y {len(lista_temporizadores)} registros de tiempo asociados. ⚠️ Esta acción eliminará los DATOS de forma PERMANENTE.\n¿Quieres continuar? s/n: {RESET}")
-                    seguro = seguro.lower()
-                    
-                    if seguro == "s" or seguro == "si":
-                        habito = borrar_categoria(borrar,id_categoria,lista_habitos,lista_temporizadores, lista_objetivos_categoria)
-                        print_color(f"La categoria {borrar} y todos sus elementos relacionados han sido borrados con éxito.",VERDE)
-                        return False
-                    elif seguro == "n" or seguro == "no":
-                        return
-                    else:
-                        print_color(f"❌ Valor inválido. Introduce 's' o 'n'",ROJO)
-                        continue
+                break
             else:
-                print_color("Opción no válida.",ROJO)
+                borrar = input_color("\nOpción no válida. Introduce una categoría existente: ",ROJO)
                 continue
+               
+        borrar = dev_categoria_correcta(borrar)
+        print_color(f"\nLa categoría {borrar} tiene {len(lista_objetivos_categoria)} objetivos, {len(lista_habitos)} hábitos, y {len(lista_temporizadores)} registros de tiempo asociados.",ROJO,"\n")
+        print_color(f"⚠️  Esta acción borrará los DATOS de forma PERMANENTE.",ROJO)
+        seguro = input(f"{AMARILLO}¿Quieres continuar? s/n: {RESET}")
+        seguro = seguro.lower()
+        
+        if preguntar_seguir(normalizar(seguro)):
+            habito = borrar_categoria(borrar,id_categoria,lista_habitos,lista_temporizadores, lista_objetivos_categoria)
+            print_color(f"\nLa categoria {borrar} y todos sus elementos relacionados han sido borrados con éxito.",VERDE,"\n")
+            return True
         else:
-            return None
+            limpiar_pantalla()
+            return "cancelar"
+    else:
+        return None
 
 def pedir_objetivo_borrar():
     
