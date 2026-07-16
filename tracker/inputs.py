@@ -192,7 +192,7 @@ def pedir_objetivo_borrar():
     
         lista = mostrar_objetivos()
         if lista:
-            borrar = input("Introduce el número del elemento a borrar: ")
+            borrar = input("Introduce el número del objetivo a borrar: ")
             if normalizar(borrar) in ("volver","salir",""):
                 return None
             else:
@@ -208,21 +208,22 @@ def pedir_objetivo_borrar():
 
 
 def pedir_temporizador_borrar():
-    while True:
-        lista = mostrar_temporizadores()
-        if lista:
+    lista = mostrar_temporizadores()
+    if lista:
         
-            borrar = input("Introduce el número del elemento a borrar: ")
-            if normalizar(borrar) in ("volver","salir",""):
-                return None
-            else:
+        borrar = input("Introduce el número del temporizador a borrar: ")
+        if normalizar(borrar) in ("volver","salir",""):
+            return None
+        else:
+            while True:
                 validado = validar_borrar_temporizador(borrar,lista)
                 if validado is None:
+                    borrar = input_color("\nDebes introducir un número válido: ", ROJO)
                     continue
                 else:
                     return validado
-        else:
-            return None
+    else:
+        return None
         
 def pedir_habito_modi():
     while True:
