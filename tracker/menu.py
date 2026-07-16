@@ -26,9 +26,9 @@ def mostrar_menu():
         else:
             print_color("2. Registrar tiempo (COMPLETADO)",VERDE,"\n")
         if not habitos and not temporizadores and not categorias:
-            print_color("3. Eliminar elementos (99%)",ROJO)
+            print_color("3. Eliminar elementos (COMPLETADO)",ROJO)
         else:
-            print("3. Eliminar elementos (99%)")
+            print_color("3. Eliminar elementos (COMPLETADO)",VERDE,"\n")
         print("4. Modificar elementos (99%)")
         print("5. Mostrar estadísticas (99%)")
         print_color("=============================================",VERDE,"\n\n")
@@ -127,8 +127,8 @@ def mostrar_menu_borrar():
             else:
                 print_color("3. Eliminar un temporizador (COMPLETADO )",VERDE,"\n")
 
-            print("4. Eliminar una categoría")
-            print("5. Eliminar todos los elementos")
+            print_color("4. Eliminar una categoría (COMPLETADO)",VERDE,"\n")
+            print_color("5. Eliminar todos los elementos (COMPLETADO)",VERDE,"\n")
             print_color("====================================",VERDE)
             print_color(volver_principal,CIAN)
 

@@ -340,14 +340,13 @@ def opcion_borrar_todo():
 
         seguro = seguro.lower()
 
-        if seguro == "s" or seguro == "si":
-
+        if preguntar_seguir(normalizar(seguro)):
             borrar_csv("categorias.csv")
             borrar_csv("habitos.csv")
             borrar_csv("temporizadores.csv")
             borrar_csv("objetivos.csv")
             print(f"{VERDE}Todos los registros han sido eliminados.{RESET}")
-        elif seguro == "n" or seguro == "no":
+        else:
             limpiar_pantalla()
             return
     else:
