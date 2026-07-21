@@ -358,28 +358,33 @@ def opcion_modi_habito():
 
     if lista:
         while True:
-            lista_todo = mostrar_csv("habitos")
-            lista_objetivos = mostrar_csv("objetivos")
+            habitos_dict = mostrar_csv_diccionario("habitos")
+            lista_objetivos = mostrar_csv_diccionario("objetivos")
             #ordena la lista por nombre (el segundo campo del csv)
             
-            lista_objetivos = sorted(lista_objetivos, key=lambda x: x[1])
-            lista_todo = sorted(lista_todo, key=lambda x: x[1])
+            lista_objetivos = sorted(lista_objetivos, key=lambda x: x["id_habito"])
+            
+            habitos_dict = sorted(habitos_dict, key=lambda x: x["habito"])
             print_color(f"\nModificar un hábito",INVERSION,"\n")
             print("\nLista de hábitos registrados: \n")
-            for i, item in enumerate(lista_todo, start=1):
-                id_habito = item[0]
-                habito = item[1]
-                categoria = dev_nombre_categoria_id(item[2])
-                
-                objetivos_habito = [obj for obj in lista_objetivos if obj[1] == id_habito]
 
-                lista_tipos = []
-                for objetivo in objetivos_habito:
-                    lista_tipos.append(objetivo[2])
-                print(f"Hábito: {habito}")
-                print(f"Categoría: {categoria}")
-                print(f"Número objetivos: {len(lista_tipos)}")
-                print("=================================")
+            for habito in sorted(habitos_dict, key=lambda x: x["habito"]):
+                nombre = habito["habito"]
+                emoticono = dev_emoticono_categoria_id(habito['id_categoria'])
+                print(f"{nombre} {emoticono}")
+                print("───────────────────────────")
+               
+                print(f"{'CATEGORÍA':>3} {'Nº OBJETIVOS':>13}")
+                print("───────────────────────────")
+                
+                categoria = dev_nombre_categoria_id(habito['id_categoria'])
+                numero_objetivos = len([o for o in lista_objetivos if o["id_habito"] == habito["id"]])
+                print(
+                    f"{categoria:<14}"
+                    f"{numero_objetivos}"
+                        )
+                print()
+
             print_color(volver, CIAN)
             
             modificar = pedir_habito_modi()
