@@ -230,7 +230,7 @@ def pedir_habito_modi():
     while True:
         lista = mostrar_registros()
         if lista:
-            habito_modificar = input("Introduce el nombre del elemento a modificar: ")
+            habito_modificar = input("Introduce el nombre del hábito a modificar: ")
         if normalizar(habito_modificar) in ("volver","salir",""):
                 return ""
               
