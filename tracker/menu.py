@@ -192,7 +192,7 @@ def mostrar_menu_modificar():
             if not habitos:
                 print_color("1. Modificar un hábito",ROJO)
             else:
-                print("1. Modificar un hábito")
+                print_color("1. Modificar un hábito (COMPLETADO)",VERDE,"\n")
             if not objetivos:
                 print_color("2. Modificar un objetivo",ROJO)
             else:

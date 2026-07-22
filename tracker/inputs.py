@@ -1,6 +1,7 @@
 from datetime import datetime
 import time
 import threading
+import emoji
 from .checks import normalizar, validar_horas, comprobar_horas_temp_24, comprobar_registro, validar_borrar_temporizador, comprobar_categoria
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
 from .guardar import registrar_objetivo, registrar_categoria
@@ -227,17 +228,18 @@ def pedir_temporizador_borrar():
         return None
         
 def pedir_habito_modi():
-    while True:
-        lista = mostrar_registros()
-        if lista:
-            habito_modificar = input("Introduce el nombre del hábito a modificar: ")
-        if normalizar(habito_modificar) in ("volver","salir",""):
-                return ""
+    
+    lista = mostrar_registros()
+    if lista:
+        habito_modificar = input("Introduce el nombre del hábito a modificar: ")
+    if normalizar(habito_modificar) in ("volver","salir",""):
+            return ""
               
+    
+    while True:
         habitos = contar_csv_id("habitos",dev_habito_id(habito_modificar),0)
-
         if habitos == False:
-            print_color("\nEste hábito no existe.",ROJO,"\n\n")
+            habito_modificar = input_color("\nEste hábito no existe. Introduce uno válido: ",ROJO)
             continue
         else:
             todo_habito = mostrar_csv_diccionario("habitos")
@@ -245,18 +247,19 @@ def pedir_habito_modi():
                 if fila["habito"].lower() == habito_modificar.lower():
                     habito = fila["habito"]
                     categoria = dev_nombre_categoria_id(fila["id_categoria"])
-            print_color(f"Hábito actual: {habito}",CIAN)
-            contador = 0
+            print_color(f"\nHábito actual: {habito}",CIAN)
+            contadorh = 0
+            contadorc = 0
 
-            seguro = input(f"{ROJO}¿Quieres modificar el nombre del hábito {habito}? s/n: {RESET}")
+            seguro = input(f"{NARANJA}¿Quieres modificar el nombre del hábito {habito}? s/n: {RESET}")
             seguro = seguro.lower()
-            
-            if seguro in ("s","si"):
-                while True:
-                    habito = input(f"Nuevo nombre: ")
-                    contador +=1
+
+            if preguntar_seguir(normalizar(seguro)):
+                 while True:
+                    habito_modificar = input(f"Modificar nombre: ")
+                    contadorh +=1
                         # devuelve el número de veces que el nombre está registrado
-                    comprobado = comprobar_registro(habito)
+                    comprobado = comprobar_registro(habito_modificar)
 
                     # si está registrado, vuelve a pedir el nombre
                     if comprobado > 0:
@@ -264,33 +267,58 @@ def pedir_habito_modi():
                         continue
                     else: 
                         break
-            seguro = input(f"{ROJO}¿Quieres modificar la categoría? s/n: {RESET}")
+            else:
+                habito_modificar = habito
+
+            seguro = input(f"{NARANJA}\n¿Quieres modificar la categoría? s/n: {RESET}")
             seguro = seguro.lower()
             
-            if seguro in ("s","si"):
+            if preguntar_seguir(normalizar(seguro)):
                 while True:
                     lista_todo = mostrar_csv_diccionario("categorias")
-                    modificar_categoria = input("Nueva categoría: ")
+                    modificar_categoria = input("Modificar categoría: ")
                     if any(item.get("categoria") == modificar_categoria for item in lista_todo):
                         id_categoria = dev_categoria_id(modificar_categoria)
-                        contador +=1
+                        contadorc +=1
                         break
                     else:
-                        print_color("Has añadido una nueva categoría.",CIAN)
+                        print_color(f"\nLa categoría {modificar_categoria} no existe. Se añadirá.",CIAN)
+                        categorias = mostrar_csv_diccionario("categorias")
+                        cat_dict = {cat["categoria"]: cat["emoticono"] for cat in categorias}
+                    
                         emoticono = input(f"Introduce un emoticono para la nueva categoría {modificar_categoria}: ")
+                        while True:
+                            if not emoji.is_emoji(emoticono):
+                                emoticono = input_color("\nDebes introducir un único emoji: ",ROJO)
+                                continue
+
+                            if emoticono in cat_dict.values():
+                                emoticono = input_color("\nEse emoji ya está en uso: ",ROJO)
+                                continue
+                            break
+                            
                         registrar_categoria(modificar_categoria, emoticono)
                         id_categoria = dev_categoria_id(modificar_categoria)
-                        contador +=1
+                        contadorc +=1
                         break
             else:
                 modificar_categoria = categoria
-                   
-            if contador > 0:
-                modificar_habito(habito,dev_habito_id(habito_modificar),id_categoria)
-                print_color(f"El hábito {habito} ha sido cambiado con éxito por {habito_modificar}. La categoría {categoria} ha sido cambiada por {modificar_categoria}",VERDE)
-                return
+                id_categoria = dev_categoria_id(modificar_categoria)
+            
+            if contadorh > 0 and contadorc == 0:
+                modificar_habito(habito_modificar,dev_habito_id(habito),dev_categoria_id(modificar_categoria))
+                print_color(f"\nEl hábito {habito} ha sido cambiado con éxito por {habito_modificar}.",VERDE,"\n")
+                break
+            elif contadorh == 0 and contadorc > 0:
+                modificar_habito(habito_modificar,dev_habito_id(habito),dev_categoria_id(modificar_categoria))
+                print_color(f"\nEl hábito {habito} ha sido cambiado con éxito a la categoría {modificar_categoria}.",VERDE,"\n")
+                break
+            elif contadorh > 0 and contadorc > 0:
+                modificar_habito(habito_modificar,dev_habito_id(habito),dev_categoria_id(modificar_categoria))
+                print_color(f"\nEl hábito {habito} ha sido cambiado con éxito por {habito_modificar} y a la categoría {modificar_categoria}.",VERDE,"\n")
+                break
             else:
-                print_color("No se ha modificado nada.",CIAN)
+                print_color("\nNo se ha modificado nada.",CIAN,"\n")
                 break
 
 def pedir_tempo_modi(lista_todo):
@@ -471,9 +499,23 @@ def pedir_categoria_modi(lista_todo):
                     emoticono = categoria_encontrada["emoticono"]
                     id_categoria = categoria_encontrada["id"]
                 else:
-                    print_color("Aviso: Esta categoría no está introducida, así que se va a proceder a añadirla.",CIAN)
+                    print_color(f"La categoría {categoria} no existe. Se añadirá.",CIAN)
+                    
+                    categorias = mostrar_csv_diccionario("categorias")
+                    cat_dict = {cat["categoria"]: cat["emoticono"] for cat in categorias}
+                    
                     emoticono = input(f"Introduce un emoticono para la categoría {modificar}: ")
-                    registrar_categoria(modificar, emoticono)
+                    
+                    while True:
+                        if not emoji.is_emoji(emoticono):
+                            emoticono = input_color("\nDebes introducir un único emoji: ",ROJO)
+                            continue
+
+                        if emoticono in cat_dict.values():
+                            emoticono = input_color("\nEse emoji ya está en uso: ",ROJO)
+                            continue
+                        break
+                registrar_categoria(modificar, emoticono)
 
 
                 categorias = contar_csv_id("categorias",id_categoria,0)

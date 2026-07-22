@@ -395,6 +395,7 @@ def opcion_modi_habito():
             if lista:
                 seguir = input("\n¿Quieres modificar otro hábito? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
+                    limpiar_pantalla()
                     continue
                 else:
                     break    
