@@ -442,7 +442,7 @@ def opcion_modi_tempo():
 
 def opcion_modi_objetivo():
     
-    # muestra previamente todos los registros a eliminar
+    # muestra previamente todos los registros a modificar
     lista = mostrar_registros()
 
     if lista:
@@ -450,13 +450,16 @@ def opcion_modi_objetivo():
             lista_todo = mostrar_csv("objetivos")
             #ordena la lista por fecha (el tercer campo del csv)
             print_color(f"\nModificar un objetivo",INVERSION,"\n")
-            print("\nLista de objetivos registrados: \n")
+            print("\nObjetivos registrados \n")
+            print(f"{'Nº':<4} {'Periodo':<12} {'Tiempo':<12} {'Hábito'}")
+            print("─────────────────────────────────────────────────")
+
             for i, item in enumerate(lista_todo, start=1):
                 habito = dev_nombre_habito_id(item[1])
                 tipo = item[2]
                 objetivo = item[3]
-                print(f"{i} - Objetivo {tipo} de {objetivo} horas ({habito})")
-
+                print(f"{i:<4} {tipo.capitalize():<12} {objetivo:<12} {habito}")
+            print("─────────────────────────────────────────────────"  )
             print_color(volver, CIAN)
             
             modificar = pedir_objetivo_modi(lista_todo)
@@ -465,8 +468,9 @@ def opcion_modi_objetivo():
                 break
             lista = mostrar_registros()
             if lista:
-                seguir = input("\n¿Quieres modificar otro hábito? s/n: ")
+                seguir = input("\n¿Quieres modificar otro objetivo? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
+                    limpiar_pantalla()
                     continue
                 else:
                     break    

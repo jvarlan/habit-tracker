@@ -351,7 +351,7 @@ def pedir_tempo_modi(lista_todo):
                     horas = fila[2]
                     fecha = fila[3]
 
-            print_color(f"Hábito actual: {habito}",CIAN)
+            print_color(f"\nHábito actual: {habito}",CIAN,"\n")
             print_color(f"Hora actual: {horas}",CIAN)
             print_color(f"Fecha actual: {fecha} ",CIAN)
 
@@ -397,24 +397,28 @@ def pedir_tempo_modi(lista_todo):
                 return
 
 def pedir_objetivo_modi(lista_todo):
-    while True:
+    mensaje = "Introduce el número del objetivo a modificar: "
 
+    while True:
         if lista_todo:
             try:
-                modificar = input("Introduce el número del objetivo a modificar: ")
+                modificar = input(mensaje)
                 
                 if normalizar(modificar) in ("volver","salir",""):
                     return ""
+                
                 modificar = int(modificar) 
+                if modificar <=0:
+                    raise IndexError
 
-                id_temporizador = lista_todo[modificar-1][0]
-            
-                temporizadores = contar_csv_id("objetivos",id_temporizador,0)           
+                id_temporizador = lista_todo[modificar-1][0]            
+                temporizadores = contar_csv_id("objetivos",id_temporizador,0)       
+
             except ValueError:
-                print_color(f"Formato incorrecto. Debes introducir un número de la lista.",NARANJA)
+                mensaje = (f"{NARANJA}\nFormato incorrecto. Debes introducir un número de la lista: {RESET}")
                 continue
             except IndexError:
-                print_color("Este objetivo no existe.",ROJO)
+                mensaje = (f"{ROJO}\nEste objetivo no existe. Debes introducir un número de la lista: {RESET}")
                 continue
             lista_tipos_restantes = ["diario","semanal","mensual","anual"]
             todo_habito = mostrar_csv("objetivos")
@@ -429,55 +433,69 @@ def pedir_objetivo_modi(lista_todo):
                 if fila[1] == id_habito:
                     lista_tipos_restantes.remove(fila[2])
            
-            print_color(f"Hábito actual: {habito}",CIAN)
-            print_color(f"Tipo hábito: {tipo_objetivo}",CIAN)
+            print_color(f"\nHábito actual: {habito}",CIAN,"\n")
+            print_color(f"Periodo: {tipo_objetivo.capitalize()}",CIAN,"\n")
             print_color(f"Objetivo horas actual: {objetivo_horas} ",CIAN)
 
-            contador = 0
+            contadorp = 0
+            contadorh  = 0
+
             if not lista_tipos_restantes:
                 print_color("No es posible cambiar el tipo de objetivo porque ya están ocupados.",ROJO)
                 nuevo_objetivo = tipo_objetivo
             else:
                 
-                seguro = input(f"{ROJO}¿Quieres modificar el tipo de hábito? s/n: {RESET}")
-                seguro = seguro.lower()
-                
-                if seguro in ("s","si"):
+                seguro = input(f"{AMARILLO}¿Quieres modificar el periodo? s/n: {RESET}")
+
+                if preguntar_seguir(normalizar(seguro)):
+                    if len(lista_tipos_restantes) == 1:
+                        opciones = lista_tipos_restantes[0]
+                    else:
+                        opciones = ", ".join(lista_tipos_restantes[:-1]) + " o " + lista_tipos_restantes[-1]
+                    nuevo_objetivo = input(f"Nuevo objetivo ({opciones}): ")
                     while True:
-                        nuevo_objetivo = input(f"Nuevo objetivo ({lista_tipos_restantes}): ")
                         if nuevo_objetivo not in lista_tipos_restantes:
+                            nuevo_objetivo = input_color(f"\nIntroduce un objetivo válido ({opciones}): ",ROJO)
                             continue
                         else:
-                            contador +=1
+                            contadorp +=1
                             break
                 else:
-                    nuevo_objetivo = tipo_objetivo
+                    nuevo_objetivo = tipo_objetivo  
                 
+            seguro = input(f"{AMARILLO}¿Quieres modificar las horas objetivo? s/n: {RESET}")
 
-            seguro = input(f"{ROJO}¿Quieres modificar las horas objetivo? s/n: {RESET}")
-            seguro = seguro.lower()
-            
-            if seguro in ("s","si"):
+            if preguntar_seguir(normalizar(seguro)):
+                objetivo = input("Objetivo (horas): ")
                 while True:
-                    objetivo = input("Objetivo (horas): ")
-                    
-                    # comprueba que las horas sean mayores que 0 y no contengan letras u otros caracteres
-                    
+                    # comprueba que las horas sean mayores que 0 y no contengan letras u otros caracteres  
                     if validar_horas(objetivo):
                         nueva_hora = validar_horas(objetivo)
-                        contador +=1
+                        contadorh +=1
                         break
                     else:
+                        objetivo = input_color(f"\nIntroduce un valor válido (HH:MM:SS): ",ROJO)
                         continue
-                    
             else:
                 nueva_hora = objetivo_horas
-
-            if contador > 0:
+            if contadorp > 0 and contadorh > 0:    
                 
                 modificar_objetivo(id_temporizador,nuevo_objetivo,nueva_hora)
                 id_habito = dev_idhabito_temporizador(id_temporizador)
-                print_color(f"El hábito {habito} con un objetivo {tipo_objetivo} de {objetivo_horas} se ha cambiado con éxito por un objetivo {nuevo_objetivo} de {nueva_hora}.",VERDE)
+                print_color(f"\nSe ha actualizado el objetivo de {habito}: {tipo_objetivo} ({objetivo_horas}) → {nuevo_objetivo} ({nueva_hora}).",VERDE,"\n")
+                return
+            elif contadorp == 0 and contadorh == 0:
+                print_color("\nNo se ha modificado nada.",CIAN,"\n")
+                return
+            elif contadorp > 0 and contadorh == 0:
+                modificar_objetivo(id_temporizador,nuevo_objetivo,nueva_hora)
+                id_habito = dev_idhabito_temporizador(id_temporizador)
+                print_color(f"\nEl periodo de {habito} ha cambiado de {tipo_objetivo} a {nuevo_objetivo}.",VERDE,"\n")
+                return
+            elif contadorp == 0 and contadorh > 0:
+                modificar_objetivo(id_temporizador,nuevo_objetivo,nueva_hora)
+                id_habito = dev_idhabito_temporizador(id_temporizador)
+                print_color(f"\nEl objetivo de {habito} ha cambiado de {objetivo_horas} a {nueva_hora}.",VERDE,"\n")
                 return
             else:
                 print_color("No se ha modificado nada.",CIAN)

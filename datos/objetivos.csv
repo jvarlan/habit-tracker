@@ -6,9 +6,7 @@ id,id_habito,tipo,objetivo
 6,1,mensual,06:00:00
 7,1,anual,10:00:00
 12,4,diario,03:00:00
-13,4,semanal,05:00:00
+13,4,anual,50:00:00
 14,4,mensual,10:00:00
-16,5,anual,10000:00:00
+16,5,anual,100:00:00
 32,5,diario,01:00:00
-59,17,semanal,02:00:00
-68,17,mensual,10:00:00

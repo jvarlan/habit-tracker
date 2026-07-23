@@ -196,7 +196,7 @@ def mostrar_menu_modificar():
             if not objetivos:
                 print_color("2. Modificar un objetivo",ROJO)
             else:
-                print("2. Modificar un objetivo")
+                print_color("2. Modificar un objetivo (COMPLETADO)",VERDE,"\n")
             if not temporizadores:
                 print_color("3. Modificar un temporizador",ROJO)
             else:
