@@ -322,79 +322,101 @@ def pedir_habito_modi():
                 break
 
 def pedir_tempo_modi(lista_todo):
-    while True:
 
+    mensaje = "Introduce el número del temporizador a modificar: "
+
+    while True:
         if lista_todo:
             try:
-                modificar = input("Introduce el número del temporizador a modificar: ")
+                modificar = input(mensaje)
                 
                 if normalizar(modificar) in ("volver","salir",""):
                     return ""
+                modificar = int(modificar)
+
+                if modificar <=0:
+                    raise IndexError
+                
                 modificar = int(modificar)-1
 
                 id_temporizador = lista_todo[modificar][0]
-                
-                temporizadores = contar_csv_id("temporizadores",id_temporizador,0)           
+                temporizadores = contar_csv_id("temporizadores",id_temporizador,0)  
+
             except ValueError:
-                print_color(f"Formato incorrecto. Debes introducir un número de la lista.",NARANJA)
+                mensaje = (f"{NARANJA}\nFormato incorrecto. Debes introducir un número de la lista: {RESET}")
                 continue
             except IndexError:
-                print_color("Este temporizador no existe.",ROJO)
+                mensaje = (f"{ROJO}\nEste temporizador no existe. Debes introducir un número de la lista: {RESET}")
                 continue
 
             todo_habito = mostrar_csv("temporizadores")
             todo_habito = sorted(todo_habito, key=lambda x: x[3])
+
             for fila in todo_habito:
+
                 if fila[0] == id_temporizador:
-                    
                     habito = dev_nombre_habito_id(fila[1])
                     horas = fila[2]
                     fecha = fila[3]
 
             print_color(f"\nHábito actual: {habito}",CIAN,"\n")
-            print_color(f"Hora actual: {horas}",CIAN)
+            print_color(f"Hora actual: {horas}",CIAN,"\n")
             print_color(f"Fecha actual: {fecha} ",CIAN)
 
-            contador = 0
+            contadorh = 0
+            contadorf  = 0
 
-            seguro = input(f"{ROJO}¿Quieres modificar las horas? s/n: {RESET}")
+            seguro = input(f"{AMARILLO}¿Quieres modificar las horas? s/n: {RESET}")
             seguro = seguro.lower()
-            
-            if seguro in ("s","si"):
+
+            if preguntar_seguir(normalizar(seguro)):
                 while True:
                     nueva_hora = pedir_horas_temp()
-                    id_habito = lista_todo[modificar-1][1]
-                    
+                    id_habito = lista_todo[modificar][1]
+                
                     contador_horas_24 = comprobar_horas_temp_24(datetime.strptime(fecha, "%Y-%m-%d").date(), id_habito)
                     contador_horas_24_total = int(contador_horas_24) - int(horas_a_segundos(horas)) + int(horas_a_segundos(nueva_hora))
-                    
+
+                
                     if contador_horas_24_total > 24 * 3600:
                         print_color(f"Este temporizador ya tiene 24 horas registradas en este día.",ROJO)
                         continue
                     else:
-                        contador +=1
+                        contadorh +=1
                         break
             else:
                 nueva_hora = horas
-
-            seguro = input(f"{ROJO}¿Quieres modificar la fecha del registro? s/n: {RESET}")
-            seguro = seguro.lower()
             
-            if seguro in ("s","si"):
+            
+            seguro = input(f"{AMARILLO}¿Quieres modificar la fecha del registro? s/n: {RESET}")
+            seguro = seguro.lower()
+
+            if preguntar_seguir(normalizar(seguro)):
                 nueva_fecha = pedir_fecha_temp()
-                contador +=1
+                contadorf +=1
             else:
                 nueva_fecha = fecha
+            
+            if contadorh > 0 or contadorf > 0:
 
-            if contador > 0:
-                
                 modificar_temporizador(id_temporizador,nueva_hora,nueva_fecha)
                 id_habito = dev_idhabito_temporizador(id_temporizador)
-                print_color(f"El temporizador {dev_nombre_habito_id(id_habito)} con {horas} horas registradas el día {fecha} ha sido cambiado con éxito por {nueva_hora} horas con fecha {nueva_fecha}.",VERDE)
+                print_color(f"\nSe ha actualizado el temporizador de {dev_nombre_habito_id(id_habito)}: {horas} horas ({fecha}) →  {nueva_hora} horas ({nueva_fecha}).",VERDE,"\n")
                 return
-            else:
-                print_color("No se ha modificado nada.",CIAN)
+            elif contadorh == 0 and contadorf == 0:
+                print_color("\nNo se ha modificado nada.",CIAN,"\n")
                 return
+            elif contadorh > 0 and contadorf == 0:
+                modificar_temporizador(id_temporizador,nueva_hora,nueva_fecha)
+                id_habito = dev_idhabito_temporizador(id_temporizador)
+                print_color(f"\nLas horas del temporizador {dev_nombre_habito_id(id_habito)} han cambiado de {horas} horas a {nueva_hora} horas ({nueva_fecha}).",VERDE,"\n")
+                return
+            elif contadorh == 0 and contadorf > 0:
+                modificar_temporizador(id_temporizador,nueva_hora,nueva_fecha)
+                id_habito = dev_idhabito_temporizador(id_temporizador)
+                print_color(f"\nLa fecha del temporizador {dev_nombre_habito_id(id_habito)} ha cambiado de {fecha} a {nueva_fecha}.",VERDE,"\n")
+                return
+        
 
 def pedir_objetivo_modi(lista_todo):
     mensaje = "Introduce el número del objetivo a modificar: "
@@ -408,11 +430,12 @@ def pedir_objetivo_modi(lista_todo):
                     return ""
                 
                 modificar = int(modificar) 
+
                 if modificar <=0:
                     raise IndexError
 
-                id_temporizador = lista_todo[modificar-1][0]            
-                temporizadores = contar_csv_id("objetivos",id_temporizador,0)       
+                id_objetivo = lista_todo[modificar-1][0]            
+                temporizadores = contar_csv_id("objetivos",id_objetivo,0)       
 
             except ValueError:
                 mensaje = (f"{NARANJA}\nFormato incorrecto. Debes introducir un número de la lista: {RESET}")
@@ -420,15 +443,18 @@ def pedir_objetivo_modi(lista_todo):
             except IndexError:
                 mensaje = (f"{ROJO}\nEste objetivo no existe. Debes introducir un número de la lista: {RESET}")
                 continue
+
             lista_tipos_restantes = ["diario","semanal","mensual","anual"]
             todo_habito = mostrar_csv("objetivos")
+
             for fila in todo_habito:
-                if fila[0] == id_temporizador:
+
+                if fila[0] == id_objetivo:
                     id_habito = fila[1]
-                    
                     habito = dev_nombre_habito_id(fila[1])
                     tipo_objetivo = fila[2]
                     objetivo_horas = fila[3]
+
             for fila in todo_habito:        
                 if fila[1] == id_habito:
                     lista_tipos_restantes.remove(fila[2])
@@ -480,26 +506,24 @@ def pedir_objetivo_modi(lista_todo):
                 nueva_hora = objetivo_horas
             if contadorp > 0 and contadorh > 0:    
                 
-                modificar_objetivo(id_temporizador,nuevo_objetivo,nueva_hora)
-                id_habito = dev_idhabito_temporizador(id_temporizador)
+                modificar_objetivo(id_objetivo,nuevo_objetivo,nueva_hora)
+                id_habito = dev_idhabito_temporizador(id_objetivo)
                 print_color(f"\nSe ha actualizado el objetivo de {habito}: {tipo_objetivo} ({objetivo_horas}) → {nuevo_objetivo} ({nueva_hora}).",VERDE,"\n")
                 return
             elif contadorp == 0 and contadorh == 0:
                 print_color("\nNo se ha modificado nada.",CIAN,"\n")
                 return
             elif contadorp > 0 and contadorh == 0:
-                modificar_objetivo(id_temporizador,nuevo_objetivo,nueva_hora)
-                id_habito = dev_idhabito_temporizador(id_temporizador)
+                modificar_objetivo(id_objetivo,nuevo_objetivo,nueva_hora)
+                id_habito = dev_idhabito_temporizador(id_objetivo)
                 print_color(f"\nEl periodo de {habito} ha cambiado de {tipo_objetivo} a {nuevo_objetivo}.",VERDE,"\n")
                 return
             elif contadorp == 0 and contadorh > 0:
-                modificar_objetivo(id_temporizador,nuevo_objetivo,nueva_hora)
-                id_habito = dev_idhabito_temporizador(id_temporizador)
+                modificar_objetivo(id_objetivo,nuevo_objetivo,nueva_hora)
+                id_habito = dev_idhabito_temporizador(id_objetivo)
                 print_color(f"\nEl objetivo de {habito} ha cambiado de {objetivo_horas} a {nueva_hora}.",VERDE,"\n")
                 return
-            else:
-                print_color("No se ha modificado nada.",CIAN)
-                return
+            
 
 
 def pedir_categoria_modi(lista_todo):

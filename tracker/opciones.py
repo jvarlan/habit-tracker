@@ -434,15 +434,16 @@ def opcion_modi_tempo():
                 break
             lista = mostrar_registros()
             if lista:
-                seguir = input("\n¿Quieres modificar otro hábito? s/n: ")
+                seguir = input("\n¿Quieres modificar otro temporizador? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
+                    limpiar_pantalla()
                     continue
                 else:
                     break    
             else:
                 break
     else:
-        print_color("No existe ningún hábito a modificar.",CIAN)
+        print_color("No existe ningún temporizador a modificar.",CIAN)
 
 def opcion_modi_objetivo():
     
@@ -513,8 +514,9 @@ def opcion_modi_categoria():
             lista = mostrar_registros()
             
             if lista:
-                seguir = input("¿Quieres modificar otro hábito? s/n: ")
+                seguir = input("¿Quieres modificar otra categoria? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
+                    limpiar_pantalla()
                     continue
                 else:
                     break    
