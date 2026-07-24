@@ -200,7 +200,7 @@ def mostrar_menu_modificar():
             if not temporizadores:
                 print_color("3. Modificar un temporizador",ROJO)
             else:
-                print("3. Modificar un temporizador")
+                print_color("3. Modificar un temporizador (COMPLETADO)",VERDE,"\n")
 
             print("4. Modificar una categoría")
             print_color("====================================",VERDE)
