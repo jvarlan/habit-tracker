@@ -415,15 +415,19 @@ def opcion_modi_tempo():
             #ordena la lista por fecha (el tercer campo del csv)
             lista_todo = sorted(lista_todo, key=lambda x: x[3])
 
-            print("\nEstos son los temporizadores ya registrados: \n")
+            print_color(f"\nModificar un temporizador",INVERSION,"\n")
+            print("\nTemporizadores registrados: \n")
+            print(f"{'Nº':<4} {'Fecha':<12} {'Tiempo':<12} {'Hábito'}")
+            print("─────────────────────────────────────────────────")            
             for i, item in enumerate(lista_todo, start=1):
                 temporizador = dev_nombre_habito_id(item[1])
                 tiempo = item[2]
                 fecha = item[3]
-                print(f"{i} - {fecha} - {tiempo} horas ({temporizador})")
+                print(f"{i:<4} {fecha:<12} {tiempo:<12} {temporizador}")
+            print("─────────────────────────────────────────────────")
 
             print_color(volver, CIAN)
-            print_color("Modificar un temporizador",INVERSION)
+            
             modificar = pedir_tempo_modi(lista_todo)
            
             if modificar == "":
