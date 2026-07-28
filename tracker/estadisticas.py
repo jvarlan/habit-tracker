@@ -301,52 +301,47 @@ def preparar_datos_estadistica(temporizadores, habitos, categorias):
         }
 
 def preparar_datos_habitos(temporizadores, habitos, categorias):
-    
+
     habitos_dict = {h['id']: h for h in habitos}
     categorias_dict = {c['id']: c for c in categorias}
 
     habitos_datos = {}
+
     for habito in habitos:
         horas_totales = 0
         fechas = []
         horas_por_fecha = {}
 
-        for t in temporizadores:   
-            if habito['id'] == t['id_habito']:
+        for t in temporizadores:
+       
+            if habito['id'] != t['id_habito']:
+                continue
 
-                h = habitos_dict.get(t['id_habito'])
+            h = habitos_dict.get(t['id_habito'])
+            if not h:
+                continue
 
-                if not h:
-                    continue
-                
-                c = categorias_dict.get(h['id_categoria'])
+            c = categorias_dict.get(h['id_categoria'])
+            if not c:
+                continue
 
-                if not c:
-                    continue
-                
-                fecha = datetime.strptime(t['fecha'], "%Y-%m-%d").date()
-                tiempo_segundos = horas_a_segundos(t['tiempo'])
-                horas_totales += tiempo_segundos
-                fechas.append(fecha)
+            fecha = datetime.strptime(t['fecha'], "%Y-%m-%d").date()
+            tiempo_segundos = horas_a_segundos(t['tiempo'])
 
-                if fecha not in horas_por_fecha:
-                    horas_por_fecha[fecha] = 0
-                horas_por_fecha[fecha] += tiempo_segundos
-            nombre = habito["habito"]
-            if nombre not in habitos_datos:
-                habitos_datos[nombre] = {
-                    "horas_totales": 0,
-                    "fechas": [],
-                    "horas_por_fecha": {}
-                }
+            horas_totales += tiempo_segundos
+            fechas.append(fecha)
 
-            habitos_datos[nombre]["horas_totales"] += horas_totales
-            habitos_datos[nombre]["fechas"] += fechas
-            habitos_datos[nombre]["horas_por_fecha"].update(horas_por_fecha)
+            horas_por_fecha[fecha] = horas_por_fecha.get(fecha, 0) + tiempo_segundos
 
+        nombre = habito["habito"]
 
+        habitos_datos[nombre] = {
+            "horas_totales": horas_totales,
+            "fechas": fechas,
+            "horas_por_fecha": horas_por_fecha
+        }
+   
     return habitos_datos
-
 
 def calcular_estadisticas_globales(datos):
     hoy = date.today()
@@ -400,26 +395,31 @@ def calcular_estadisticas_globales(datos):
     }
 
 def calcular_estadisticas_habitos(datos, nombre):
+    
     hoy = date.today()
     fechas = sorted(set(datos["fechas"]))
+    
     horas_totales = datos["horas_totales"]
     horas_por_fecha = datos["horas_por_fecha"]
 
     fecha_max = None
     horas_max = 0
-
+    
     for fecha, horas in horas_por_fecha.items():
         if horas > horas_max:
             horas_max = horas
             fecha_max = fecha
-    
+
     media_horas = horas_totales / len(fechas)
+
 
     racha_max = calcular_racha_maxima(fechas)
     racha_actual = calcular_racha_actual(fechas)
 
     dias_activos = len(fechas)
+    
     primera_fecha = min(fechas)
+    
     ultima_fecha = max(fechas)
     dias_totales = ((hoy - primera_fecha).days) + 1
 

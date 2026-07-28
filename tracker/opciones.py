@@ -366,7 +366,7 @@ def opcion_modi_habito():
             
             habitos_dict = sorted(habitos_dict, key=lambda x: x["habito"])
             print_color(f"\nModificar un hábito",INVERSION,"\n")
-            print("\nLista de hábitos registrados: \n")
+            print("\nHábitos registrados: \n")
 
             for habito in sorted(habitos_dict, key=lambda x: x["habito"]):
                 nombre = habito["habito"]
@@ -497,7 +497,7 @@ def opcion_modi_categoria():
             lista_todo = sorted(lista_todo, key=lambda x: x["categoria"])
             print_color(f"\nModificar una categoria",INVERSION,"\n")
 
-            print("\nLista de categorias registradas: \n")
+            print("\nCategorias registradas: \n")
 
             for i, item in enumerate(lista_todo, start=1):
                 id_categoria = item["id"]
@@ -634,9 +634,12 @@ def opcion_estadistica_habitos():
         categorias = mostrar_csv_diccionario("categorias")
  
         habitos_datos = preparar_datos_habitos(temporizadores, habitos, categorias)
+      
 
 
         for nombre_habito, datos in habitos_datos.items():
+            if not datos["fechas"]:
+                continue
 
             estadisticas = calcular_estadisticas_habitos(datos, nombre_habito)
         

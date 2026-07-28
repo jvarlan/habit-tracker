@@ -29,7 +29,7 @@ def mostrar_menu():
             print_color("3. Eliminar elementos (COMPLETADO)",ROJO)
         else:
             print_color("3. Eliminar elementos (COMPLETADO)",VERDE,"\n")
-        print("4. Modificar elementos (99%)")
+        print_color("4. Modificar elementos (COMPLETADO)",VERDE,"\n")
         print("5. Mostrar estadísticas (99%)")
         print_color("=============================================",VERDE,"\n\n")
         print_color(volver,CIAN,"\n\n")
@@ -202,7 +202,7 @@ def mostrar_menu_modificar():
             else:
                 print_color("3. Modificar un temporizador (COMPLETADO)",VERDE,"\n")
 
-            print("4. Modificar una categoría")
+            print_color("4. Modificar una categoría (COMPLETADO)",VERDE,"\n")
             print_color("====================================",VERDE)
             print_color(volver_principal,CIAN)
             
