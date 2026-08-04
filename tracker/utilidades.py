@@ -63,7 +63,7 @@ def nombre_idhabito():
 
 def cumple_periodo(fecha, ahora, tipo, offset):
    
-
+    
     if isinstance(fecha, str):
         fecha = datetime.strptime(fecha, "%Y-%m-%d").date()
     if isinstance(ahora, datetime):

@@ -138,14 +138,16 @@ def generar_bloque_categorias(habitos,temporizadores, categorias):
         *categorias_est(habitos, temporizadores, categorias),
     ]
 
-def generar_bloque_resumen(titulo,objetivos,temporizadores,tipo, categorias, habitos):
+def generar_bloque_resumen(titulo, objetivos, temporizadores, tipo, categorias, habitos):
 
     if not objetivos:
-        print_color(f"No hay objetivos {titulo}",ROJO)
+        print_color(f"No hay objetivos {titulo}", ROJO)
         return []
+
+    separador = "─" * (70 - len(titulo) - 4)
+
     return [
-        print_color_pausa(f"\n{titulo}",VERDE),
-        print_color_pausa("────────────────────────",VERDE),
+        print_color_pausa(f"\n── {titulo} {separador}", VERDE),
         *resumen_est(objetivos, categorias, temporizadores, tipo, habitos, 0),
     ]
 
@@ -156,11 +158,12 @@ def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, of
         
         for objetivo in objetivos:     
             id_habito = objetivo['id_habito']
+            segundos_totales = 0
             for temporizador in temporizadores:
                 
                 if temporizador['id_habito'] == id_habito:
                     fecha_temp = datetime.strptime(temporizador['fecha'], "%Y-%m-%d").date()
-                    segundos_totales = 0
+                    
                     if cumple_periodo(fecha_temp, ahora, tipo_periodo, offset):
                         segundos_totales = segundos_totales + horas_a_segundos(temporizador['tiempo'])
             
@@ -190,7 +193,7 @@ def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, of
 
 
             if porcentaje == 0:
-                emoti_objetivo = "👎"
+                emoti_objetivo = "❌"
             elif porcentaje > 0 and porcentaje <= 50:
                 emoti_objetivo = "📈"
             elif porcentaje > 50 and porcentaje <= 80:
@@ -202,7 +205,19 @@ def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, of
          
             horas_totales = segundos_totales / 3600     
             
-            linea = f"{emoticono_categoria} {habito['habito']} -> {horas_string_a_HHMM(horas_totales)}/{objetivo['objetivo']} horas ({porcentaje:.2f}%) {emoti_objetivo}"
+
+            progreso = min(porcentaje, 100)
+
+            relleno = int(progreso / 10)
+            barra = "▰" * relleno + " " * (10 - relleno)
+            barra = f"[{barra}]"
+
+            linea = (
+                f"{emoticono_categoria} {habito['habito']:<20} "
+                f"{horas_string_a_HHMM(horas_totales)} / {objetivo['objetivo']}  "
+                f"{barra} {porcentaje:>3.0f}% {emoti_objetivo}"
+            )
+
             lineas.append(linea)
 
         return lineas

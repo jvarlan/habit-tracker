@@ -537,7 +537,7 @@ def opcion_estadistica_objetivo():
 
     while True:
         mostrar_mas = normalizar(input(
-            "\nPulsa 'M' para ver los objetivos mensuales, 'A' para los anuales o 'ENTER' para salir: "
+            "\n[M] Mensuales   [A] Anuales   [ENTER] Salir: "
         ))
 
         if mostrar_mas in ("","volver","salir"):
@@ -569,7 +569,7 @@ def opcion_estadistica_resumen():
 
         while True:
             mostrar_mas = normalizar(input(
-                "\nPulsa 'M' para ver los objetivos mensuales, 'A' para los anuales o 'ENTER' para salir: "
+                "\n[M] Mensuales   [A] Anuales   [ENTER] Salir: "
             ))
 
             if mostrar_mas in ("","volver","salir"):
