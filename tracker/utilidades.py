@@ -214,3 +214,10 @@ def normalizar(texto):
     texto = unicodedata.normalize("NFD",texto)
     texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
     return texto.strip()
+
+def encabezado_categoria(titulo):
+    ANCHO = 40
+    return print_color_pausa(
+        f"\n── {titulo} " + "─" * (ANCHO - len(f"── {titulo} ")),
+        VERDE
+    )

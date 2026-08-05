@@ -5,7 +5,7 @@ from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categori
 from .devolver import dev_categoria_id, dev_categoria_correcta, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id, dev_id_categoria_habito_id, dev_emoticono_categoria_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo, pedir_objetivo_modi
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
-from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos, calcular_estadisticas_habitos, mostrar_estadisticas_habitos
+from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos, calcular_estadisticas_habitos, mostrar_estadisticas_habitos, categorias_fecha, mostrar_mas_categorias
 from datetime import datetime, date, timedelta
 import emoji
 
@@ -594,9 +594,14 @@ def opcion_estadistica_categoria():
         print_color_pausa("  📊  CATEGORÍAS    ",CIAN),
         print_color_pausa("=======================================",CIAN),
         *generar_bloque_categorias(habitos, temporizadores, categorias),
+           
     ]
         imprimir_con_pausa(lineas)
 
+        lineas_mes, tiempo_mes = categorias_fecha(habitos, temporizadores, categorias, "mes")
+        lineas_año, tiempo_año = categorias_fecha(habitos, temporizadores, categorias, "año")
+        lineas_historico, tiempo_historico = categorias_fecha(habitos, temporizadores, categorias, "historico")
+        mostrar_mas_categorias(lineas_mes, tiempo_mes, lineas_año, tiempo_año, lineas_historico, tiempo_historico)
         mostrar_mas = normalizar(input(
             "\nPulsa 'ENTER' para salir: "
         ))

@@ -265,7 +265,7 @@ def mostrar_menu_estadisticas():
             if not habitos:
                 print_color("1. Resumen",ROJO)
             else:
-                print("1. Resumen")
+                print_color("1. Resumen (COMPLETADO)",VERDE,"\n")
             if not temporizadores:
                 print_color("2. Categorías",ROJO)
             else:

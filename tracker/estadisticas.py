@@ -1,9 +1,10 @@
 import csv
 from config import BASE_DIR
 from .devolver import dev_nombre_habito_id
-from .utilidades import normalizar, print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM
+from .utilidades import normalizar, print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM, encabezado_categoria
 from .mostrar import mostrar_csv_diccionario
 from datetime import datetime, timedelta, date
+from wcwidth import wcswidth
 
 
 def leer():
@@ -115,28 +116,79 @@ def generar_bloque_objetivo(titulo,datos,temporizadores,tipo,unidad,media_n):
         print_color_pausa("────────────────────────",CIAN),
         *media_objetivos(datos, temporizadores, tipo, media_n),
     ]
-def generar_bloque_categorias(habitos,temporizadores, categorias):
-    
+def generar_bloque_categorias(habitos, temporizadores, categorias):
+
     if not categorias:
-        print_color(f"No hay objetivos",ROJO)
+        print_color("No hay categorías", ROJO)
         return []
-    return [
-        print_color_pausa(f"\nHoy",VERDE),
-        print_color_pausa("────────────────────────",VERDE),
-        *categorias_fecha(habitos, temporizadores, categorias,"dia"),
-        print_color_pausa(f"\nSemana actual",VERDE),
-        print_color_pausa("────────────────────────",VERDE),
-        *categorias_fecha(habitos, temporizadores, categorias,"semana"),
-        print_color_pausa(f"\nMes actual",VERDE),
-        print_color_pausa("────────────────────────",VERDE),
-        *categorias_fecha(habitos, temporizadores, categorias,"mes"),
-        print_color_pausa(f"\nAño actual",VERDE),
-        print_color_pausa("────────────────────────",VERDE),
-        *categorias_fecha(habitos, temporizadores, categorias,"año"),
-        print_color_pausa(f"\Histórico acumulado",VERDE),
-        print_color_pausa("────────────────────────",VERDE),
-        *categorias_est(habitos, temporizadores, categorias),
+    lineas_dia, tiempo_dia = categorias_fecha(habitos, temporizadores, categorias, "dia")
+    lineas_semana, tiempo_semana = categorias_fecha(habitos, temporizadores, categorias, "semana")
+    
+    lineas = [
+
+        encabezado_categoria("HOY"),
+        *lineas_dia,
+        print_color_pausa(
+            f"\nTiempo total hoy: {numero_string_a_HHMM(tiempo_dia)}",
+              CIAN
+        ),
+
+        encabezado_categoria("SEMANA ACTUAL"),
+        *lineas_semana,
+        print_color_pausa(
+            f"\nTiempo total esta semana: {numero_string_a_HHMM(tiempo_semana)}",
+              CIAN
+        ),
+
     ]
+    return lineas
+
+def mostrar_mas_categorias(
+    lineas_mes, tiempo_mes, 
+    lineas_año, tiempo_año, 
+    lineas_historico, tiempo_historico
+):
+     while True:
+
+        mostrar_mas = normalizar(input(
+            "\n[M] Mensual   [A] Anual   [H] Histórico   [ENTER] Salir: "
+        ))
+
+        if mostrar_mas in ("", "volver", "salir"):
+            break
+
+        if mostrar_mas == "m":
+            encabezado_categoria("MES ACTUAL")
+
+            for linea in lineas_mes:
+                print(linea)
+
+            print_color_pausa(
+                f"\nTiempo total este mes: {numero_string_a_HHMM(tiempo_mes)}",
+                CIAN
+            )
+
+        elif mostrar_mas == "a":
+            encabezado_categoria("AÑO ACTUAL")
+
+            for linea in lineas_año:
+                print(linea)
+
+            print_color_pausa(
+                f"\nTiempo total este año: {numero_string_a_HHMM(tiempo_año)}",
+                CIAN
+            )
+
+        elif mostrar_mas == "h":
+            encabezado_categoria("HISTÓRICO ACUMULADO")
+
+            for linea in lineas_historico:
+                print(linea)
+
+            print_color_pausa(
+                f"\nTiempo total histórico: {numero_string_a_HHMM(tiempo_historico)}",
+                CIAN
+            )
 
 def generar_bloque_resumen(titulo, objetivos, temporizadores, tipo, categorias, habitos):
 
@@ -205,7 +257,6 @@ def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, of
          
             horas_totales = segundos_totales / 3600     
             
-
             progreso = min(porcentaje, 100)
 
             relleno = int(progreso / 10)
@@ -222,62 +273,53 @@ def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, of
 
         return lineas
 
-def categorias_est(habitos, temporizadores, categorias):
-    
-        ahora = datetime.now()
-        lineas = []
-        
-        for categoria in categorias:
-            segundos_totales = 0
-            for habito in habitos:
-                if habito['id_categoria'] == categoria['id']:
-                   # objetivo += int(habito['objetivo'])
-                    for temporizador in temporizadores:
-                        if temporizador['id_habito'] == habito['id']:
-                            segundos_totales += horas_a_segundos(temporizador['tiempo'])
-
-            # Icono de la categoría (💪, 🎮, 📖)
-            
-            emoticono_categoria = categoria['emoticono']
-          
-          #  try:
-           #     porcentaje = (float(segundos_totales) / (float(objetivo)* 3600)) * 100
-           # except ZeroDivisionError:
-            #    porcentaje = 0
-            linea = f"{emoticono_categoria} {categoria['categoria']} -> {numero_string_a_HHMM(segundos_totales)} horas"
-            lineas.append(linea)
-
-        return lineas
-
 def categorias_fecha(habitos, temporizadores, categorias, tipo):
     
         lineas = []
+        tiempo_categorias = []
+        tiempo_total = 0
 
         ahora = datetime.now().date()
-        
+
+        # primera pasada: calcular tiempos
         for categoria in categorias:
             segundos_totales = 0
+
             for habito in habitos:
                 if habito['id_categoria'] == categoria['id']:
-                   # objetivo += int(habito['objetivo'])
+
                     for temporizador in temporizadores:
                         if temporizador['id_habito'] == habito['id']:
-                            if(cumple_periodo(temporizador['fecha'], ahora, tipo, 0)):
-                                    segundos_totales += horas_a_segundos(temporizador['tiempo'])
 
+                            if tipo == "historico" or cumple_periodo(temporizador['fecha'], ahora, tipo, 0):
+                                    segundos = horas_a_segundos(temporizador['tiempo'])
+                                    segundos_totales += segundos
+                                    tiempo_total += segundos
+            tiempo_categorias.append((categoria, segundos_totales))
+
+        for categoria, segundos_totales in tiempo_categorias:
 
             # Icono de la categoría (💪, 🎮, 📖)
             
             emoticono_categoria = categoria['emoticono']
+
+            if tiempo_total > 0:
+                porcentaje = (float(segundos_totales) / float(tiempo_total)) * 100
+            else:
+                porcentaje = 0
           
-          #  try:
-           #     porcentaje = (float(segundos_totales) / (float(objetivo)* 3600)) * 100
-           # except ZeroDivisionError:
-            #    porcentaje = 0
-            linea = f"{emoticono_categoria} {categoria['categoria']} -> {numero_string_a_HHMM(segundos_totales)} horas"
+            nombre = f"{emoticono_categoria} {categoria['categoria']}"
+            espacios = 25 -wcswidth(nombre)
+
+            linea = (
+                f"{nombre}"
+                f"{' ' * max(1, espacios)}"
+                f"{numero_string_a_HHMM(segundos_totales)}"
+                f" ({porcentaje:.0f}%)"
+            )
             lineas.append(linea)
 
-        return lineas
+        return lineas, tiempo_total
 
 def preparar_datos_estadistica(temporizadores, habitos, categorias):
     
