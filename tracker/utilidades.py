@@ -215,7 +215,7 @@ def normalizar(texto):
     texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
     return texto.strip()
 
-def encabezado_categoria(titulo):
+def encabezado_global(titulo):
     ANCHO = 40
     return print_color_pausa(
         f"\n── {titulo} " + "─" * (ANCHO - len(f"── {titulo} ")),

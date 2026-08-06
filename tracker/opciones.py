@@ -527,10 +527,11 @@ def opcion_estadistica_objetivo():
     diarios, semanales, mensuales, anuales, habitos, temporizadores, categorias = agrupar_datos_csv()
 
     lineas = [
-        print_color_pausa("===== Objetivos registrados ======",CIAN),
-        
-        *generar_bloque_objetivo("días", diarios, temporizadores, "dia", "Día", 7),
-        *generar_bloque_objetivo("semanas", semanales, temporizadores, "semana", "Semana", 4),
+        print_color_pausa("=======================================", CIAN),
+        print_color_pausa("  🎯  OBJETIVOS    ", CIAN),
+        print_color_pausa("=======================================", CIAN),
+        *generar_bloque_objetivo("Diarios", diarios, temporizadores, "dia", "Día", 7),
+        *generar_bloque_objetivo("Semanales", semanales, temporizadores, "semana", "Semana", 4),
     ]
     
     imprimir_con_pausa(lineas)
@@ -544,10 +545,10 @@ def opcion_estadistica_objetivo():
             break
         if mostrar_mas == "m":
             
-            lineas_mes = generar_bloque_objetivo("meses", mensuales, temporizadores, "mes", "Mes", 4)
+            lineas_mes = generar_bloque_objetivo("Mensuales", mensuales, temporizadores, "mes", "Mes", 4)
             imprimir_con_pausa(lineas_mes)
         elif mostrar_mas == "a":
-            lineas_año = generar_bloque_objetivo("años", anuales, temporizadores, "año", "Año", 4)
+            lineas_año = generar_bloque_objetivo("Anuales", anuales, temporizadores, "año", "Año", 4)
             imprimir_con_pausa(lineas_año)
 
 

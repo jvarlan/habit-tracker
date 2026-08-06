@@ -1,7 +1,7 @@
 import csv
 from config import BASE_DIR
 from .devolver import dev_nombre_habito_id
-from .utilidades import normalizar, print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM, encabezado_categoria
+from .utilidades import normalizar, print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM, encabezado_global
 from .mostrar import mostrar_csv_diccionario
 from datetime import datetime, timedelta, date
 from wcwidth import wcswidth
@@ -57,8 +57,20 @@ def objetivos(tipos,temporizadores, tipo_periodo, offset):
                 conseguido = "✔️"
             else:
                 conseguido = "❌"
+
             habito = dev_nombre_habito_id(objetivo['id_habito'])
-            linea = f"{emoticono_categoria} {habito} -> {numero_string_a_HHMM(segundos_totales)}/{objetivo['objetivo']} horas {conseguido}"
+            nombre = f"{emoticono_categoria} {habito}"
+            espacios = 20 -wcswidth(habito)
+            
+            linea = (
+                f"{nombre}"
+                f"{' ' * max(1, espacios)}"
+                f"{numero_string_a_HHMM(segundos_totales)}"
+                f" / {objetivo['objetivo']} horas {conseguido}"
+                )
+
+
+            #######                
             lineas.append(linea)
 
         return lineas
@@ -94,7 +106,16 @@ def media_objetivos(tipos,temporizadores, tipo_periodo, num_periodos):
             else:
                 conseguido = "❌"
             habito = dev_nombre_habito_id(objetivo['id_habito'])
-            linea = f"{emoticono_categoria} {habito} -> {numero_string_a_HHMM(segundos_totales)}/{objetivo['objetivo']} horas {conseguido}"
+            nombre = f"{emoticono_categoria} {habito}"
+            espacios = 20 -wcswidth(habito)
+            
+            linea = (
+                f"{nombre}"
+                f"{' ' * max(1, espacios)}"
+                f"{numero_string_a_HHMM(segundos_totales)}"
+                f" / {objetivo['objetivo']} horas {conseguido}"
+                )
+
             lineas.append(linea)
 
         return lineas
@@ -103,8 +124,16 @@ def generar_bloque_objetivo(titulo,datos,temporizadores,tipo,unidad,media_n):
     if not datos:
         print_color(f"No hay objetivos {titulo}",ROJO)
         return []
+    if tipo == "mes":
+        plural = f"{tipo}es"
+    else:
+        plural = f"{tipo}s"
+    if tipo == "semana":
+        ultimo = "últimas"
+    else:
+        ultimo = "últimos"
     return [
-        print_color_pausa(f"\nObjetivo {titulo}: ",VERDE),
+        encabezado_global(f"{titulo.upper()}"),
         print_color_pausa(f"\n{unidad} actual",CIAN),
         print_color_pausa("────────────────────────",CIAN),
    
@@ -112,7 +141,8 @@ def generar_bloque_objetivo(titulo,datos,temporizadores,tipo,unidad,media_n):
         print_color_pausa(f"\n{unidad} anterior",CIAN),
         print_color_pausa("────────────────────────",CIAN),
         *objetivos(datos, temporizadores, tipo, 1),
-        print_color_pausa(f"\nMedia últimos {media_n} {titulo}",CIAN),
+       
+        print_color_pausa(f"\nMedia {ultimo} {media_n} {plural}",CIAN),
         print_color_pausa("────────────────────────",CIAN),
         *media_objetivos(datos, temporizadores, tipo, media_n),
     ]
@@ -126,14 +156,14 @@ def generar_bloque_categorias(habitos, temporizadores, categorias):
     
     lineas = [
 
-        encabezado_categoria("HOY"),
+        encabezado_global("HOY"),
         *lineas_dia,
         print_color_pausa(
             f"\nTiempo total hoy: {numero_string_a_HHMM(tiempo_dia)}",
               CIAN
         ),
 
-        encabezado_categoria("SEMANA ACTUAL"),
+        encabezado_global("SEMANA ACTUAL"),
         *lineas_semana,
         print_color_pausa(
             f"\nTiempo total esta semana: {numero_string_a_HHMM(tiempo_semana)}",
@@ -161,7 +191,7 @@ def mostrar_mas_categorias(
         
             lineas = [
         
-                encabezado_categoria("MES ACTUAL"),
+                encabezado_global("MES ACTUAL"),
                 *lineas_mes,
                 print_color_pausa(
                     f"\nTiempo total este mes: {numero_string_a_HHMM(tiempo_mes)}",
@@ -175,7 +205,7 @@ def mostrar_mas_categorias(
 
         elif normalizar(mostrar_mas) == "a":
             lineas = [
-                encabezado_categoria("AÑO ACTUAL"),
+                encabezado_global("AÑO ACTUAL"),
                 *lineas_año,
                 print_color_pausa(
                     f"\nTiempo total este año: {numero_string_a_HHMM(tiempo_año)}",
@@ -187,7 +217,7 @@ def mostrar_mas_categorias(
 
         elif normalizar(mostrar_mas) == "h":
             lineas = [
-                encabezado_categoria("HISTÓRICO ACUMULADO"),
+                encabezado_global("HISTÓRICO ACUMULADO"),
                 *lineas_historico,
                 print_color_pausa(
                     f"\nTiempo total histórico: {numero_string_a_HHMM(tiempo_historico)}",
