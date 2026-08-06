@@ -543,6 +543,7 @@ def opcion_estadistica_objetivo():
         if mostrar_mas in ("","volver","salir"):
             break
         if mostrar_mas == "m":
+            
             lineas_mes = generar_bloque_objetivo("meses", mensuales, temporizadores, "mes", "Mes", 4)
             imprimir_con_pausa(lineas_mes)
         elif mostrar_mas == "a":
@@ -597,16 +598,15 @@ def opcion_estadistica_categoria():
            
     ]
         imprimir_con_pausa(lineas)
-
+        
         lineas_mes, tiempo_mes = categorias_fecha(habitos, temporizadores, categorias, "mes")
         lineas_año, tiempo_año = categorias_fecha(habitos, temporizadores, categorias, "año")
         lineas_historico, tiempo_historico = categorias_fecha(habitos, temporizadores, categorias, "historico")
-        mostrar_mas_categorias(lineas_mes, tiempo_mes, lineas_año, tiempo_año, lineas_historico, tiempo_historico)
-        mostrar_mas = normalizar(input(
-            "\nPulsa 'ENTER' para salir: "
-        ))
+        resultado = mostrar_mas_categorias(lineas_mes, tiempo_mes, lineas_año, tiempo_año, lineas_historico, tiempo_historico)
+        imprimir_con_pausa(resultado)
 
-        if mostrar_mas in ("","volver","salir"):
+
+        if resultado == []:
             mostrar_mas = True
 
 def opcion_estadistica_rachas():

@@ -155,40 +155,48 @@ def mostrar_mas_categorias(
         ))
 
         if mostrar_mas in ("", "volver", "salir"):
-            break
+            return []
 
-        if mostrar_mas == "m":
-            encabezado_categoria("MES ACTUAL")
+        if normalizar(mostrar_mas) == "m":
+        
+            lineas = [
+        
+                encabezado_categoria("MES ACTUAL"),
+                *lineas_mes,
+                print_color_pausa(
+                    f"\nTiempo total este mes: {numero_string_a_HHMM(tiempo_mes)}",
+                      CIAN
+                ),
+            ]
 
-            for linea in lineas_mes:
+            for linea in lineas:
+                print(linea)
+        
+
+        elif normalizar(mostrar_mas) == "a":
+            lineas = [
+                encabezado_categoria("AÑO ACTUAL"),
+                *lineas_año,
+                print_color_pausa(
+                    f"\nTiempo total este año: {numero_string_a_HHMM(tiempo_año)}",
+                    CIAN
+                ),
+            ]
+            for linea in lineas:
                 print(linea)
 
-            print_color_pausa(
-                f"\nTiempo total este mes: {numero_string_a_HHMM(tiempo_mes)}",
-                CIAN
-            )
-
-        elif mostrar_mas == "a":
-            encabezado_categoria("AÑO ACTUAL")
-
-            for linea in lineas_año:
+        elif normalizar(mostrar_mas) == "h":
+            lineas = [
+                encabezado_categoria("HISTÓRICO ACUMULADO"),
+                *lineas_historico,
+                print_color_pausa(
+                    f"\nTiempo total histórico: {numero_string_a_HHMM(tiempo_historico)}",
+                    CIAN
+                ),
+            ]
+            for linea in lineas:
                 print(linea)
 
-            print_color_pausa(
-                f"\nTiempo total este año: {numero_string_a_HHMM(tiempo_año)}",
-                CIAN
-            )
-
-        elif mostrar_mas == "h":
-            encabezado_categoria("HISTÓRICO ACUMULADO")
-
-            for linea in lineas_historico:
-                print(linea)
-
-            print_color_pausa(
-                f"\nTiempo total histórico: {numero_string_a_HHMM(tiempo_historico)}",
-                CIAN
-            )
 
 def generar_bloque_resumen(titulo, objetivos, temporizadores, tipo, categorias, habitos):
 

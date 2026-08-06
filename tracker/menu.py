@@ -269,7 +269,7 @@ def mostrar_menu_estadisticas():
             if not temporizadores:
                 print_color("2. Categorías",ROJO)
             else:
-                print("2. Categorías")
+                print_color("2. Categorías (COMPLETADO)",VERDE,"\n")
 
             print("3. Objetivos")
             print("4. Constancia")
