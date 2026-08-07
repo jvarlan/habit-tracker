@@ -6,9 +6,9 @@ from .utilidades import ROJO, VERDE, CIAN, print_color, normalizar
 import tkinter as tk
 
 # se guarda en una variable para luego simplemente mostrarlo en pantalla
-volver = f"Pulsa 'ENTER' si quieres salir del programa."
+volver = f"[ENTER] Cerrar aplicación."
 volver2 = f"..............................................."
-volver_principal = f"Pulsa 'ENTER' si quieres volver al menú principal."
+volver_principal = f"[ENTER] Volver al menú principal."
 
 #menu principal
 def mostrar_menu():
@@ -271,11 +271,11 @@ def mostrar_menu_estadisticas():
             else:
                 print_color("2. Categorías (COMPLETADO)",VERDE,"\n")
 
-            print("3. Objetivos")
-            print("4. Constancia")
+            print_color("3. Objetivos (COMPLETADO)",VERDE,"\n")
+            print_color ("4. Constancia (COMPLETADO)",VERDE,"\n")
             print("5. Hábitos")
             print_color("====================================",VERDE,"\n")
-
+            print_color("\n[ENTER] Volver al menú principal",CIAN,"\n")
             opcion = input("\nSelecciona una opción: ")
         else:
             break

@@ -1,7 +1,7 @@
 import csv
 from config import BASE_DIR
 from .devolver import dev_nombre_habito_id
-from .utilidades import normalizar, print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM, encabezado_global
+from .utilidades import normalizar, print_color, print_color_pausa, cumple_periodo, numero_string_a_HHMM, ROJO, VERDE, CIAN, segundos_a_hhmmss, horas_a_segundos, horas_string_a_HHMM, encabezado_global, imprimir_con_pausa
 from .mostrar import mostrar_csv_diccionario
 from datetime import datetime, timedelta, date
 from wcwidth import wcswidth
@@ -460,7 +460,8 @@ def calcular_estadisticas_globales(datos):
     dias_activos = len(fechas)
     primera_fecha = min(fechas)
     ultima_fecha = max(fechas)
-    dias_totales = ((hoy - primera_fecha).days) + 1
+    dias_totales = (hoy - primera_fecha).days + 1
+    frecuencia_semanal = dias_activos / (dias_totales / 7)
 
     porcentaje_actividad = (dias_activos / dias_totales) * 100
 
@@ -483,7 +484,7 @@ def calcular_estadisticas_globales(datos):
         "dias_totales": dias_totales,
 
         "porcentaje_actividad": round(porcentaje_actividad, 2),
-
+        "frecuencia_semanal": round(frecuencia_semanal, 2),
         "primera_fecha": primera_fecha,
 
         "ultima_fecha": ultima_fecha
@@ -584,35 +585,30 @@ def calcular_racha_actual(fechas):
     return racha_actual
 
 def mostrar_estadisticas_globales(stats):
+    ancho = 30
 
+    lineas = [
+        print_color_pausa("=======================================", CIAN),
+        print_color_pausa("  📈  CONSTANCIA    ", CIAN),
+        print_color_pausa("=======================================", CIAN),
 
-    print("\n=== RESUMEN GLOBAL ===\n")
+        f"\n🔥 Racha máxima: {stats['racha_max']} días",
+        f"⚡ Racha actual: {stats['racha_actual']} días",
+   
+        encabezado_global("RESUMEN GLOBAL"),
 
-    print(f"Total de horas registradas: {stats['horas_totales']}")
+        f"\nTotal de horas registradas:{' ' * max(1, ancho - wcswidth('Total de horas registradas:'))}{stats['horas_totales']}",
+        f"Media de los registros:{' ' * max(1, ancho - wcswidth('Media de los registros:'))}{stats['media_horas']}",
 
-    print(f"Media de los registros: {stats['media_horas']}\n")
-
-    print(f"Primer registro: {stats['primera_fecha']}")
-
-    print(f"Último registro: {stats['ultima_fecha']}\n")
-
-    print(
-        f"Días activos: "
-        f"{stats['dias_activos']} / {stats['dias_totales']} "
-        f"({stats['porcentaje_actividad']}%)"
-    )
-
-    print(
-        f"Día más productivo: "
-        f"{stats['fecha_max']} "
-        f"({stats['record_horas_dia']}\n)"
-    )
-
-    print("\n=== CONSTANCIA ===\n")
-
-    print(f"Racha máxima: {stats['racha_max']}")
-
-    print(f"Racha actual: {stats['racha_actual']}")
+        f"\nPrimer registro:{' ' * max(1, ancho - wcswidth('Primer registro:'))}{stats['primera_fecha'].strftime('%d/%m/%Y')}",
+        f"Último registro:{' ' * max(1, ancho - wcswidth('Último registro:'))}{stats['ultima_fecha'].strftime('%d/%m/%Y')}",
+       
+        f"\nDías activos:{' ' * max(1, ancho - wcswidth('Días activos:'))}{stats['dias_activos']} / {stats['dias_totales']} ({stats['porcentaje_actividad']}%)",
+        f"Día más productivo:{' ' * max(1, ancho - wcswidth('Día más productivo:'))}{stats['fecha_max'].strftime('%d/%m/%Y')} ({stats['record_horas_dia']})",
+        f"Frecuencia semanal:{' ' * max(1, ancho - wcswidth('Frecuencia semanal:'))}{stats['frecuencia_semanal']} días/semana",                 
+    ]
+    imprimir_con_pausa(lineas)
+    
 
 def mostrar_estadisticas_habitos(stats):
 

@@ -10,7 +10,7 @@ from datetime import datetime, date, timedelta
 import emoji
 
 
-volver = f"\nPulsa 'ENTER' si quieres salir al menú de opciones."
+volver = f"\n[ENTER] Salir"
 volver2 = f"............................................................................"
 
 def opcion_registro():
@@ -262,9 +262,10 @@ def opcion_borrar_tempo():
                 print("───────────────────────────")
                 for temporizador in info['temporizadores']:
                     id, fecha, tiempo = [x.strip() for x in temporizador.split(" - ")]
+                    fecha_formateada = datetime.strptime(fecha, "%Y-%m-%d").strftime("%d/%m/%Y")
                     print(
                         f"{id:<4}"
-                        f"{fecha:<14}"
+                        f"{fecha_formateada:<14}"
                         f"{tiempo}"
                     )
                 print()
@@ -625,7 +626,7 @@ def opcion_estadistica_rachas():
         mostrar_estadisticas_globales(estadisticas)
         
         salir = normalizar(input(
-            "\nPulsa 'ENTER' para salir: "
+            "\n[ENTER] Salir: "
         ))
 
         if salir in ("","volver","salir"):
@@ -657,7 +658,7 @@ def opcion_estadistica_habitos():
 
 
         salir = normalizar(input(
-            "\nPulsa 'ENTER' para salir: "
+            "\n[ENTER] Salir"
         ))
 
         if salir in ("","volver","salir"):

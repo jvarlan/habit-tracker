@@ -81,7 +81,7 @@ def pedir_horas_temp():
             stop_event = threading.Event()
             resultado = []
 
-            print_color("\nPulsa ENTER cuando quieras parar el cronómetro... ",CIAN)
+            print_color("\n[ENTER] Parar el cronómetro ",CIAN)
             
             
             hilo_input = threading.Thread(target=esperar_enter, args=(stop_event,))

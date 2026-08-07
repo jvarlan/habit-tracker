@@ -104,7 +104,7 @@ def imprimir_con_pausa(lineas):
         contador +=1
 
         if contador >= altura:
-            input(print_color_pausa("\nPulsa ENTER para continuar... \n",ROJO))
+            input(print_color_pausa("\n[ENTER] Continuar... \n",ROJO))
             limpiar_pantalla()
             contador = 0
 
