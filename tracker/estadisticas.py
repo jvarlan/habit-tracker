@@ -122,7 +122,6 @@ def media_objetivos(tipos,temporizadores, tipo_periodo, num_periodos):
 
 def generar_bloque_objetivo(titulo,datos,temporizadores,tipo,unidad,media_n):
     if not datos:
-        print_color(f"No hay objetivos {titulo}",ROJO)
         return []
     if tipo == "mes":
         plural = f"{tipo}es"
@@ -132,6 +131,7 @@ def generar_bloque_objetivo(titulo,datos,temporizadores,tipo,unidad,media_n):
         ultimo = "últimas"
     else:
         ultimo = "últimos"
+    
     return [
         encabezado_global(f"{titulo.upper()}"),
         print_color_pausa(f"\n{unidad} actual",CIAN),
@@ -230,16 +230,17 @@ def mostrar_mas_categorias(
 
 def generar_bloque_resumen(titulo, objetivos, temporizadores, tipo, categorias, habitos):
 
-    if not objetivos:
-        print_color(f"No hay objetivos {titulo}", ROJO)
-        return []
-
+ 
     separador = "─" * (70 - len(titulo) - 4)
-
-    return [
-        print_color_pausa(f"\n── {titulo} {separador}", VERDE),
-        *resumen_est(objetivos, categorias, temporizadores, tipo, habitos, 0),
-    ]
+    if objetivos:
+        return [
+            print_color_pausa(f"\n── {titulo} {separador}", VERDE),
+            *resumen_est(objetivos, categorias, temporizadores, tipo, habitos, 0),
+        ]   
+    else:  
+        return [
+            *resumen_est(objetivos, categorias, temporizadores, tipo, habitos, 0),
+        ]
 
 def resumen_est(objetivos, categorias, temporizadores, tipo_periodo, habitos, offset=0):
        
@@ -453,6 +454,7 @@ def calcular_estadisticas_globales(datos):
             fecha_max = fecha
     
     media_horas = horas_totales / len(fechas)
+    
 
     racha_max = calcular_racha_maxima(fechas)
     racha_actual = calcular_racha_actual(fechas)

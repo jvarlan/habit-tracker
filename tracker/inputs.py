@@ -15,9 +15,12 @@ def pedir_nombre_registro(volver):
     while True:
         diccionario = mostrar_csv_diccionario("habitos")
         print_color(f"\nNuevo registro de hábito",INVERSION,"\n")
-        muestra_habitos_registrados_color(diccionario, volver)
-        print_color("Si quieres añadir un nuevo objetivo a un hábito existente, introduce el nombre del hábito.",CIAN)
-        nombre = input("Introduce el nombre del hábito: ")
+        if diccionario:
+            muestra_habitos_registrados_color(diccionario, volver)
+            print_color("Añadir nuevo objetivo: introduce un nombre de la lista.",CIAN)
+            nombre = input("Introduce el nombre del hábito: ")
+        else:
+            nombre = input("\nIntroduce el nombre del hábito: ")
        # limpiar_pantalla()
 
      # devuelve el número de veces que el nombre está registrado

@@ -1,4 +1,4 @@
-from .utilidades import ROJO, VERDE, CIAN, INVERSION, RESET, print_color, input_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss, muestra_habitos_registrados, normalizar
+from .utilidades import ROJO, VERDE, CIAN, GRIS, INVERSION, RESET, print_color, input_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss, muestra_habitos_registrados, normalizar
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
@@ -40,6 +40,7 @@ def opcion_registro():
                 categoria_real = dev_categoria_correcta(categoria)
             else:
                 categoria = input("Categoría: ")
+                categoria_real = categoria
            
             if categoria_real in cat_dict:
                 emoticono = cat_dict[categoria_real]
@@ -74,7 +75,7 @@ def opcion_registro():
                     id_categoria = dev_categoria_id(categoria)
                     id_habito = registrar(nombre, id_categoria)
                     registrar_objetivo(id_habito, tipo, objetivo)
-                    print_color(f"\nSe ha añadido el hábito {nombre} en la categoría {categoria} con un objetivo {tipo} de {objetivo} horas.",VERDE,"\n")
+                    print_color(f"\nHábito añadido correctamente.\n{nombre} | {categoria} {emoticono} | {tipo} | {objetivo} horas",VERDE,"\n")
 
                     otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria_real)
                 else:
@@ -122,7 +123,7 @@ def opcion_temporizador():
                         continue #si la actividad supera las 24 horas el mismo día, vuelve a pedir las horas
                     else:     
                         habito(id_habito,horas,fecha)
-                        print_color(f"Se ha registrado {horas} en el temporizador {nombre} con fecha {fecha}",VERDE,"\n")
+                        print_color(f"Tiempo registrado con éxito.\n{horas} | {nombre} | {fecha}",VERDE,"\n")
                         break # una vez es correcto, sale del bucle de horas y dias y vuelve al bucle original
                 break
             seguir = input("\n¿Quieres introducir un nuevo temporizador? s/n: ")
@@ -538,19 +539,32 @@ def opcion_estadistica_objetivo():
     imprimir_con_pausa(lineas)
 
     while True:
+        texto_mensual = "[M] Mensuales"
+        texto_anual = "[A] Anuales"
+        if not mensuales:
+            texto_mensual = f"{GRIS}[M] Mensuales{RESET}"
+        if not anuales:
+            texto_anual = f"{GRIS}[A] Anuales{RESET}"
         mostrar_mas = normalizar(input(
-            "\n[M] Mensuales   [A] Anuales   [ENTER] Salir: "
+            f"\n{texto_mensual}   {texto_anual}   [ENTER] Salir: "
         ))
 
         if mostrar_mas in ("","volver","salir"):
             break
         if mostrar_mas == "m":
-            
-            lineas_mes = generar_bloque_objetivo("Mensuales", mensuales, temporizadores, "mes", "Mes", 4)
-            imprimir_con_pausa(lineas_mes)
+            if not mensuales:
+                print_color(f"\nNo hay objetivos mensuales.",ROJO,"\n")
+                continue
+            else:
+                lineas_mes = generar_bloque_objetivo("Mensuales", mensuales, temporizadores, "mes", "Mes", 4)
+                imprimir_con_pausa(lineas_mes)
         elif mostrar_mas == "a":
-            lineas_año = generar_bloque_objetivo("Anuales", anuales, temporizadores, "año", "Año", 4)
-            imprimir_con_pausa(lineas_año)
+            if not anuales:
+                print_color(f"\nNo hay objetivos anuales.",ROJO,"\n")
+                continue
+            else:
+                lineas_año = generar_bloque_objetivo("Anuales", anuales, temporizadores, "año", "Año", 4)
+                imprimir_con_pausa(lineas_año)
 
 
 def opcion_estadistica_resumen():
@@ -571,18 +585,32 @@ def opcion_estadistica_resumen():
         imprimir_con_pausa(lineas)
 
         while True:
+            texto_mensuales = "[M] Mensuales"
+            texto_anuales = "[A] Anuales"
+            if not mensuales:
+                texto_mensuales = f"{GRIS}[M] Mensuales{RESET}"
+            if not anuales:
+                texto_anuales = f"{GRIS}[A] Anuales{RESET}"
             mostrar_mas = normalizar(input(
-                "\n[M] Mensuales   [A] Anuales   [ENTER] Salir: "
+                f"\n{texto_mensuales}   {texto_anuales}   [ENTER] Salir: "
             ))
 
             if mostrar_mas in ("","volver","salir"):
                 salir = True  # Indicamos que queremos salir de todo
                 break  # Salimos del bucle interno
             if mostrar_mas == "m":
-                lineas_mes = generar_bloque_resumen("MENSUALES", mensuales, temporizadores, "mes",categorias, habitos)
+                if not mensuales:
+                    print_color("\nNo hay objetivos MENSUALES", ROJO,"\n")
+                    continue
+                else:
+                    lineas_mes = generar_bloque_resumen("MENSUALES", mensuales, temporizadores, "mes",categorias, habitos)
                 imprimir_con_pausa(lineas_mes)
             elif mostrar_mas == "a":
-                lineas_año = generar_bloque_resumen("ANUALES", anuales, temporizadores, "año",categorias, habitos)
+                if not anuales:
+                    print_color("\nNo hay objetivos ANUALES", ROJO,"\n")
+                    continue
+                else:
+                    lineas_año = generar_bloque_resumen("ANUALES", anuales, temporizadores, "año",categorias, habitos)
                 imprimir_con_pausa(lineas_año)
 
 def opcion_estadistica_categoria():

@@ -1,7 +1,7 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores, mostrar_objetivos
 from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria, opcion_estadistica_rachas, opcion_estadistica_habitos
 from .utilidades import limpiar_pantalla
-from .utilidades import ROJO, VERDE, CIAN, print_color, normalizar
+from .utilidades import ROJO, VERDE, CIAN, GRIS, print_color, normalizar
 
 import tkinter as tk
 
@@ -20,17 +20,23 @@ def mostrar_menu():
         categorias = mostrar_categorias()
 
         print_color("\n======== HABIT TRACKER (FASE BETA) ========",VERDE,"\n")
-        print_color("1. Añadir un nuevo hábito (COMPLETADO)",VERDE,"\n")
+        print_color("1. Añadir un nuevo hábito ",VERDE,"\n")
         if not habitos:
-            print_color("2. Registrar tiempo (COMPLETADO)",ROJO)
+            print_color("2. Registrar tiempo ",GRIS,"\n")
         else:
-            print_color("2. Registrar tiempo (COMPLETADO)",VERDE,"\n")
+            print_color("2. Registrar tiempo ",VERDE,"\n")
         if not habitos and not temporizadores and not categorias:
-            print_color("3. Eliminar elementos (COMPLETADO)",ROJO)
+            print_color("3. Eliminar elementos ",GRIS,"\n")
         else:
-            print_color("3. Eliminar elementos (COMPLETADO)",VERDE,"\n")
-        print_color("4. Modificar elementos (COMPLETADO)",VERDE,"\n")
-        print_color("5. Mostrar estadísticas (COMPLETADO)",VERDE,"\n")
+            print_color("3. Eliminar elementos ",VERDE,"\n")
+        if not habitos and not temporizadores and not categorias:
+            print_color("4. Modificar elementos ",GRIS,"\n")
+        else:
+            print_color("4. Modificar elementos ",VERDE,"\n")
+        if not habitos and not temporizadores and not categorias:
+            print_color("5. Mostrar estadísticas ",GRIS,"\n")
+        else:
+            print_color("5. Mostrar estadísticas ",VERDE,"\n")
         print_color("=============================================",VERDE,"\n\n")
         print_color(volver,CIAN,"\n\n")
 
@@ -115,20 +121,20 @@ def mostrar_menu_borrar():
         # se repite en bucle hasta que se pulse Salir
             print_color("\n========= MENÚ DE BORRADO =========",VERDE,"\n")
             if not habitos:
-                print_color("1. Eliminar un hábito (COMPLETADO)",VERDE,"\n")
+                print_color("1. Eliminar un hábito ",VERDE,"\n")
             else:
-                print_color("1. Eliminar un hábito (COMPLETADO)",VERDE,"\n")
+                print_color("1. Eliminar un hábito ",VERDE,"\n")
             if not objetivos:
                 print_color("2. Eliminar un objetivo",ROJO,"\n")
             else:
-                print_color("2. Eliminar un objetivo (COMPLETADO)",VERDE,"\n")
+                print_color("2. Eliminar un objetivo ",VERDE,"\n")
             if not temporizadores:
-                print_color("3. Eliminar un temporizador",ROJO)
+                print_color("3. Eliminar un temporizador",GRIS,"\n")
             else:
-                print_color("3. Eliminar un temporizador (COMPLETADO )",VERDE,"\n")
+                print_color("3. Eliminar un temporizador",VERDE,"\n")
 
-            print_color("4. Eliminar una categoría (COMPLETADO)",VERDE,"\n")
-            print_color("5. Eliminar todos los elementos (COMPLETADO)",VERDE,"\n")
+            print_color("4. Eliminar una categoría ",VERDE,"\n")
+            print_color("5. Eliminar todos los elementos ",VERDE,"\n")
             print_color("====================================",VERDE)
             print_color(volver_principal,CIAN)
 
@@ -190,19 +196,19 @@ def mostrar_menu_modificar():
         # se repite en bucle hasta que se pulse Salir
             print_color("\n========= MENÚ DE MODIFICACIÓN =========",VERDE,"\n")
             if not habitos:
-                print_color("1. Modificar un hábito",ROJO)
+                print_color("1. Modificar un hábito",GRIS)
             else:
-                print_color("1. Modificar un hábito (COMPLETADO)",VERDE,"\n")
+                print_color("1. Modificar un hábito ",VERDE,"\n")
             if not objetivos:
-                print_color("2. Modificar un objetivo",ROJO)
+                print_color("2. Modificar un objetivo",GRIS)
             else:
-                print_color("2. Modificar un objetivo (COMPLETADO)",VERDE,"\n")
+                print_color("2. Modificar un objetivo ",VERDE,"\n")
             if not temporizadores:
-                print_color("3. Modificar un temporizador",ROJO)
+                print_color("3. Modificar un temporizador",GRIS,"\n")
             else:
-                print_color("3. Modificar un temporizador (COMPLETADO)",VERDE,"\n")
+                print_color("3. Modificar un temporizador ",VERDE,"\n")
 
-            print_color("4. Modificar una categoría (COMPLETADO)",VERDE,"\n")
+            print_color("4. Modificar una categoría ",VERDE,"\n")
             print_color("====================================",VERDE)
             print_color(volver_principal,CIAN)
             
@@ -222,9 +228,13 @@ def modi_2():
     opcion_modi_objetivo()
     return True
 def modi_3():
-    limpiar_pantalla()
-    opcion_modi_tempo()
-    return True
+    temporizadores = mostrar_temporizadores()
+    if not temporizadores:
+        return True
+    else:
+        limpiar_pantalla()
+        opcion_modi_tempo()
+        return True
 def modi_4():
     limpiar_pantalla()
     opcion_modi_categoria()
@@ -262,18 +272,20 @@ def mostrar_menu_estadisticas():
             categorias = mostrar_categorias()
         # se repite en bucle hasta que se pulse Salir
             print_color("\n========= MENÚ ESTADÍSTICAS =========",VERDE,"\n")
-            if not habitos:
-                print_color("1. Resumen",ROJO)
-            else:
-                print_color("1. Resumen (COMPLETADO)",VERDE,"\n")
-            if not temporizadores:
-                print_color("2. Categorías",ROJO)
-            else:
-                print_color("2. Categorías (COMPLETADO)",VERDE,"\n")
+            
+            print_color("1. Resumen ",VERDE,"\n")
+           
+            print_color("2. Categorías ",VERDE,"\n")
 
-            print_color("3. Objetivos (COMPLETADO)",VERDE,"\n")
-            print_color ("4. Constancia (COMPLETADO)",VERDE,"\n")
-            print_color("5. Hábitos (COMPLETADO)",VERDE,"\n")
+            print_color("3. Objetivos ",VERDE,"\n")
+            if not temporizadores:
+                print_color("4. Constancia ",GRIS,"\n")
+            else:
+                print_color("4. Constancia ",VERDE,"\n")
+            if not temporizadores:
+                print_color("5. Hábitos ",GRIS,"\n")
+            else:  
+                print_color("5. Hábitos ",VERDE,"\n")
             print_color("====================================",VERDE,"\n")
             print_color("\n[ENTER] Volver al menú principal",CIAN,"\n")
             opcion = input("\nSelecciona una opción: ")
@@ -297,13 +309,21 @@ def estadisticas_3():
     return True
    
 def estadisticas_4():
-    limpiar_pantalla()
-    opcion_estadistica_rachas()
+    temporizadores = mostrar_temporizadores()
+    if not temporizadores:
+        return True
+    else:
+        limpiar_pantalla()
+        opcion_estadistica_rachas()
     return True
 def estadisticas_5():
-    limpiar_pantalla()
-    opcion_estadistica_habitos()
-    return True
+    temporizadores = mostrar_temporizadores()
+    if not temporizadores:
+        return True
+    else:
+        limpiar_pantalla()
+        opcion_estadistica_habitos()
+        return True
 # diccionario que contiene la redirección de las funciones
 menu_estadisticas = {
     "1": estadisticas_1,
