@@ -178,11 +178,24 @@ def pedir_categoria_borrar():
                 continue
                
         borrar = dev_categoria_correcta(borrar)
-        print_color(f"\nLa categoría {borrar} tiene {len(lista_objetivos_categoria)} objetivos, {len(lista_habitos)} hábitos, y {len(lista_temporizadores)} registros de tiempo asociados.",ROJO,"\n")
-        print_color(f"⚠️  Esta acción borrará los DATOS de forma PERMANENTE.",ROJO)
-        seguro = input(f"{AMARILLO}¿Quieres continuar? s/n: {RESET}")
+
+        print_color(
+                f"\nLa categoría {borrar} contiene:\n"
+                f"  • {len(lista_objetivos_categoria)} objetivos\n"
+                f"  • {len(lista_habitos)} hábitos\n"
+                f"  • {len(lista_temporizadores)} registros de tiempo\n",
+                NARANJA,"\n"
+            )
+
+        print_color(
+                "⚠️  Esta acción eliminará estos datos de forma PERMANENTE.",
+                ROJO
+            )
+
+        seguro = input(f"{ROJO}¿Quieres continuar? (s/n): {RESET}")
+
         seguro = seguro.lower()
-        
+            
         if preguntar_seguir(normalizar(seguro)):
             habito = borrar_categoria(borrar,id_categoria,lista_habitos,lista_temporizadores, lista_objetivos_categoria)
             print_color(f"\nLa categoria {borrar} y todos sus elementos relacionados han sido borrados con éxito.",VERDE,"\n")
@@ -670,7 +683,7 @@ def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
             if validar_horas(objetivo_ad):
                 objetivo_ad = validar_horas(objetivo_ad)
                 registrar_objetivo(id_habito, tipo_ad, objetivo_ad)
-                print_color(f"\nSe ha añadido el hábito {nombre} en la categoría {categoria} con un objetivo {tipo_ad} de {objetivo_ad} horas.",VERDE,"\n")
+                print_color(f"\nObjetivo añadido con éxito.\n{nombre} | {tipo_ad} | {objetivo_ad} horas",VERDE,"\n")
                 break
             else:
                 objetivo_ad = input_color(f"\nIntroduce un valor válido (HH:MM:SS): ",ROJO)

@@ -128,6 +128,7 @@ def opcion_temporizador():
                 break
             seguir = input("\n¿Quieres introducir un nuevo temporizador? s/n: ")
             if preguntar_seguir(normalizar(seguir)):
+                limpiar_pantalla()
                 continue
             else:
                 break    
@@ -208,8 +209,16 @@ def opcion_borrar_obj():
             if borrar == None:
                 return False
             else:
-                
-                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el objetivo {borrar["tipo"]} con {borrar["objetivo"]} horas registradas ({dev_nombre_habito_id(borrar["id_habito"])})?\nEsta acción ELIMINARÁ el objetivo de forma PERMANENTE. s/n: {RESET}")
+                seguro = input(
+                    f"{ROJO}"
+                    f"\n¿Estás seguro de que quieres borrar el objetivo {borrar['tipo']}?{RESET}"
+                    f"\n\nObjetivo: {borrar['objetivo']} horas"
+                    f"\nHábito: {dev_nombre_habito_id(borrar['id_habito'])}"
+                    f"\n\n{ROJO}Esta acción ELIMINARÁ el objetivo de forma PERMANENTE.{RESET}"
+                    f"\n¿Confirmar? (s/n): {RESET}"
+                )
+
+
                 seguro = seguro.lower()
 
                 if preguntar_seguir(normalizar(seguro)):
@@ -277,22 +286,32 @@ def opcion_borrar_tempo():
             if borrar == None:
                 return False
             else:
-                seguro = input(f"\n{ROJO}¿Estás seguro de que quieres borrar el temporizador {dev_nombre_habito_id(borrar["id_habito"])} con {borrar["horas"]} horas registradas del día {borrar["fecha"]}?\nEsta acción ELIMINARÁ el temporizador de forma PERMANENTE. s/n: {RESET}")
+                seguro = input(
+                    f'\n{ROJO}¿Quieres eliminar el temporizador '
+                    f'{dev_nombre_habito_id(borrar["id_habito"])}?\n\n{RESET}'
+                    f'Tiempo registrado: {borrar["horas"]}\n'
+                    f'Fecha: {borrar["fecha"]}\n\n'
+                    f'{ROJO}Esta acción no se puede deshacer.\n'
+                    f'¿Confirmar? (s/n): {RESET}'
+                )
                 seguro = seguro.lower()
-
-                if seguro == "s" or seguro == "si":
-                    habito = borrar_temporizador(borrar["id"],borrar)
+                if preguntar_seguir(normalizar(seguro)):
+                    borrar_temporizador(borrar["id"],borrar)
                     print_color(f"\nTemporizador eliminado con éxito.",VERDE,"\n\n")
-                elif seguro == "n" or seguro == "no":
-                    continue
-            lista = mostrar_temporizadores()
-            if lista:
-                seguir = input("¿Quieres eliminar otro temporizador? s/n: ")
-                if preguntar_seguir(normalizar(seguir)):
+                else:
                     limpiar_pantalla()
                     continue
-                else:
-                    break    
+               
+            lista = mostrar_temporizadores()
+            if lista:
+                seguir = input("\n¿Quieres eliminar otro temporizador? s/n: ")
+                while True:
+                    if preguntar_seguir(normalizar(seguir)):
+                        limpiar_pantalla()
+                        continue
+                    else:
+                        limpiar_pantalla()
+                        break    
             else:
                 break
 
