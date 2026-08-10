@@ -19,7 +19,7 @@ def mostrar_menu():
         temporizadores = mostrar_temporizadores()
         categorias = mostrar_categorias()
 
-        print_color("\n======== HABIT TRACKER (FASE PULIDO) ========",VERDE,"\n")
+        print_color("\n======== HABIT TRACKER (FASE BETA) ========",VERDE,"\n")
         print_color("1. Añadir un nuevo hábito (COMPLETADO)",VERDE,"\n")
         if not habitos:
             print_color("2. Registrar tiempo (COMPLETADO)",ROJO)
@@ -30,7 +30,7 @@ def mostrar_menu():
         else:
             print_color("3. Eliminar elementos (COMPLETADO)",VERDE,"\n")
         print_color("4. Modificar elementos (COMPLETADO)",VERDE,"\n")
-        print("5. Mostrar estadísticas (99%)")
+        print_color("5. Mostrar estadísticas (COMPLETADO)",VERDE,"\n")
         print_color("=============================================",VERDE,"\n\n")
         print_color(volver,CIAN,"\n\n")
 
@@ -273,7 +273,7 @@ def mostrar_menu_estadisticas():
 
             print_color("3. Objetivos (COMPLETADO)",VERDE,"\n")
             print_color ("4. Constancia (COMPLETADO)",VERDE,"\n")
-            print("5. Hábitos")
+            print_color("5. Hábitos (COMPLETADO)",VERDE,"\n")
             print_color("====================================",VERDE,"\n")
             print_color("\n[ENTER] Volver al menú principal",CIAN,"\n")
             opcion = input("\nSelecciona una opción: ")

@@ -518,6 +518,7 @@ def calcular_estadisticas_habitos(datos, nombre):
     
     ultima_fecha = max(fechas)
     dias_totales = ((hoy - primera_fecha).days) + 1
+    frecuencia_semanal = dias_activos / (dias_totales / 7)
 
     porcentaje_actividad = (dias_activos / dias_totales) * 100
 
@@ -539,6 +540,8 @@ def calcular_estadisticas_habitos(datos, nombre):
         "dias_activos": dias_activos,
 
         "dias_totales": dias_totales,
+
+        "frecuencia_semanal": round(frecuencia_semanal, 2),
 
         "porcentaje_actividad": round(porcentaje_actividad, 2),
 
@@ -611,32 +614,27 @@ def mostrar_estadisticas_globales(stats):
     
 
 def mostrar_estadisticas_habitos(stats):
+    ancho = 30
+
+    lineas = [
+            encabezado_global(stats['nombre'].upper()),
+            f"\nTotal de horas registradas:{' ' * max(1, ancho - wcswidth('Total de horas registradas:'))}{stats['horas_totales']}",
+            f"Media de los registros:{' ' * max(1, ancho - wcswidth('Media de los registros:'))}{stats['media_horas']}\n",
+            f"Primer registro:{' ' * max(1, ancho - wcswidth('Primer registro:'))}{stats['primera_fecha'].strftime('%d/%m/%Y')}",
+            f"Último registro:{' ' * max(1, ancho - wcswidth('Último registro:'))}{stats['ultima_fecha'].strftime('%d/%m/%Y')}\n",
+            f"Días activos:{' ' * max(1, ancho - wcswidth('Días activos:'))}{stats['dias_activos']} / {stats['dias_totales']} ({stats['porcentaje_actividad']}%)",
+            f"Día más productivo:{' ' * max(1, ancho - wcswidth('Día más productivo:'))}{stats['fecha_max'].strftime('%d/%m/%Y')} ({stats['record_horas_dia']})",
+            f"Frecuencia semanal:{' ' * max(1, ancho - wcswidth('Frecuencia semanal:'))}{stats['frecuencia_semanal']} días/semana",
+
+            f"\n🔥 Racha máxima: {stats['racha_max']} días",
+            f"⚡ Racha actual: {stats['racha_actual']} días",
+       
+           
+        ]
+    return lineas
+        
 
 
-    print(f"\n=== {stats['nombre']} ===\n")
 
-    print(f"Total de horas registradas: {stats['horas_totales']}")
 
-    print(f"Media de los registros: {stats['media_horas']}\n")
-
-    print(f"Primer registro: {stats['primera_fecha']}")
-
-    print(f"Último registro: {stats['ultima_fecha']}\n")
-
-    print(
-        f"Días activos: "
-        f"{stats['dias_activos']} / {stats['dias_totales']} "
-        f"({stats['porcentaje_actividad']}%)"
-    )
-
-    print(
-        f"Día más productivo: "
-        f"{stats['fecha_max']} "
-        f"({stats['record_horas_dia']})"
-    )
-    print(
-        f"Racha máxima: {stats['racha_max']}"
-        )
-    print(
-        f"Racha actual: {stats['racha_actual']}"
-        )
+   

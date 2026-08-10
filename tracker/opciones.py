@@ -641,24 +641,35 @@ def opcion_estadistica_habitos():
         categorias = mostrar_csv_diccionario("categorias")
  
         habitos_datos = preparar_datos_habitos(temporizadores, habitos, categorias)
-      
+        lineas = [
+            print_color_pausa("=======================================", CIAN),
+            print_color_pausa("  📋  HÁBITOS    ", CIAN),
+            print_color_pausa("=======================================", CIAN),
+              
+        ]
+            
+        imprimir_con_pausa(lineas)
 
-
+        datos_a_mostrar = []
         for nombre_habito, datos in habitos_datos.items():
             if not datos["fechas"]:
                 continue
 
             estadisticas = calcular_estadisticas_habitos(datos, nombre_habito)
+
         
-            mostrar_estadisticas_habitos(estadisticas)
-        
+            datos_a_mostrar.extend(mostrar_estadisticas_habitos(estadisticas))
+
+            
+
             horas_totales = datos['horas_totales']
             fechas = datos['fechas']
             horas_por_fecha = datos['horas_por_fecha']
 
+        imprimir_con_pausa(datos_a_mostrar)
 
         salir = normalizar(input(
-            "\n[ENTER] Salir"
+            f"\n{ROJO}[ENTER] Salir{RESET}"
         ))
 
         if salir in ("","volver","salir"):

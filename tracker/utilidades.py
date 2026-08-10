@@ -93,7 +93,7 @@ def cumple_periodo(fecha, ahora, tipo, offset):
 
 def imprimir_con_pausa(lineas):
     try:
-        altura = shutil.get_terminal_size().lines - 9 #margen de lineas
+        altura = shutil.get_terminal_size().lines - 20 #margen de lineas
     except:
         altura = 20
 
