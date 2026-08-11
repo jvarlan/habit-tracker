@@ -5,7 +5,7 @@ from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categori
 from .devolver import dev_categoria_id, dev_categoria_correcta, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id, dev_id_categoria_habito_id, dev_emoticono_categoria_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo, pedir_objetivo_modi
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
-from .fusion import fusionar_habitos, fusionar_objetivos, fusionar_temporizadores
+from .fusion import fusionar_habitos, fusionar_objetivos, fusionar_temporizadores, fusionar_categorias, fusionar_habitos_categoria
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos, calcular_estadisticas_habitos, mostrar_estadisticas_habitos, categorias_fecha, mostrar_mas_categorias
 from datetime import datetime, date, timedelta
 import emoji
@@ -347,7 +347,7 @@ def opcion_borrar_categoria():
                 lista = mostrar_categorias()
                 if not lista:
                     break
-                
+
                 seguir = input("\n¿Quieres eliminar otra categoría? s/n: ")
                 if preguntar_seguir(normalizar(seguir)):
                     limpiar_pantalla()
@@ -789,6 +789,7 @@ def opcion_fusionar_habitos():
             CIAN
         )
 
+
 def opcion_fusionar_categorias():
     
     lista = mostrar_csv_diccionario("categorias")
@@ -800,20 +801,41 @@ def opcion_fusionar_categorias():
             id_categoria = lista["id"]
             emoticono = dev_emoticono_categoria_id(id_categoria)
             print(f"{nombre} {emoticono}")
-        print_color("\nRecuerda que al fusionar categorías, se combinarán los hábitos y registros de ambas categorías en una sola.", ROJO, "\n")
+        print_color("\nRecuerda que al fusionar categorías, se combinarán los hábitos y objetivos de ambas categorías en una sola.", ROJO, "\n")
         print_color("\n[ENTER] para volver al menú de fusión.", CIAN, "\n")
         eleccion = input("\nElige las categorías que quieres fusionar (separadas por coma): ")
-        if eleccion.strip() == "":
-            return
-        categoria_1, categoria2 = [c.strip() for c in eleccion.split(",")]
+        while True:
+
+            if eleccion.strip() == "":
+                return
+            elecciones = [h.strip() for h in eleccion.split(",")]
+            if len(elecciones) != 2:
+                
+                eleccion = input(f"\n{ROJO}Debes seleccionar exactamente dos categorías: {RESET}")
+                continue
+            else:
+                break
+            
+        categoria_1, categoria_2 = elecciones
+
         id_categoria_1 = dev_categoria_id(categoria_1)
-        id_categoria_2 = dev_categoria_id(categoria2)
+        id_categoria_2 = dev_categoria_id(categoria_2)
+
+        categoria_1 = dev_nombre_categoria_id(id_categoria_1)
+        categoria_2 = dev_nombre_categoria_id(id_categoria_2)
+
         if id_categoria_1 and id_categoria_2:
             # Fusionar las categorías
-            seguir = input(f"\n{ROJO}¿Estás seguro de que quieres fusionar '{categoria_1}' y '{categoria2}'? Esta acción no se puede deshacer. (s/n): {RESET}")
+            elige = input(f"¿Cuál de las dos categorías quieres conservar como principal? {categoria_1}/{categoria_2}: ")
+            id_principal = dev_categoria_id(elige)
+            id_secundario = id_categoria_1 if id_principal == id_categoria_2 else id_categoria_2
+            seguir = input(f"\n{ROJO}¿Estás seguro de que quieres fusionar '{categoria_1}' y '{categoria_2}'? Esta acción no se puede deshacer. (s/n): {RESET}")
+
             if preguntar_seguir(normalizar(seguir)):
-                # Aquí puedes implementar la lógica para fusionar las categorías seleccionadas
-                print_color(f"\nLas categorías '{categoria_1}' y '{categoria2}' han sido fusionadas correctamente.", VERDE, "\n")
+                # Aquí puedes implementar la lógica para fusionar los hábitos seleccionados
+                fusionar_categorias(id_principal, id_secundario)
+                fusionar_habitos_categoria(id_principal, id_secundario)
+                print_color(f"\nLas categorías '{categoria_1}' y '{categoria_2}' han sido fusionados correctamente.", VERDE, "\n")
                 input("\n[ENTER] para continuar...")
             else:
                 print_color("\nFusión cancelada.", ROJO, "\n")
