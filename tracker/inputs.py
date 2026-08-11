@@ -127,7 +127,7 @@ def pedir_habito_borrar():
         if normalizar(borrar) in ("volver","salir",""):
             return None
     while True:    
-        borrar_id = dev_habito_id(normalizar(borrar))
+        borrar_id = dev_habito_id(borrar)
         temporizadores = contar_csv_n("temporizadores",borrar_id,0)
         objetivos = contar_csv_id("objetivos",borrar_id,1)
         habitos = contar_csv_n("habitos",borrar_id,0)

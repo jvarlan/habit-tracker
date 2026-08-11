@@ -1,5 +1,5 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores, mostrar_objetivos
-from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria, opcion_estadistica_rachas, opcion_estadistica_habitos, opcion_fusionar_habitos, opcion_fusionar_categorias
+from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria, opcion_estadistica_rachas, opcion_estadistica_habitos, opcion_fusionar_habitos
 from .utilidades import limpiar_pantalla
 from .utilidades import ROJO, VERDE, CIAN, GRIS, print_color, normalizar
 
@@ -103,7 +103,8 @@ menu = {
     "2": opcion_2,
     "3": opcion_3,
     "4": opcion_4,
-    "5": opcion_5
+    "5": opcion_5,
+    "6": opcion_6
 }
 
 def seleccionar(opcion):
@@ -386,6 +387,7 @@ def mostrar_menu_fusionar():
 
 # las distintas opciones del menu fusionar           
 def fusionar_1():
+
     limpiar_pantalla()
     opcion_fusionar_habitos()
     return True

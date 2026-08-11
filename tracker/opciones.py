@@ -5,6 +5,7 @@ from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categori
 from .devolver import dev_categoria_id, dev_categoria_correcta, dev_habito_id, dev_nombre_habito_id, dev_nombre_categoria_id, dev_id_categoria_habito_id, dev_emoticono_categoria_id
 from .inputs import pedir_nombre_temp, pedir_horas_temp, pedir_fecha_temp, pedir_nombre_registro, pedir_objetivo_borrar, pedir_categoria_borrar, pedir_temporizador_borrar, pedir_habito_borrar, pedir_habito_modi, pedir_tempo_modi, pedir_categoria_modi, otro_objetivo, pedir_objetivo_modi
 from .borrar import borrar_csv, borrar_temporizador, borrar_objetivo
+from .fusion import fusionar_habitos, fusionar_objetivos, fusionar_temporizadores
 from .estadisticas import generar_bloque_objetivo, generar_bloque_resumen, generar_bloque_categorias, calcular_estadisticas_globales, mostrar_estadisticas_globales, preparar_datos_estadistica, preparar_datos_habitos, calcular_estadisticas_habitos, mostrar_estadisticas_habitos, categorias_fecha, mostrar_mas_categorias
 from datetime import datetime, date, timedelta
 import emoji
@@ -737,19 +738,40 @@ def opcion_fusionar_habitos():
             print(f"{nombre} {emoticono}")
         print_color("\nRecuerda que al fusionar hábitos, se combinarán los registros y objetivos de ambos hábitos en uno solo.", ROJO, "\n")
         print_color("\n[ENTER] para volver al menú de fusión.", CIAN, "\n")
-
         eleccion = input("\nElige los hábitos que quieres fusionar (separados por coma): ")
-        if eleccion.strip() == "":
-            return
-        habito_1, habito2 = [h.strip() for h in eleccion.split(",")]
+        while True:
+
+            if eleccion.strip() == "":
+                return
+            elecciones = [h.strip() for h in eleccion.split(",")]
+            if len(elecciones) != 2:
+                
+                eleccion = input(f"\n{ROJO}Debes seleccionar exactamente dos hábitos: {RESET}")
+                continue
+            else:
+                break
+            
+        habito_1, habito_2 = elecciones
+
         id_habito_1 = dev_habito_id(habito_1)
-        id_habito_2 = dev_habito_id(habito2)
+        id_habito_2 = dev_habito_id(habito_2)
+
+        habito_1 = dev_nombre_habito_id(id_habito_1)
+        habito_2 = dev_nombre_habito_id(id_habito_2)
+
         if id_habito_1 and id_habito_2:
             # Fusionar los hábitos
-            seguir = input(f"\n{ROJO}¿Estás seguro de que quieres fusionar '{habito_1}' y '{habito2}'? Esta acción no se puede deshacer. (s/n): {RESET}")
+            elige = input(f"¿Cuál de los dos hábitos quieres conservar como principal? {habito_1}/{habito_2}: ")
+            id_principal = dev_habito_id(elige)
+            id_secundario = id_habito_1 if id_principal == id_habito_2 else id_habito_2
+            seguir = input(f"\n{ROJO}¿Estás seguro de que quieres fusionar '{habito_1}' y '{habito_2}'? Esta acción no se puede deshacer. (s/n): {RESET}")
+
             if preguntar_seguir(normalizar(seguir)):
                 # Aquí puedes implementar la lógica para fusionar los hábitos seleccionados
-                print_color(f"\nLos hábitos '{habito_1}' y '{habito2}' han sido fusionados correctamente.", VERDE, "\n")
+                fusionar_habitos(id_principal, id_secundario)
+                fusionar_objetivos(id_principal, id_secundario)
+                fusionar_temporizadores(id_principal, id_secundario)
+                print_color(f"\nLos hábitos '{habito_1}' y '{habito_2}' han sido fusionados correctamente.", VERDE, "\n")
                 input("\n[ENTER] para continuar...")
             else:
                 print_color("\nFusión cancelada.", ROJO, "\n")
