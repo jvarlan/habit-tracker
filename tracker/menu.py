@@ -133,11 +133,11 @@ def mostrar_menu_borrar():
         # se repite en bucle hasta que se pulse Salir
             print_color("\n========= MENÚ DE BORRADO =========",VERDE,"\n")
             if not habitos:
-                print_color("1. Eliminar un hábito ",VERDE,"\n")
+                print_color("1. Eliminar un hábito ",GRIS,"\n")
             else:
                 print_color("1. Eliminar un hábito ",VERDE,"\n")
             if not objetivos:
-                print_color("2. Eliminar un objetivo",ROJO,"\n")
+                print_color("2. Eliminar un objetivo",GRIS,"\n")
             else:
                 print_color("2. Eliminar un objetivo ",VERDE,"\n")
             if not temporizadores:
@@ -387,7 +387,6 @@ def mostrar_menu_fusionar():
 
 # las distintas opciones del menu fusionar           
 def fusionar_1():
-
     limpiar_pantalla()
     opcion_fusionar_habitos()
     return True

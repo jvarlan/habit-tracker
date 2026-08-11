@@ -150,13 +150,18 @@ def opcion_borrar():
                 break
             if borrar == "preguntar":
                 lista = mostrar_csv_diccionario("habitos")
-                if lista:
-                    seguir = input("¿Quieres eliminar otro hábito? s/n: ")
-                    if preguntar_seguir(normalizar(seguir)):
-                        limpiar_pantalla()
-                        continue
-                    else:
-                        break   
+
+                if not lista:
+                    break
+
+                seguir = input("¿Quieres eliminar otro hábito? s/n: ")
+
+                if preguntar_seguir(normalizar(seguir)):
+                    limpiar_pantalla()
+                    continue
+                else:
+                    break
+
             else:
                 break
     else:
@@ -336,17 +341,19 @@ def opcion_borrar_categoria():
                 print(f"{i} - {item['categoria']} {item['emoticono']}")
             print_color(volver,CIAN)
             borrar = pedir_categoria_borrar()
-            if borrar == None:
+            if borrar is None:
                 return False
-            elif borrar == True:
+            elif borrar is True:
                 lista = mostrar_categorias()
-                if lista:
-                    seguir = input("\n¿Quieres eliminar otra categoría? s/n: ")
-                    if preguntar_seguir(normalizar(seguir)):
-                        limpiar_pantalla()
-                        continue
-                    else:
-                        break    
+                if not lista:
+                    break
+                
+                seguir = input("\n¿Quieres eliminar otra categoría? s/n: ")
+                if preguntar_seguir(normalizar(seguir)):
+                    limpiar_pantalla()
+                    continue
+                else:
+                    break    
             else:
                 continue
     else:

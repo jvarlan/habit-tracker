@@ -198,7 +198,7 @@ def pedir_categoria_borrar():
             
         if preguntar_seguir(normalizar(seguro)):
             habito = borrar_categoria(borrar,id_categoria,lista_habitos,lista_temporizadores, lista_objetivos_categoria)
-            print_color(f"\nLa categoria {borrar} y todos sus elementos relacionados han sido borrados con éxito.",VERDE,"\n")
+            print_color(f"\nCategoría {borrar} y todos sus elementos han sido eliminados con éxito.\n {borrar} y todos sus elementos",VERDE,"\n")
             return True
         else:
             limpiar_pantalla()
