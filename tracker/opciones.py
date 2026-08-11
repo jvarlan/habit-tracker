@@ -247,84 +247,118 @@ def opcion_borrar_obj():
     else:
         print_color("No existe ningún objetivo a eliminar.",CIAN)
 
-
 def opcion_borrar_tempo():
-    # muestra previamente todos los registros a eliminar
+    # Muestra previamente todos los registros a eliminar
     lista = mostrar_temporizadores()
 
-    if lista:     
+    if lista:
         while True:
             habitos = {}
+
             for i, item in enumerate(lista, start=1):
                 id_habito = item['id_habito']
                 id_categoria = dev_id_categoria_habito_id(id_habito)
                 emoticono = dev_emoticono_categoria_id(id_categoria)
 
                 nombre = dev_nombre_habito_id(id_habito)
-                
+
                 if nombre not in habitos:
                     habitos[nombre] = {
                         "emoticono": emoticono,
                         "temporizadores": []
                     }
+
                 habitos[nombre]["temporizadores"].append(
-                    f"{i} - {item["fecha"]} - {item["horas"]}"
+                    f"{i} - {item['fecha']} - {item['horas']}"
                 )
-            
-            print_color(f"\nEliminar un temporizador",INVERSION,"\n")
-            print("\nLista de temporizadores por hábito: \n")
+
+            print_color(
+                "\nEliminar un temporizador",
+                INVERSION,
+                "\n"
+            )
+
+            print("\nLista de temporizadores por hábito:\n")
+
             for nombre, info in sorted(habitos.items()):
                 print(f"{nombre} {info['emoticono']}")
                 print("───────────────────────────")
                 print(f"{'ID':<3} {'FECHA':>3} {'HORAS':>13}")
                 print("───────────────────────────")
+
                 for temporizador in info['temporizadores']:
-                    id, fecha, tiempo = [x.strip() for x in temporizador.split(" - ")]
-                    fecha_formateada = datetime.strptime(fecha, "%Y-%m-%d").strftime("%d/%m/%Y")
+                    id, fecha, tiempo = [
+                        x.strip()
+                        for x in temporizador.split(" - ")
+                    ]
+
+                    fecha_formateada = datetime.strptime(
+                        fecha,
+                        "%Y-%m-%d"
+                    ).strftime("%d/%m/%Y")
+
                     print(
                         f"{id:<4}"
                         f"{fecha_formateada:<14}"
                         f"{tiempo}"
                     )
+
                 print()
-            
-            print_color(volver,CIAN)
+
+            print_color(volver, CIAN)
+
             borrar = pedir_temporizador_borrar()
-            
-            if borrar == None:
+
+            if borrar is None:
                 return False
-            else:
-                seguro = input(
-                    f'\n{ROJO}¿Quieres eliminar el temporizador '
-                    f'{dev_nombre_habito_id(borrar["id_habito"])}?\n\n{RESET}'
-                    f'Tiempo registrado: {borrar["horas"]}\n'
-                    f'Fecha: {borrar["fecha"]}\n\n'
-                    f'{ROJO}Esta acción no se puede deshacer.\n'
-                    f'¿Confirmar? (s/n): {RESET}'
+
+            seguro = input(
+                f'\n{ROJO}¿Quieres eliminar el temporizador '
+                f'{dev_nombre_habito_id(borrar["id_habito"])}?\n\n{RESET}'
+                f'Tiempo registrado: {borrar["horas"]}\n'
+                f'Fecha: {borrar["fecha"]}\n\n'
+                f'{ROJO}Esta acción no se puede deshacer.\n'
+                f'¿Confirmar? (s/n): {RESET}'
+            )
+
+            seguro = seguro.lower()
+
+            if preguntar_seguir(normalizar(seguro)):
+                borrar_temporizador(
+                    borrar["id"],
+                    borrar
                 )
-                seguro = seguro.lower()
-                if preguntar_seguir(normalizar(seguro)):
-                    borrar_temporizador(borrar["id"],borrar)
-                    print_color(f"\nTemporizador eliminado con éxito.",VERDE,"\n\n")
-                else:
-                    limpiar_pantalla()
-                    continue
-               
-            lista = mostrar_temporizadores()
-            if lista:
-                seguir = input("\n¿Quieres eliminar otro temporizador? s/n: ")
-                while True:
-                    if preguntar_seguir(normalizar(seguir)):
-                        limpiar_pantalla()
-                        continue
-                    else:
-                        limpiar_pantalla()
-                        break    
+
+                print_color(
+                    "\nTemporizador eliminado con éxito.",
+                    VERDE,
+                    "\n\n"
+                )
             else:
+                limpiar_pantalla()
+                continue
+
+            lista = mostrar_temporizadores()
+
+            if not lista:
+                break
+
+            seguir = input(
+                "\n¿Quieres eliminar otro temporizador? s/n: "
+            )
+
+            if preguntar_seguir(normalizar(seguir)):
+                limpiar_pantalla()
+                continue
+            else:
+                limpiar_pantalla()
                 break
 
     else:
-        print_color("No existe ningún temporizador a eliminar.",CIAN)
+        print_color(
+            "No existe ningún temporizador a eliminar.",
+            CIAN
+        )
 
 def opcion_borrar_categoria():
     # muestra previamente todos los registros a eliminar
@@ -358,6 +392,7 @@ def opcion_borrar_categoria():
                 continue
     else:
         print_color("No existe ninguna categoria a eliminar.",CIAN)
+
 
 def opcion_borrar_todo():
     lista1 = mostrar_csv("habitos")

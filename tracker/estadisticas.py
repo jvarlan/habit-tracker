@@ -5,6 +5,7 @@ from .utilidades import normalizar, print_color, print_color_pausa, cumple_perio
 from .mostrar import mostrar_csv_diccionario
 from datetime import datetime, timedelta, date
 from wcwidth import wcswidth
+import calendar
 
 
 def leer():
@@ -74,51 +75,117 @@ def objetivos(tipos,temporizadores, tipo_periodo, offset):
             lineas.append(linea)
 
         return lineas
-def media_objetivos(tipos,temporizadores, tipo_periodo, num_periodos):
-        # calcula la media dependiendo del tipo de periodo que sea (diario, semanal, mensual, anual)
-        ahora = datetime.now()
-        lineas = []
-        for objetivo in tipos:     
-            id_habito = objetivo['id_habito']
-            segundos_totales = 0
-            habitos = mostrar_csv_diccionario("habitos")
 
-            for habito in habitos:
-                if habito['id'] == id_habito:
-                    id_categoria = habito['id_categoria']
-           
+def media_objetivos(tipos, temporizadores, tipo_periodo, num_periodos):
+    ahora = datetime.now()
+    lineas = []
 
-            categorias = mostrar_csv_diccionario("categorias")  
-            for categoria in categorias:
-                if categoria['id'] == id_categoria:
-                    emoticono_categoria = categoria["emoticono"]
-            
+    for objetivo in tipos:
+        id_habito = objetivo['id_habito']
+        segundos_totales = 0
+
+        habitos = mostrar_csv_diccionario("habitos")
+
+        id_categoria = None
+        for habito in habitos:
+            if habito['id'] == id_habito:
+                id_categoria = habito['id_categoria']
+                break
+
+        categorias = mostrar_csv_diccionario("categorias")
+
+        emoticono_categoria = ""
+        for categoria in categorias:
+            if categoria['id'] == id_categoria:
+                emoticono_categoria = categoria["emoticono"]
+                break
+
+        # Acumulamos los segundos de todos los periodos
+        if tipo_periodo == "dia":
+            # Excluimos hoy
+            rango = range(1, num_periodos + 1)
+        else:
+            rango = range(num_periodos)
+
+        for offset in rango:
+            for temporizador in temporizadores:
+                if temporizador['id_habito'] == id_habito:
+                    fecha_temp = datetime.strptime(
+                        temporizador['fecha'],
+                        "%Y-%m-%d"
+                    )
+
+                    if cumple_periodo(
+                        fecha_temp,
+                        ahora,
+                        tipo_periodo,
+                        offset
+                    ):
+                        segundos_totales += horas_a_segundos(
+                            temporizador['tiempo']
+                        )
+
+        # Número de días que abarcan los periodos
+        if tipo_periodo == "dia":
+            dias = num_periodos
+
+        elif tipo_periodo == "semana":
+            dias = num_periodos * 7
+
+        elif tipo_periodo == "mes":
+            dias = 0
+
             for offset in range(num_periodos):
-                for temporizador in temporizadores:
-                    if temporizador['id_habito'] == id_habito:
-                        fecha_temp = datetime.strptime(temporizador['fecha'], "%Y-%m-%d")
-                        if cumple_periodo(fecha_temp, ahora, tipo_periodo, offset):
-                            segundos_totales = segundos_totales + horas_a_segundos(temporizador['tiempo'])
-            conseguido = ""
-            segundos_totales = segundos_totales / num_periodos
-            if int(segundos_totales) >= int(horas_a_segundos(objetivo['objetivo'])) * 3600:
-                conseguido = "✔️"
-            else:
-                conseguido = "❌"
-            habito = dev_nombre_habito_id(objetivo['id_habito'])
-            nombre = f"{emoticono_categoria} {habito}"
-            espacios = 20 -wcswidth(habito)
-            
-            linea = (
-                f"{nombre}"
-                f"{' ' * max(1, espacios)}"
-                f"{numero_string_a_HHMM(segundos_totales)}"
-                f" / {objetivo['objetivo']} horas {conseguido}"
-                )
+                mes = (ahora.month - 1 - offset) % 12 + 1
+                año = ahora.year - ((offset + (12 - ahora.month)) // 12)
 
-            lineas.append(linea)
+                if mes == ahora.month and año == ahora.year:
+                    # No contamos el día de hoy
+                    dias += ahora.day - 1
+                else:
+                    if mes == 12:
+                        siguiente_mes = datetime(año + 1, 1, 1)
+                    else:
+                        siguiente_mes = datetime(año, mes + 1, 1)
 
-        return lineas
+                    mes_actual = datetime(año, mes, 1)
+
+                    dias += (siguiente_mes - mes_actual).days
+
+        elif tipo_periodo == "año":
+            dias = 0
+
+            for offset in range(num_periodos):
+                año = ahora.year - offset
+
+                if año == ahora.year:
+                    # No contamos el día de hoy
+                    dias += ahora.timetuple().tm_yday - 1
+                else:
+                    dias += 366 if calendar.isleap(año) else 365
+
+        # Media diaria
+        segundos_totales = segundos_totales / dias
+
+        if segundos_totales >= horas_a_segundos(objetivo['objetivo']):
+            conseguido = "✔️"
+        else:
+            conseguido = "❌"
+
+        habito = dev_nombre_habito_id(objetivo['id_habito'])
+        nombre = f"{emoticono_categoria} {habito}"
+        espacios = 20 - wcswidth(habito)
+
+        linea = (
+            f"{nombre}"
+            f"{' ' * max(1, espacios)}"
+            f"{numero_string_a_HHMM(segundos_totales)}"
+            f" / {objetivo['objetivo']} horas {conseguido}"
+        )
+
+        lineas.append(linea)
+
+    return lineas
 
 def generar_bloque_objetivo(titulo,datos,temporizadores,tipo,unidad,media_n):
     if not datos:

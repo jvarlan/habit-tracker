@@ -60,12 +60,13 @@ def nombre_idhabito():
         id_habito_nombre[habito[1]] = habito[0]
     return id_habito_nombre
 
-
 def cumple_periodo(fecha, ahora, tipo, offset):
-   
-    
+
     if isinstance(fecha, str):
         fecha = datetime.strptime(fecha, "%Y-%m-%d").date()
+    elif isinstance(fecha, datetime):
+        fecha = fecha.date()
+
     if isinstance(ahora, datetime):
         ahora = ahora.date()
 
@@ -74,8 +75,12 @@ def cumple_periodo(fecha, ahora, tipo, offset):
 
     elif tipo == "semana":
         referencia = ahora - timedelta(weeks=offset)
-        return fecha.isocalendar().week == referencia.isocalendar().week and fecha.year == referencia.year
-   
+
+        return (
+            fecha.isocalendar().week == referencia.isocalendar().week
+            and fecha.isocalendar().year == referencia.isocalendar().year
+        )
+
     elif tipo == "mes":
         mes = ahora.month - offset
         año = ahora.year
@@ -87,8 +92,8 @@ def cumple_periodo(fecha, ahora, tipo, offset):
         return fecha.year == año and fecha.month == mes
 
     elif tipo == "año":
-
         return fecha.year == (ahora.year - offset)
+
 
 
 def imprimir_con_pausa(lineas):
