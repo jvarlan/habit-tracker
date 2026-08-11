@@ -1,5 +1,5 @@
 from .mostrar import mostrar_registros, mostrar_categorias, mostrar_temporizadores, mostrar_objetivos
-from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria, opcion_estadistica_rachas, opcion_estadistica_habitos
+from .opciones import opcion_registro, opcion_temporizador, opcion_borrar, opcion_borrar_obj, opcion_borrar_todo, opcion_borrar_tempo, opcion_borrar_categoria, opcion_modi_habito, opcion_modi_tempo, opcion_modi_categoria, opcion_modi_objetivo, opcion_estadistica_objetivo, opcion_estadistica_resumen, opcion_estadistica_categoria, opcion_estadistica_rachas, opcion_estadistica_habitos, opcion_fusionar_habitos, opcion_fusionar_categorias
 from .utilidades import limpiar_pantalla
 from .utilidades import ROJO, VERDE, CIAN, GRIS, print_color, normalizar
 
@@ -34,9 +34,13 @@ def mostrar_menu():
         else:
             print_color("4. Modificar elementos ",VERDE,"\n")
         if not habitos and not temporizadores and not categorias:
-            print_color("5. Mostrar estadísticas ",GRIS,"\n")
+            print_color("5. Fusionar elementos ",GRIS,"\n")
         else:
-            print_color("5. Mostrar estadísticas ",VERDE,"\n")
+            print_color("5. Fusionar elementos ",VERDE,"\n")
+        if not habitos and not temporizadores and not categorias:
+            print_color("6. Mostrar estadísticas ",GRIS,"\n")
+        else:
+            print_color("6. Mostrar estadísticas ",VERDE,"\n")
         print_color("=============================================",VERDE,"\n\n")
         print_color(volver,CIAN,"\n\n")
 
@@ -76,8 +80,15 @@ def opcion_4():
     else:
         print_color("Actualmente no existe ningún elemento a modificar.",CIAN)
     return True
-
 def opcion_5():
+    limpiar_pantalla()
+    lista = mostrar_categorias()
+    if lista:
+        mostrar_menu_fusionar()
+    else:
+        print_color("Actualmente no existe ningún elemento a fusionar.",CIAN)
+    return True
+def opcion_6():
     limpiar_pantalla()
     lista = mostrar_categorias()
     if lista:
@@ -346,3 +357,47 @@ def estadisticas(opcion):
         limpiar_pantalla()
         print_color("Opción no válida.",ROJO)
         return True
+
+def fusionar(opcion):
+    if normalizar(opcion) in ("volver", "salir", ""):
+        print_color("Volviendo al menú principal...", VERDE)
+        return False
+
+    if opcion in menu_fusionar:
+        return menu_fusionar[opcion]()
+
+    limpiar_pantalla()
+    print_color("Opción no válida.", ROJO)
+    return True
+
+def mostrar_menu_fusionar():
+    while True:
+        limpiar_pantalla()
+       
+        print_color("\n========= MENÚ DE FUSIÓN =========",VERDE,"\n")
+        print_color("1. Fusionar hábitos ",VERDE,"\n")
+        print_color("2. Fusionar categorías ",VERDE,"\n")
+        print_color("====================================",VERDE)
+        print_color(volver_principal,CIAN)
+        opcion = input("Selecciona una opción: ")
+        
+        if not fusionar(opcion):
+            break
+
+# las distintas opciones del menu fusionar           
+def fusionar_1():
+    limpiar_pantalla()
+    opcion_fusionar_habitos()
+    return True
+
+def fusionar_2():
+    limpiar_pantalla()
+    opcion_fusionar_categorias()
+    return True
+
+
+# diccionario que contiene la redirección de las funciones
+menu_fusionar = {
+    "1": fusionar_1,
+    "2": fusionar_2
+}   
