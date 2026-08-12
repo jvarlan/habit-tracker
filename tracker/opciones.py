@@ -768,31 +768,82 @@ def opcion_estadistica_habitos():
             salir = True
 
 def opcion_fusionar_habitos():
-    
+
     lista = mostrar_csv_diccionario("habitos")
 
     if lista:
         print_color("Fusionar hábitos", INVERSION, "\n\n")
-        for lista in lista:
-            nombre = lista["habito"]
-            id_categoria = lista["id_categoria"]
+
+        nombres_habitos = []
+
+        for habito in lista:
+            nombre = habito["habito"]
+            nombres_habitos.append(nombre)
+
+            id_categoria = habito["id_categoria"]
             emoticono = dev_emoticono_categoria_id(id_categoria)
+
             print(f"{nombre} {emoticono}")
-        print_color("\nRecuerda que al fusionar hábitos, se combinarán los registros y objetivos de ambos hábitos en uno solo.", ROJO, "\n")
-        print_color("\n[ENTER] para volver al menú de fusión.", CIAN, "\n")
-        eleccion = input("\nElige los hábitos que quieres fusionar (separados por coma): ")
+
+        print_color(
+            "\nRecuerda que al fusionar hábitos, se combinarán los registros "
+            "y objetivos de ambos hábitos en uno solo.",
+            ROJO,
+            "\n"
+        )
+
+        print_color(
+            "\n[ENTER] para volver al menú de fusión.",
+            CIAN,
+            "\n"
+        )
+
+        eleccion = input(
+            "\nElige los hábitos que quieres fusionar (separados por coma): "
+        )
+
         while True:
 
             if eleccion.strip() == "":
                 return
+
             elecciones = [h.strip() for h in eleccion.split(",")]
+
+            # Comprobar que se han seleccionado exactamente dos hábitos
             if len(elecciones) != 2:
-                
-                eleccion = input(f"\n{ROJO}Debes seleccionar exactamente dos hábitos: {RESET}")
+                eleccion = input(
+                    f"\n{ROJO}Debes seleccionar exactamente dos hábitos: {RESET}"
+                )
                 continue
-            else:
-                break
-            
+
+           # Comprobar que los hábitos existen
+
+            nombres_habitos_normalizados = [
+                normalizar(nombre) for nombre in nombres_habitos
+            ]
+
+            habitos_invalidos = [
+                habito for habito in elecciones
+                if normalizar(habito) not in nombres_habitos_normalizados
+            ]
+
+            if habitos_invalidos:
+                eleccion = input(
+                    f"\n{ROJO}Los siguientes hábitos no existen: "
+                    f"{', '.join(habitos_invalidos)}. "
+                    f"Por favor, elige hábitos válidos de la lista mostrada: {RESET}"
+                )
+                continue
+
+            # Comprobar que no se ha seleccionado el mismo hábito dos veces
+            if elecciones[0] == elecciones[1]:
+                eleccion = input(
+                    f"\n{ROJO}Debes seleccionar dos hábitos diferentes: {RESET}"
+                )
+                continue
+
+            break
+
         habito_1, habito_2 = elecciones
 
         id_habito_1 = dev_habito_id(habito_1)
@@ -802,55 +853,143 @@ def opcion_fusionar_habitos():
         habito_2 = dev_nombre_habito_id(id_habito_2)
 
         if id_habito_1 and id_habito_2:
-            # Fusionar los hábitos
-            elige = input(f"¿Cuál de los dos hábitos quieres conservar como principal? {habito_1}/{habito_2}: ")
-            id_principal = dev_habito_id(elige)
-            id_secundario = id_habito_1 if id_principal == id_habito_2 else id_habito_2
-            seguir = input(f"\n{ROJO}¿Estás seguro de que quieres fusionar '{habito_1}' y '{habito_2}'? Esta acción no se puede deshacer. (s/n): {RESET}")
+
+            # Elegir hábito principal
+            while True:
+
+                elige = input(
+                    f"\n¿Cuál de los dos hábitos quieres conservar como principal? "
+                    f"{habito_1}/{habito_2}: "
+                ).strip()
+
+                if elige == habito_1:
+                    id_principal = id_habito_1
+                    id_secundario = id_habito_2
+                    break
+
+                elif elige == habito_2:
+                    id_principal = id_habito_2
+                    id_secundario = id_habito_1
+                    break
+
+                else:
+                    print_color(
+                        f"\nDebes introducir '{habito_1}' o '{habito_2}'.",
+                        ROJO,
+                        "\n"
+                    )
+
+            seguir = input(
+                f"\n{ROJO}¿Estás seguro de que quieres fusionar "
+                f"'{habito_1}' y '{habito_2}'? "
+                f"Esta acción no se puede deshacer. (s/n): {RESET}"
+            )
 
             if preguntar_seguir(normalizar(seguir)):
-                # Aquí puedes implementar la lógica para fusionar los hábitos seleccionados
+
                 fusionar_habitos(id_principal, id_secundario)
                 fusionar_objetivos(id_principal, id_secundario)
                 fusionar_temporizadores(id_principal, id_secundario)
-                print_color(f"\nLos hábitos '{habito_1}' y '{habito_2}' han sido fusionados correctamente.", VERDE, "\n")
+
+                print_color(
+                    f"\nLos hábitos '{habito_1}' y '{habito_2}' "
+                    "han sido fusionados correctamente.",
+                    VERDE,
+                    "\n"
+                )
+
                 input("\n[ENTER] para continuar...")
+
             else:
-                print_color("\nFusión cancelada.", ROJO, "\n")
+                print_color(
+                    "\nFusión cancelada.",
+                    ROJO,
+                    "\n"
+                )
+
                 input("\n[ENTER] para continuar...")
+
     else:
         print_color(
             "Actualmente no existe ningún elemento a fusionar.",
             CIAN
         )
-
-
 def opcion_fusionar_categorias():
-    
+
     lista = mostrar_csv_diccionario("categorias")
 
     if lista:
         print_color("Fusionar categorías", INVERSION, "\n\n")
-        for lista in lista:
-            nombre = lista["categoria"]
-            id_categoria = lista["id"]
+
+        nombres_categorias = []
+
+        for categoria in lista:
+            nombre = categoria["categoria"]
+            nombres_categorias.append(nombre)
+
+            id_categoria = categoria["id"]
             emoticono = dev_emoticono_categoria_id(id_categoria)
+
             print(f"{nombre} {emoticono}")
-        print_color("\nRecuerda que al fusionar categorías, se combinarán los hábitos y objetivos de ambas categorías en una sola.", ROJO, "\n")
-        print_color("\n[ENTER] para volver al menú de fusión.", CIAN, "\n")
-        eleccion = input("\nElige las categorías que quieres fusionar (separadas por coma): ")
+
+        print_color(
+            "\nRecuerda que al fusionar categorías, se combinarán los hábitos "
+            "y objetivos de ambas categorías en una sola.",
+            ROJO,
+            "\n"
+        )
+
+        print_color(
+            "\n[ENTER] para volver al menú de fusión.",
+            CIAN,
+            "\n"
+        )
+
+        eleccion = input(
+            "\nElige las categorías que quieres fusionar (separadas por coma): "
+        )
+
         while True:
 
             if eleccion.strip() == "":
                 return
-            elecciones = [h.strip() for h in eleccion.split(",")]
+
+            elecciones = [c.strip() for c in eleccion.split(",")]
+
+            # Comprobar que se han seleccionado exactamente dos categorías
             if len(elecciones) != 2:
-                
-                eleccion = input(f"\n{ROJO}Debes seleccionar exactamente dos categorías: {RESET}")
+                eleccion = input(
+                    f"\n{ROJO}Debes seleccionar exactamente dos categorías: {RESET}"
+                )
                 continue
-            else:
-                break
-            
+
+            # Comprobar que las categorías existen
+            nombres_categorias_normalizados = [
+                normalizar(nombre) for nombre in nombres_categorias
+            ]
+
+            categorias_invalidas = [
+                categoria for categoria in elecciones
+                if normalizar(categoria) not in nombres_categorias_normalizados
+            ]
+
+            if categorias_invalidas:
+                eleccion = input(
+                    f"\n{ROJO}Las siguientes categorías no existen: "
+                    f"{', '.join(categorias_invalidas)}. "
+                    f"Por favor, elige categorías válidas de la lista mostrada: {RESET}"
+                )
+                continue
+
+            # Comprobar que no se ha seleccionado la misma categoría dos veces
+            if normalizar(elecciones[0]) == normalizar(elecciones[1]):
+                eleccion = input(
+                    f"\n{ROJO}Debes seleccionar dos categorías diferentes: {RESET}"
+                )
+                continue
+
+            break
+
         categoria_1, categoria_2 = elecciones
 
         id_categoria_1 = dev_categoria_id(categoria_1)
@@ -860,21 +999,64 @@ def opcion_fusionar_categorias():
         categoria_2 = dev_nombre_categoria_id(id_categoria_2)
 
         if id_categoria_1 and id_categoria_2:
-            # Fusionar las categorías
-            elige = input(f"¿Cuál de las dos categorías quieres conservar como principal? {categoria_1}/{categoria_2}: ")
-            id_principal = dev_categoria_id(elige)
-            id_secundario = id_categoria_1 if id_principal == id_categoria_2 else id_categoria_2
-            seguir = input(f"\n{ROJO}¿Estás seguro de que quieres fusionar '{categoria_1}' y '{categoria_2}'? Esta acción no se puede deshacer. (s/n): {RESET}")
+
+            # Elegir categoría principal
+            while True:
+
+                elige = input(
+                    f"\n¿Cuál de las dos categorías quieres conservar como principal? "
+                    f"{categoria_1}/{categoria_2}: "
+                ).strip()
+
+                if normalizar(elige) == normalizar(categoria_1):
+                    id_principal = id_categoria_1
+                    id_secundario = id_categoria_2
+                    break
+
+                elif normalizar(elige) == normalizar(categoria_2):
+                    id_principal = id_categoria_2
+                    id_secundario = id_categoria_1
+                    break
+
+                else:
+                    print_color(
+                        f"\nDebes introducir '{categoria_1}' o '{categoria_2}'.",
+                        ROJO,
+                        "\n"
+                    )
+
+            seguir = input(
+                f"\n{ROJO}¿Estás seguro de que quieres fusionar "
+                f"'{categoria_1}' y '{categoria_2}'? "
+                f"Esta acción no se puede deshacer. (s/n): {RESET}"
+            )
 
             if preguntar_seguir(normalizar(seguir)):
-                # Aquí puedes implementar la lógica para fusionar los hábitos seleccionados
+
                 fusionar_categorias(id_principal, id_secundario)
-                fusionar_habitos_categoria(id_principal, id_secundario)
-                print_color(f"\nLas categorías '{categoria_1}' y '{categoria_2}' han sido fusionados correctamente.", VERDE, "\n")
+                fusionar_habitos_categoria(
+                    id_principal,
+                    id_secundario
+                )
+
+                print_color(
+                    f"\nLas categorías '{categoria_1}' y '{categoria_2}' "
+                    "han sido fusionadas correctamente.",
+                    VERDE,
+                    "\n"
+                )
+
                 input("\n[ENTER] para continuar...")
+
             else:
-                print_color("\nFusión cancelada.", ROJO, "\n")
+                print_color(
+                    "\nFusión cancelada.",
+                    ROJO,
+                    "\n"
+                )
+
                 input("\n[ENTER] para continuar...")
+
     else:
         print_color(
             "Actualmente no existe ningún elemento a fusionar.",
