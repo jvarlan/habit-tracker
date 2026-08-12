@@ -1,4 +1,5 @@
 {
-    "postCreateCommand": "python -m pip install -r requirements.txt",
-    "postStartCommand": "python -m pip install -r requirements.txt"
+    "name": "Habit Tracker",
+    "image": "mcr.microsoft.com/devcontainers/python:3.12",
+    "postCreateCommand": "pip install -r requirements.txt"
 }
