@@ -98,7 +98,7 @@ def cumple_periodo(fecha, ahora, tipo, offset):
 
 def imprimir_con_pausa(lineas):
     try:
-        altura = shutil.get_terminal_size().lines - 20 #margen de lineas
+        altura = max(shutil.get_terminal_size().lines - 5, 5)
     except:
         altura = 20
 
@@ -106,13 +106,13 @@ def imprimir_con_pausa(lineas):
 
     for linea in lineas:
         print(linea)
-        contador +=1
+        contador += 1
 
         if contador >= altura:
-            input(print_color_pausa("\n[ENTER] Continuar... \n",ROJO))
+            input(print_color_pausa("\n[ENTER] Continuar...\n", ROJO))
             limpiar_pantalla()
             contador = 0
-
+            
 def volver_atras(texto):
     if texto in ("","volver","salir"):
         return False
