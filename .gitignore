@@ -1,3 +1,3 @@
-datos/categorias.csv
-datos/registro.csv
-datos/temporizadores.csv
+datos/
+__pycache__/
+*.pyc
