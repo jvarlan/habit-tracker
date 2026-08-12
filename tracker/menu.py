@@ -19,7 +19,7 @@ def mostrar_menu():
         temporizadores = mostrar_temporizadores()
         categorias = mostrar_categorias()
 
-        print_color("\n======== HABIT TRACKER (FASE BETA) ========",VERDE,"\n")
+        print_color("\n======== HABIT TRACKER (FASE BETA v.0.90) ========",VERDE,"\n")
         print_color("1. Añadir un nuevo hábito ",VERDE,"\n")
         if not habitos:
             print_color("2. Registrar tiempo ",GRIS,"\n")
