@@ -2,5 +2,11 @@
     "name": "Habit Tracker",
     "image": "mcr.microsoft.com/devcontainers/python:3.12",
     "postCreateCommand": "pip install -r requirements.txt",
-    "postStartCommand": "python main.py"
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "task.allowAutomaticTasks": "on"
+            }
+        }
+    }
 }
