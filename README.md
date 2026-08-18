@@ -1,17 +1,46 @@
 # Habit Tracker
 
-Aplicación de escritorio en terminal desarrollada en Python para registrar y gestionar hábitos, objetivos y categorías, además de consultar estadísticas sobre el progreso y la constancia.
+Aplicación desarrollada en Python para registrar hábitos y obtener estadísticas sobre el progreso y la constancia.
 
 ## ✨ Funcionalidades
 
-- 📋 Crear, modificar y eliminar hábitos
-- 🎯 Crear y gestionar objetivos
-- 📁 Organizar hábitos mediante categorías
-- ⏱️ Temporizadores para registrar el tiempo dedicado a una actividad
-- 📊 Consultar estadísticas y medias
-- 🔥 Seguimiento de la constancia y rachas
-- 🔀 Fusionar hábitos y categorías
-- 💾 Almacenamiento de los datos mediante archivos CSV
+* 📋 Crear, modificar y eliminar hábitos
+* 🎯 Crear y gestionar objetivos
+* 📁 Organizar hábitos mediante categorías
+* ⏱️ Temporizadores
+* 📊 Consultar estadísticas
+* 🔥 Seguimiento de la constancia y rachas
+* 🔀 Fusionar hábitos, objetivos y categorías
+* 💾 Almacenamiento de datos mediante archivos CSV
 
-## 🚀 Instalación
-Introduce "python main.py" para ejecutar el programa
+## ▶️ Ejecución
+
+Para iniciar el programa:
+
+**`python main.py`**
+
+## 🔄 Actualizar
+
+Si ya tienes el programa instalado y quieres actualizarlo a la última versión:
+
+**`git pull`**
+
+Después, actualiza las dependencias por si se han añadido nuevas:
+
+**`pip install -r requirements.txt`**
+
+Y vuelve a ejecutar el programa:
+
+**`python main.py`**
+
+## 🛠️ Tecnologías
+
+* Python
+* CSV
+* Git / GitHub
+
+---
+
+**Programa desarrollado por [jvarlan](https://github.com/jvarlan)**
+
+
