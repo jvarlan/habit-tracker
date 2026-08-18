@@ -226,3 +226,89 @@ def encabezado_global(titulo):
         f"\n── {titulo} " + "─" * (ANCHO - len(f"── {titulo} ")),
         VERDE
     )
+
+
+def obtener_emojis_sugeridos(categoria):
+
+    sugerencias = {
+        "gimnasio": ["💪", "🏋️", "🔥", "🏆", "🎯"],
+
+        "deporte": ["🏃", "⚽", "🏀", "🏆", "💪"],
+
+        "entrenamiento": ["💪", "🏋️", "🏃", "🔥", "🏆"],
+
+        "correr": ["🏃", "👟", "🔥", "💪", "🏆"],
+
+        "estudio": ["📚", "📖", "📝", "🎓", "🧠"],
+
+        "estudiar": ["📚", "📖", "📝", "🎓", "🧠"],
+
+        "lectura": ["📚", "📖", "🧠", "📝", "☕"],
+
+        "leer": ["📚", "📖", "🧠", "📝", "☕"],
+
+        "trabajo": ["💼", "💻", "📊", "📋", "🖥️"],
+
+        "oficina": ["💼", "💻", "📊", "📋", "🖥️"],
+
+        "videojuegos": ["🎮", "🕹️", "👾", "🏆", "🎯"],
+
+        "videojuego": ["🎮", "🕹️", "👾", "🏆", "🎯"],
+
+        "gaming": ["🎮", "🕹️", "👾", "🏆", "🎯"],
+
+        "juegos": ["🎮", "🕹️", "🎲", "🧩", "🏆"],
+
+        "programacion": ["💻", "⌨️", "🖥️", "⚙️", "🐍"],
+
+        "programar": ["💻", "⌨️", "🖥️", "⚙️", "🐍"],
+
+        "python": ["🐍", "💻", "⌨️", "🖥️", "⚙️"],
+
+        "dinero": ["💰", "💵", "💳", "📈", "🏦"],
+
+        "ahorro": ["💰", "🪙", "🏦", "📈", "💳"],
+
+        "inversion": ["📈", "💰", "💵", "🏦", "💳"],
+
+        "comida": ["🍎", "🍽️", "🥗", "🍳", "🍴"],
+
+        "cocina": ["🍳", "👨‍🍳", "🍴", "🥘", "🍽️"],
+
+        "salud": ["❤️", "🩺", "💊", "🏥", "🧘"],
+
+        "meditacion": ["🧘", "🌿", "🕯️", "😌", "🌱"],
+
+        "dormir": ["😴", "🛌", "🌙", "💤", "⭐"],
+
+        "descanso": ["😴", "🛌", "🌙", "💤", "⭐"],
+
+        "musica": ["🎵", "🎶", "🎧", "🎸", "🎹"],
+
+        "arte": ["🎨", "🖌️", "🖍️", "🖼️", "✨"],
+
+        "dibujar": ["🎨", "🖌️", "🖍️", "🖼️", "✨"],
+
+        "viaje": ["✈️", "🧳", "🌍", "🗺️", "🏖️"],
+
+        "viajes": ["✈️", "🧳", "🌍", "🗺️", "🏖️"],
+
+        "limpieza": ["🧹", "🧽", "🧼", "🧺", "✨"],
+
+        "limpiar": ["🧹", "🧽", "🧼", "🧺", "✨"]
+    }
+
+    categoria = normalizar(categoria).lower()
+
+    emojis_sugeridos = []
+
+    # Busca todas las palabras relacionadas que aparezcan
+    # dentro de la categoría
+    for palabra, emojis in sugerencias.items():
+
+        if palabra in categoria:
+
+            emojis_sugeridos.extend(emojis)
+
+    # Elimina duplicados manteniendo el orden
+    return list(dict.fromkeys(emojis_sugeridos))

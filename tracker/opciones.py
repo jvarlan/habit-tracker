@@ -1,4 +1,4 @@
-from .utilidades import ROJO, VERDE, CIAN, GRIS, INVERSION, RESET, print_color, input_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss, muestra_habitos_registrados, normalizar
+from .utilidades import ROJO, VERDE, CIAN, GRIS, INVERSION, RESET, print_color, input_color, preguntar_seguir, print_color_pausa, limpiar_pantalla, imprimir_con_pausa, volver_atras, agrupar_datos_csv, cronometro, horas_a_segundos, segundos_a_hhmmss, muestra_habitos_registrados, normalizar, obtener_emojis_sugeridos
 from .checks import comprobar_horas_temp,comprobar_horas_temp_24, validar_horas
 from .guardar import registrar, registrar_categoria, habito, registrar_objetivo
 from .mostrar import mostrar_registros, mostrar_temporizadores, mostrar_categorias, mostrar_csv, mostrar_csv_diccionario, mostrar_objetivos
@@ -18,81 +18,321 @@ def opcion_registro():
 
     while True:
 
-            nombre = pedir_nombre_registro(volver)
-            
-            # da la opción de introducir volver y salir en todas sus variables
-            if normalizar(nombre) in ("volver","salir",""):
-                return False
-            
-            categorias = mostrar_csv_diccionario("categorias")
-            cat_dict = {cat["categoria"]: cat["emoticono"] for cat in categorias}
-            
-            categorias_lista = sorted(cat_dict.keys())
-            if categorias_lista:
-                # si no está registrado, prosigue con el resto de inputs
-                limpiar_pantalla()
-                print_color(f"\nNuevo registro de hábito",INVERSION,"\n")
-                print("\nCategorías disponibles:\n")
-                
-                for i, cat in enumerate(categorias_lista, 1):
-                    print(f"{i}. {cat} {cat_dict[cat]}")
+        nombre = pedir_nombre_registro(volver)
 
-                categoria = input("\nIntroduce una categoria de la lista o añade una nueva: ")
-                categoria_real = dev_categoria_correcta(categoria)
-            else:
-                categoria = input("Categoría: ")
-                categoria_real = categoria
-           
-            if categoria_real in cat_dict:
-                emoticono = cat_dict[categoria_real]
-            else:
-                emoticono = input("Introduce un emoticono asociado: ")
-                while True:
-                    if not emoji.is_emoji(emoticono):
-                        emoticono = input_color("\nDebes introducir un único emoji: ",ROJO)
-                        continue
+        # Da la opción de introducir volver y salir en todas sus variables
+        if normalizar(nombre) in ("volver", "salir", ""):
+            return False
 
-                    if emoticono in cat_dict.values():
-                        emoticono = input_color("\nEse emoji ya está en uso: ",ROJO)
-                        continue
+        categorias = mostrar_csv_diccionario("categorias")
+
+        cat_dict = {
+            cat["categoria"]: cat["emoticono"]
+            for cat in categorias
+        }
+
+        categorias_lista = sorted(cat_dict.keys())
+
+        if categorias_lista:
+
+            limpiar_pantalla()
+
+            print_color(
+                "\nNuevo registro de hábito",
+                INVERSION,
+                "\n"
+            )
+
+            print("\nCategorías disponibles:\n")
+
+            for i, cat in enumerate(categorias_lista, 1):
+                print(f"{i}. {cat} {cat_dict[cat]}")
+
+            categoria = input(
+                "\nIntroduce una categoria de la lista o añade una nueva: "
+            )
+
+            categoria_real = dev_categoria_correcta(categoria)
+
+        else:
+
+            categoria = input("Categoría: ")
+            categoria_real = categoria
+
+        # Si la categoría ya existe, utiliza su emoji
+        if categoria_real in cat_dict:
+
+            emoticono = cat_dict[categoria_real]
+
+        else:
+
+            # Emojis generales para completar la lista
+            emojis_opcionales = [
+                "⭐",
+                "🌟",
+                "✨",
+                "🔥",
+                "💯",
+                "🎯",
+                "🏆",
+                "❤️",
+                "💚",
+                "💙",
+                "💜",
+                "🌱",
+                "🌿",
+                "☀️",
+                "🌙",
+                "🚀",
+                "💡",
+                "📌",
+                "⏰",
+                "✅",
+                "🎨",
+                "🎵",
+                "🎮",
+                "📚",
+                "💻",
+                "💰",
+                "🍎",
+                "🏠",
+                "🚗",
+                "✈️",
+                "🐶",
+                "🐱"
+            ]
+
+            # Emojis que ya están registrados
+            emojis_usados = set(cat_dict.values())
+
+            # Buscar sugerencias basándonos SOLO en la categoría
+            emojis_sugeridos = obtener_emojis_sugeridos(
+                categoria_real
+            )
+
+            # Eliminar los emojis que ya están registrados
+            emojis_sugeridos = [
+                emoti
+                for emoti in emojis_sugeridos
+                if emoti not in emojis_usados
+            ]
+
+            # Lista final
+            emojis_disponibles = emojis_sugeridos.copy()
+
+            # Completar hasta 7 emojis
+            for emoti in emojis_opcionales:
+
+                if len(emojis_disponibles) >= 7:
                     break
-            lista_tipos = ["diario","semanal","mensual","anual"]
-            opciones = ", ".join(lista_tipos[:-1]) + f" o {lista_tipos[-1]}"
-                
-            tipo = input(f"Elige un tipo de objetivo ({opciones}): ")
+
+                if (
+                    emoti not in emojis_usados
+                    and emoti not in emojis_disponibles
+                ):
+                    emojis_disponibles.append(emoti)
+
             while True:
-                if normalizar(tipo) not in lista_tipos:
-                    tipo = input_color("\nTipo de objetivo no válido. Introduce uno del paréntesis: ",ROJO)
-                    continue
-                break
-                    
-            objetivo = input(f"Objetivo (horas): ")
-                
-                # comprueba que las horas sean mayores que 0 y no contengan letras u otros caracteres
-            while True:   
-                if validar_horas(objetivo):
-                    objetivo = validar_horas(objetivo)
-                    registrar_categoria(categoria, emoticono)
-                    id_categoria = dev_categoria_id(categoria)
-                    id_habito = registrar(nombre, id_categoria)
-                    registrar_objetivo(id_habito, tipo, objetivo)
-                    print_color(f"\nHábito añadido correctamente.\n{nombre} | {categoria} {emoticono} | {tipo} | {objetivo} horas",VERDE,"\n")
 
-                    otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria_real)
-                else:
-                    objetivo = input_color("\nEl objetivo debe ser un número mayor que 0. Introduce un valor válido: ",ROJO)
-                    continue
-                break
-
-            seguir = input("\n¿Quieres introducir un nuevo hábito? s/n: ")
-            lista = mostrar_registros()
-            if preguntar_seguir(seguir):
                 limpiar_pantalla()
-                if not lista:
-                    break
+
+                print_color(
+                    "\nNuevo registro de hábito",
+                    INVERSION,
+                    "\n"
+                )
+
+                print(
+                    f"Categoría: {categoria_real}\n"
+                )
+
+                if emojis_sugeridos:
+
+                    print(
+                        "Emojis sugeridos para esta categoría:\n"
+                    )
+
+                else:
+
+                    print(
+                        "No hay emojis específicos para esta categoría.\n"
+                    )
+
+                for i, emoti in enumerate(
+                    emojis_disponibles,
+                    1
+                ):
+                    print(f"{i}. {emoti}")
+
+                opcion_personalizada = (
+                    len(emojis_disponibles) + 1
+                )
+
+                print(
+                    f"{opcion_personalizada}. ✏️  Personalizado"
+                )
+
+                opcion = input(
+                    "\nSelecciona una opción: "
+                )
+
+                if opcion.isdigit():
+
+                    opcion = int(opcion)
+
+                    # Seleccionar emoji de la lista
+                    if 1 <= opcion <= len(emojis_disponibles):
+
+                        emoticono = emojis_disponibles[
+                            opcion - 1
+                        ]
+
+                        break
+
+                    # Introducir emoji personalizado
+                    elif opcion == opcion_personalizada:
+
+                        while True:
+
+                            emoticono = input(
+                                "\nIntroduce tu propio emoji: "
+                            )
+
+                            if not emoji.is_emoji(emoticono):
+
+                                input_color(
+                                    "\nDebes introducir un único emoji. "
+                                    "Pulsa Enter para continuar: ",
+                                    ROJO
+                                )
+
+                                continue
+
+                            if emoticono in emojis_usados:
+
+                                input_color(
+                                    "\nEse emoji ya está en uso. "
+                                    "Pulsa Enter para continuar: ",
+                                    ROJO
+                                )
+
+                                continue
+
+                            break
+
+                        break
+
+                input_color(
+                    "\nOpción no válida. "
+                    "Pulsa Enter para continuar: ",
+                    ROJO
+                )
+
+        lista_tipos = [
+            "diario",
+            "semanal",
+            "mensual",
+            "anual"
+        ]
+
+        opciones = (
+            ", ".join(lista_tipos[:-1])
+            + f" o {lista_tipos[-1]}"
+        )
+
+        tipo = input(
+            f"Elige un tipo de objetivo ({opciones}): "
+        )
+
+        while True:
+
+            if normalizar(tipo) not in lista_tipos:
+
+                tipo = input_color(
+                    "\nTipo de objetivo no válido. "
+                    "Introduce uno del paréntesis: ",
+                    ROJO
+                )
+
                 continue
+
+            break
+
+        objetivo = input("Objetivo (horas): ")
+
+        # Comprueba que las horas sean mayores que 0
+        # y no contengan letras u otros caracteres
+        while True:
+
+            if validar_horas(objetivo):
+
+                objetivo = validar_horas(objetivo)
+
+                registrar_categoria(
+                    categoria,
+                    emoticono
+                )
+
+                id_categoria = dev_categoria_id(
+                    categoria
+                )
+
+                id_habito = registrar(
+                    nombre,
+                    id_categoria
+                )
+
+                registrar_objetivo(
+                    id_habito,
+                    tipo,
+                    objetivo
+                )
+
+                print_color(
+                    f"\nHábito añadido correctamente.\n"
+                    f"{nombre} | {categoria} {emoticono} | "
+                    f"{tipo} | {objetivo} horas",
+                    VERDE,
+                    "\n"
+                )
+
+                otro_objetivo(
+                    id_habito,
+                    tipo,
+                    lista_tipos,
+                    nombre,
+                    categoria_real
+                )
+
             else:
+
+                objetivo = input_color(
+                    "\nEl objetivo debe ser un número mayor que 0. "
+                    "Introduce un valor válido: ",
+                    ROJO
+                )
+
+                continue
+
+            break
+
+        seguir = input(
+            "\n¿Quieres introducir un nuevo hábito? s/n: "
+        )
+
+        lista = mostrar_registros()
+
+        if preguntar_seguir(seguir):
+
+            limpiar_pantalla()
+
+            if not lista:
                 break
+
+            continue
+
+        else:
+            break
 
 def opcion_temporizador():
     lista = mostrar_temporizadores()
