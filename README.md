@@ -10,9 +10,8 @@ Aplicación de escritorio en terminal desarrollada en Python para registrar y ge
 - ⏱️ Temporizadores para registrar el tiempo dedicado a una actividad
 - 📊 Consultar estadísticas y medias
 - 🔥 Seguimiento de la constancia y rachas
-- 🔀 Fusionar hábitos, objetivos y categorías
+- 🔀 Fusionar hábitos y categorías
 - 💾 Almacenamiento de los datos mediante archivos CSV
 
 ## 🚀 Instalación
-Introduce "python main.py para ejecutar el programa"
-
+Introduce "python main.py" para ejecutar el programa
