@@ -6,7 +6,7 @@ from .utilidades import ROJO, VERDE, CIAN, GRIS, print_color, normalizar
 import tkinter as tk
 
 # se guarda en una variable para luego simplemente mostrarlo en pantalla
-volver = f"[ENTER] Cerrar aplicación."
+volver = f"[ENTER] Cerrar aplicación"
 volver2 = f"..............................................."
 volver_principal = f"[ENTER] Volver al menú principal."
 
