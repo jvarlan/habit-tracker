@@ -9,7 +9,7 @@ from .contar import contar_csv_n, contar_csv_id
 from .devolver import dev_habito_id, dev_habito_datos, dev_nombre_habito_id, dev_tipo_objetivo, dev_idhabito_temporizador, dev_lista_objetivos_cat, dev_categoria_id, dev_nombre_categoria_id, dev_lista_habitos_cat, dev_lista_temporizadores_cat, dev_emoticono_categoria_id, dev_habito_correcto, dev_categoria_correcta
 from .borrar import borrar_temporizadores, borrar_habito, borrar_categoria, borrar_objetivos_id_habito
 from .modificar import modificar_habito, modificar_temporizador, modificar_categoria, modificar_objetivo
-from .utilidades import ROJO, VERDE, CIAN, AMARILLO, NARANJA, RESET, INVERSION, normalizar, print_color, input_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados, muestra_habitos_registrados_color
+from .utilidades import ROJO, VERDE, CIAN, AMARILLO, NARANJA, RESET, INVERSION, normalizar, print_color, input_color, cronometro, esperar_enter, horas_a_segundos, preguntar_seguir, limpiar_pantalla, muestra_habitos_registrados, muestra_habitos_registrados_color, obtener_emojis_sugeridos
 
 def pedir_nombre_registro(volver):
     while True:
@@ -243,97 +243,520 @@ def pedir_temporizador_borrar():
         return None
         
 def pedir_habito_modi():
-    
+
     lista = mostrar_registros()
-    if lista:
-        habito_modificar = input("Introduce el nombre del hábito a modificar: ")
-    if normalizar(habito_modificar) in ("volver","salir",""):
-            return ""
-              
-    
+
+    if not lista:
+        print_color(
+            "\nNo hay hábitos registrados.",
+            CIAN,
+            "\n"
+        )
+        return ""
+
+    habito_modificar = input(
+        "Introduce el nombre del hábito a modificar: "
+    )
+
+    if normalizar(habito_modificar) in ("volver", "salir", ""):
+        return ""
+
     while True:
-        habitos = contar_csv_id("habitos",dev_habito_id(habito_modificar),0)
+
+        habitos = contar_csv_id(
+            "habitos",
+            dev_habito_id(habito_modificar),
+            0
+        )
+
         if habitos == False:
-            habito_modificar = input_color("\nEste hábito no existe. Introduce uno válido: ",ROJO)
+
+            habito_modificar = input_color(
+                "\nEste hábito no existe. "
+                "Introduce uno válido: ",
+                ROJO
+            )
+
+            if normalizar(habito_modificar) in (
+                "volver",
+                "salir",
+                ""
+            ):
+                return ""
+
             continue
+
         else:
+
             todo_habito = mostrar_csv_diccionario("habitos")
+
             for fila in todo_habito:
-                if fila["habito"].lower() == habito_modificar.lower():
+
+                if (
+                    fila["habito"].lower()
+                    == habito_modificar.lower()
+                ):
+
                     habito = fila["habito"]
-                    categoria = dev_nombre_categoria_id(fila["id_categoria"])
-            print_color(f"\nHábito actual: {habito}",CIAN)
+
+                    categoria = dev_nombre_categoria_id(
+                        fila["id_categoria"]
+                    )
+
+                    break
+
+            print_color(
+                f"\nHábito actual: {habito}",
+                CIAN
+            )
+
             contadorh = 0
             contadorc = 0
 
-            seguro = input(f"{NARANJA}¿Quieres modificar el nombre del hábito {habito}? s/n: {RESET}")
+            # -----------------------------------------
+            # MODIFICAR NOMBRE
+            # -----------------------------------------
+
+            seguro = input(
+                f"{NARANJA}"
+                f"¿Quieres modificar el nombre del hábito "
+                f"{habito}? s/n: "
+                f"{RESET}"
+            )
+
             seguro = seguro.lower()
 
             if preguntar_seguir(normalizar(seguro)):
-                 while True:
-                    habito_modificar = input(f"Modificar nombre: ")
-                    contadorh +=1
-                        # devuelve el número de veces que el nombre está registrado
-                    comprobado = comprobar_registro(habito_modificar)
 
-                    # si está registrado, vuelve a pedir el nombre
-                    if comprobado > 0:
-                        print_color("Esté hábito ya está registrado. Por favor, introduce uno nuevo.", ROJO)
-                        continue
-                    else: 
+                while True:
+
+                    nuevo_habito = input(
+                        "Modificar nombre: "
+                    )
+
+                    if normalizar(nuevo_habito) in (
+                        "volver",
+                        "salir",
+                        ""
+                    ):
+                        nuevo_habito = habito
                         break
+
+                    comprobado = comprobar_registro(
+                        nuevo_habito
+                    )
+
+                    if comprobado > 0:
+
+                        print_color(
+                            "Este hábito ya está registrado. "
+                            "Por favor, introduce uno nuevo.",
+                            ROJO
+                        )
+
+                        continue
+
+                    habito_modificar = nuevo_habito
+                    contadorh += 1
+
+                    break
+
             else:
+
                 habito_modificar = habito
 
-            seguro = input(f"{NARANJA}\n¿Quieres modificar la categoría? s/n: {RESET}")
-            seguro = seguro.lower()
-            
-            if preguntar_seguir(normalizar(seguro)):
-                while True:
-                    lista_todo = mostrar_csv_diccionario("categorias")
-                    modificar_categoria = input("Modificar categoría: ")
-                    if any(item.get("categoria") == modificar_categoria for item in lista_todo):
-                        id_categoria = dev_categoria_id(modificar_categoria)
-                        contadorc +=1
-                        break
-                    else:
-                        print_color(f"\nLa categoría {modificar_categoria} no existe. Se añadirá.",CIAN)
-                        categorias = mostrar_csv_diccionario("categorias")
-                        cat_dict = {cat["categoria"]: cat["emoticono"] for cat in categorias}
-                    
-                        emoticono = input(f"Introduce un emoticono para la nueva categoría {modificar_categoria}: ")
-                        while True:
-                            if not emoji.is_emoji(emoticono):
-                                emoticono = input_color("\nDebes introducir un único emoji: ",ROJO)
-                                continue
+            # -----------------------------------------
+            # MODIFICAR CATEGORÍA
+            # -----------------------------------------
 
-                            if emoticono in cat_dict.values():
-                                emoticono = input_color("\nEse emoji ya está en uso: ",ROJO)
-                                continue
-                            break
-                            
-                        registrar_categoria(modificar_categoria, emoticono)
-                        id_categoria = dev_categoria_id(modificar_categoria)
-                        contadorc +=1
+            seguro = input(
+                f"{NARANJA}"
+                f"\n¿Quieres modificar la categoría? s/n: "
+                f"{RESET}"
+            )
+
+            seguro = seguro.lower()
+
+            if preguntar_seguir(normalizar(seguro)):
+
+                while True:
+
+                    lista_todo = mostrar_csv_diccionario(
+                        "categorias"
+                    )
+
+                    modificar_categoria = input(
+                        "Modificar categoría: "
+                    )
+
+                    if normalizar(modificar_categoria) in (
+                        "volver",
+                        "salir",
+                        ""
+                    ):
+                        modificar_categoria = categoria
+                        id_categoria = dev_categoria_id(
+                            modificar_categoria
+                        )
                         break
+
+                    # ---------------------------------
+                    # CATEGORÍA YA EXISTENTE
+                    # ---------------------------------
+
+                    if any(
+                        item.get("categoria")
+                        == modificar_categoria
+                        for item in lista_todo
+                    ):
+
+                        id_categoria = dev_categoria_id(
+                            modificar_categoria
+                        )
+
+                        contadorc += 1
+
+                        break
+
+                    # ---------------------------------
+                    # CATEGORÍA NUEVA
+                    # ---------------------------------
+
+                    else:
+
+                        emojis_opcionales = [
+                            "⭐",
+                            "🌟",
+                            "✨",
+                            "🔥",
+                            "💯",
+                            "🎯",
+                            "🏆",
+                            "❤️",
+                            "💚",
+                            "💙",
+                            "💜",
+                            "🌱",
+                            "🌿",
+                            "☀️",
+                            "🌙",
+                            "🚀",
+                            "💡",
+                            "📌",
+                            "⏰",
+                            "✅",
+                            "🎨",
+                            "🎵",
+                            "🎮",
+                            "📚",
+                            "💻",
+                            "💰",
+                            "🍎",
+                            "🏠",
+                            "🚗",
+                            "✈️",
+                            "🐶",
+                            "🐱"
+                        ]
+
+                        categorias = (
+                            mostrar_csv_diccionario(
+                                "categorias"
+                            )
+                        )
+
+                        cat_dict = {
+                            cat["categoria"]:
+                            cat["emoticono"]
+                            for cat in categorias
+                        }
+
+                        # Emojis ya utilizados
+                        emojis_usados = set(
+                            cat_dict.values()
+                        )
+
+                        # Buscar sugerencias
+                        emojis_sugeridos = (
+                            obtener_emojis_sugeridos(
+                                modificar_categoria
+                            )
+                        )
+
+                        # Eliminar emojis ya utilizados
+                        emojis_sugeridos = [
+                            emoti
+                            for emoti
+                            in emojis_sugeridos
+                            if emoti not in emojis_usados
+                        ]
+
+                        # Lista final
+                        emojis_disponibles = (
+                            emojis_sugeridos.copy()
+                        )
+
+                        # Completar hasta 7
+                        for emoti in emojis_opcionales:
+
+                            if len(
+                                emojis_disponibles
+                            ) >= 7:
+                                break
+
+                            if (
+                                emoti not in emojis_usados
+                                and
+                                emoti
+                                not in emojis_disponibles
+                            ):
+
+                                emojis_disponibles.append(
+                                    emoti
+                                )
+
+                        print_color(
+                            f"\nLa categoría "
+                            f"{modificar_categoria} "
+                            f"no existe. Se añadirá.",
+                            CIAN
+                        )
+
+                        if emojis_sugeridos:
+
+                            print(
+                                "\nEmojis sugeridos "
+                                "para esta categoría:\n"
+                            )
+
+                        else:
+
+                            print(
+                                "\nNo hay emojis específicos "
+                                "para esta categoría.\n"
+                            )
+
+                        # ---------------------------------
+                        # SELECCIONAR EMOJI
+                        # ---------------------------------
+
+                        while True:
+
+                            for i, emoti in enumerate(
+                                emojis_disponibles,
+                                1
+                            ):
+
+                                print(
+                                    f"{i}. {emoti}"
+                                )
+
+                            opcion_personalizada = (
+                                len(
+                                    emojis_disponibles
+                                ) + 1
+                            )
+
+                            print(
+                                f"{opcion_personalizada}. "
+                                f"✏️  Personalizado"
+                            )
+
+                            opcion = input(
+                                "\nSelecciona una opción: "
+                            )
+
+                            if opcion.isdigit():
+
+                                opcion = int(opcion)
+
+                                # -------------------------
+                                # EMOJI DE LA LISTA
+                                # -------------------------
+
+                                if (
+                                    1
+                                    <= opcion
+                                    <= len(
+                                        emojis_disponibles
+                                    )
+                                ):
+
+                                    emoticono = (
+                                        emojis_disponibles[
+                                            opcion - 1
+                                        ]
+                                    )
+
+                                    break
+
+                                # -------------------------
+                                # EMOJI PERSONALIZADO
+                                # -------------------------
+
+                                elif (
+                                    opcion
+                                    == opcion_personalizada
+                                ):
+
+                                    while True:
+
+                                        emoticono = input(
+                                            "\nIntroduce tu "
+                                            "propio emoji: "
+                                        )
+
+                                        if not emoji.is_emoji(
+                                            emoticono
+                                        ):
+
+                                            input_color(
+                                                "\nDebes introducir "
+                                                "un único emoji. "
+                                                "Pulsa Enter para "
+                                                "continuar: ",
+                                                ROJO
+                                            )
+
+                                            continue
+
+                                        if (
+                                            emoticono
+                                            in emojis_usados
+                                        ):
+
+                                            input_color(
+                                                "\nEse emoji ya "
+                                                "está en uso. "
+                                                "Pulsa Enter para "
+                                                "continuar: ",
+                                                ROJO
+                                            )
+
+                                            continue
+
+                                        break
+
+                                    break
+
+                                else:
+
+                                    input_color(
+                                        "\nOpción no válida. "
+                                        "Pulsa Enter para "
+                                        "continuar: ",
+                                        ROJO
+                                    )
+
+                            else:
+
+                                input_color(
+                                    "\nOpción no válida. "
+                                    "Pulsa Enter para "
+                                    "continuar: ",
+                                    ROJO
+                                )
+
+                        # ---------------------------------
+                        # REGISTRAR CATEGORÍA NUEVA
+                        # ---------------------------------
+
+                        registrar_categoria(
+                            modificar_categoria,
+                            emoticono
+                        )
+
+                        id_categoria = (
+                            dev_categoria_id(
+                                modificar_categoria
+                            )
+                        )
+
+                        contadorc += 1
+
+                        break
+
             else:
+
                 modificar_categoria = categoria
-                id_categoria = dev_categoria_id(modificar_categoria)
-            
+
+                id_categoria = dev_categoria_id(
+                    modificar_categoria
+                )
+
+            # -----------------------------------------
+            # GUARDAR MODIFICACIONES
+            # -----------------------------------------
+
             if contadorh > 0 and contadorc == 0:
-                modificar_habito(habito_modificar,dev_habito_id(habito),dev_categoria_id(modificar_categoria))
-                print_color(f"\nEl hábito {habito} ha sido cambiado con éxito por {habito_modificar}.",VERDE,"\n")
+
+                modificar_habito(
+                    habito_modificar,
+                    dev_habito_id(habito),
+                    dev_categoria_id(
+                        modificar_categoria
+                    )
+                )
+
+                print_color(
+                    f"\nEl hábito {habito} ha sido "
+                    f"cambiado con éxito por "
+                    f"{habito_modificar}.",
+                    VERDE,
+                    "\n"
+                )
+
                 break
+
             elif contadorh == 0 and contadorc > 0:
-                modificar_habito(habito_modificar,dev_habito_id(habito),dev_categoria_id(modificar_categoria))
-                print_color(f"\nEl hábito {habito} ha sido cambiado con éxito a la categoría {modificar_categoria}.",VERDE,"\n")
+
+                modificar_habito(
+                    habito_modificar,
+                    dev_habito_id(habito),
+                    dev_categoria_id(
+                        modificar_categoria
+                    )
+                )
+
+                print_color(
+                    f"\nEl hábito {habito} ha sido "
+                    f"cambiado con éxito a la categoría "
+                    f"{modificar_categoria}.",
+                    VERDE,
+                    "\n"
+                )
+
                 break
+
             elif contadorh > 0 and contadorc > 0:
-                modificar_habito(habito_modificar,dev_habito_id(habito),dev_categoria_id(modificar_categoria))
-                print_color(f"\nEl hábito {habito} ha sido cambiado con éxito por {habito_modificar} y a la categoría {modificar_categoria}.",VERDE,"\n")
+
+                modificar_habito(
+                    habito_modificar,
+                    dev_habito_id(habito),
+                    dev_categoria_id(
+                        modificar_categoria
+                    )
+                )
+
+                print_color(
+                    f"\nEl hábito {habito} ha sido "
+                    f"cambiado con éxito por "
+                    f"{habito_modificar} y a la categoría "
+                    f"{modificar_categoria}.",
+                    VERDE,
+                    "\n"
+                )
+
                 break
+
             else:
-                print_color("\nNo se ha modificado nada.",CIAN,"\n")
+
+                print_color(
+                    "\nNo se ha modificado nada.",
+                    CIAN,
+                    "\n"
+                )
+
                 break
 
 def pedir_tempo_modi(lista_todo):
@@ -542,80 +965,459 @@ def pedir_objetivo_modi(lista_todo):
 
 
 def pedir_categoria_modi(lista_todo):
-    if lista_todo:
-        modificar = input("Introduce el nombre de la categoría a modificar: ")
+
+    if not lista_todo:
+        print_color(
+            "\nNo hay categorías registradas.",
+            CIAN,
+            "\n"
+        )
+        return ""
+
+    modificar = input(
+        "Introduce el nombre de la categoría a modificar: "
+    )
+
+    if normalizar(modificar) in ("volver", "salir", ""):
+        return "volver"
+
+    categoria_encontrada = None
+
+    while True:
+
+        # -----------------------------------------
+        # BUSCAR CATEGORÍA
+        # -----------------------------------------
+
         categoria_encontrada = None
-        while True:    
-            for item in lista_todo:
-                if normalizar(item["categoria"]) == normalizar(modificar):
-                    categoria_encontrada = item
-            if normalizar(modificar) in ("volver","salir",""):
+
+        for item in lista_todo:
+
+            if (
+                normalizar(item["categoria"])
+                == normalizar(modificar)
+            ):
+
+                categoria_encontrada = item
+                break
+
+        if categoria_encontrada:
+
+            categoria = categoria_encontrada["categoria"]
+            emoticono = categoria_encontrada["emoticono"]
+            id_categoria = categoria_encontrada["id"]
+
+            break
+
+        else:
+
+            modificar = input_color(
+                f"\nLa categoría {modificar} no existe. "
+                f"Introduce una categoría válida: ",
+                ROJO
+            )
+
+            if normalizar(modificar) in (
+                "volver",
+                "salir",
+                ""
+            ):
                 return "volver"
-            
-            if categoria_encontrada:
-                categoria = categoria_encontrada["categoria"]
-                emoticono = categoria_encontrada["emoticono"]
-                id_categoria = categoria_encontrada["id"]
-            else:
-                modificar = input_color(f"\nLa categoría {modificar} no existe. Introduce una categoría válida: ",ROJO)
+
+    categorias = contar_csv_id(
+        "categorias",
+        id_categoria,
+        0
+    )
+
+    # Contadores para saber qué se ha modificado
+    contadorc = 0
+    contadore = 0
+
+    # -----------------------------------------
+    # MODIFICAR NOMBRE
+    # -----------------------------------------
+
+    seguro = input(
+        f"{AMARILLO}"
+        f"¿Quieres modificar el nombre de la categoría? s/n: "
+        f"{RESET}"
+    )
+
+    seguro = seguro.lower()
+
+    if preguntar_seguir(normalizar(seguro)):
+
+        while True:
+
+            nueva_categoria = input(
+                "Introduce el nuevo nombre para la categoría: "
+            )
+
+            if normalizar(nueva_categoria) in (
+                "volver",
+                "salir",
+                ""
+            ):
+
+                nueva_categoria = categoria
+                break
+
+            # Comprobar que no sea el mismo nombre
+            if (
+                normalizar(nueva_categoria)
+                == normalizar(categoria)
+            ):
+
+                nueva_categoria = input_color(
+                    "\nNo puedes poner el mismo nombre. "
+                    "Introduce otro: ",
+                    ROJO
+                )
+
                 continue
-                    
-                   
-            categorias = contar_csv_id("categorias",id_categoria,0)
-            # contador para contabilizar si el usuario modifica algo o no
-            contadorc = 0
-            contadore = 0
-            
-            seguro = input(f"{AMARILLO}¿Quieres modificar el nombre de la categoria? s/n: {RESET}")
-            seguro = seguro.lower()
 
-            if preguntar_seguir(normalizar(seguro)):
-                nueva_categoria = input("Introduce el nuevo nombre para la categoria: ")
-                while True:
-                    if nueva_categoria == categoria:
-                        nueva_categoria = input_color("\nNo puedes poner el mismo nombre. Introduce otro: ",ROJO)
-                        continue
-                    else:
-                        contadorc +=1
-                        break
-            else:
-                nueva_categoria = modificar
-            seguro = input(f"{AMARILLO}¿Quieres modificar el emoticono asociado? s/n: {RESET}")
-            seguro = seguro.lower()
+            # Comprobar que no exista otra categoría
+            categoria_repetida = any(
+                normalizar(item["categoria"])
+                == normalizar(nueva_categoria)
+                and item["id"] != id_categoria
+                for item in lista_todo
+            )
 
-            if preguntar_seguir(normalizar(seguro)):
-                nuevo_emoticono = input("Introduce el nuevo emoticono: ")
-                while True:
-                    if not emoji.is_emoji(nuevo_emoticono):
-                        nuevo_emoticono = input_color("\nDebes introducir un único emoji: ",ROJO)
-                        continue
-                    if any(nuevo_emoticono == lista["emoticono"] for lista in lista_todo):
-                        nuevo_emoticono = input_color("\nIntroduce un emoticono que no esté usado: ",ROJO)
-                        continue
-                    contadore +=1
+            if categoria_repetida:
+
+                nueva_categoria = input_color(
+                    "\nEsa categoría ya existe. "
+                    "Introduce otra: ",
+                    ROJO
+                )
+
+                continue
+
+            contadorc += 1
+            break
+
+    else:
+
+        nueva_categoria = categoria
+
+    # -----------------------------------------
+    # MODIFICAR EMOJI
+    # -----------------------------------------
+
+    seguro = input(
+        f"{AMARILLO}"
+        f"\n¿Quieres modificar el emoticono asociado? s/n: "
+        f"{RESET}"
+    )
+
+    seguro = seguro.lower()
+
+    if preguntar_seguir(normalizar(seguro)):
+
+        # Emojis generales para completar la lista
+        emojis_opcionales = [
+            "⭐",
+            "🌟",
+            "✨",
+            "🔥",
+            "💯",
+            "🎯",
+            "🏆",
+            "❤️",
+            "💚",
+            "💙",
+            "💜",
+            "🌱",
+            "🌿",
+            "☀️",
+            "🌙",
+            "🚀",
+            "💡",
+            "📌",
+            "⏰",
+            "✅",
+            "🎨",
+            "🎵",
+            "🎮",
+            "📚",
+            "💻",
+            "💰",
+            "🍎",
+            "🏠",
+            "🚗",
+            "✈️",
+            "🐶",
+            "🐱"
+        ]
+
+        # -----------------------------------------
+        # EMOJIS ACTUALMENTE USADOS
+        # -----------------------------------------
+
+        categorias = mostrar_csv_diccionario(
+            "categorias"
+        )
+
+        # Excluir el emoji de la categoría actual,
+        # porque el usuario podría querer mantenerlo
+        emojis_usados = {
+            item["emoticono"]
+            for item in categorias
+            if item["id"] != id_categoria
+        }
+
+        # -----------------------------------------
+        # EMOJIS SUGERIDOS
+        # -----------------------------------------
+
+        emojis_sugeridos = obtener_emojis_sugeridos(
+            nueva_categoria
+        )
+
+        # Eliminar emojis que ya estén utilizados
+        emojis_sugeridos = [
+            emoti
+            for emoti in emojis_sugeridos
+            if emoti not in emojis_usados
+        ]
+
+        # -----------------------------------------
+        # LISTA FINAL DE EMOJIS
+        # -----------------------------------------
+
+        emojis_disponibles = (
+            emojis_sugeridos.copy()
+        )
+
+        # Completar hasta 7 emojis
+        for emoti in emojis_opcionales:
+
+            if len(emojis_disponibles) >= 7:
+                break
+
+            if (
+                emoti not in emojis_usados
+                and emoti not in emojis_disponibles
+            ):
+
+                emojis_disponibles.append(
+                    emoti
+                )
+
+        # -----------------------------------------
+        # MOSTRAR EMOJIS
+        # -----------------------------------------
+
+        limpiar_pantalla()
+
+        print_color(
+            f"\nCategoría: {nueva_categoria}",
+            CIAN,
+            "\n"
+        )
+
+        if emojis_sugeridos:
+
+            print(
+                "Emojis sugeridos para esta categoría:\n"
+            )
+
+        else:
+
+            print(
+                "No hay emojis específicos "
+                "para esta categoría.\n"
+            )
+
+        # -----------------------------------------
+        # SELECCIONAR EMOJI
+        # -----------------------------------------
+
+        while True:
+
+            for i, emoti in enumerate(
+                emojis_disponibles,
+                1
+            ):
+
+                print(
+                    f"{i}. {emoti}"
+                )
+
+            opcion_personalizada = (
+                len(emojis_disponibles) + 1
+            )
+
+            print(
+                f"{opcion_personalizada}. "
+                f"✏️  Personalizado"
+            )
+
+            opcion = input(
+                "\nSelecciona una opción: "
+            )
+
+            if opcion.isdigit():
+
+                opcion = int(opcion)
+
+                # -----------------------------
+                # EMOJI DE LA LISTA
+                # -----------------------------
+
+                if (
+                    1
+                    <= opcion
+                    <= len(emojis_disponibles)
+                ):
+
+                    nuevo_emoticono = (
+                        emojis_disponibles[
+                            opcion - 1
+                        ]
+                    )
+
+                    contadore += 1
                     break
+
+                # -----------------------------
+                # EMOJI PERSONALIZADO
+                # -----------------------------
+
+                elif (
+                    opcion
+                    == opcion_personalizada
+                ):
+
+                    while True:
+
+                        nuevo_emoticono = input(
+                            "\nIntroduce tu propio emoji: "
+                        )
+
+                        if not emoji.is_emoji(
+                            nuevo_emoticono
+                        ):
+
+                            input_color(
+                                "\nDebes introducir "
+                                "un único emoji. "
+                                "Pulsa Enter para continuar: ",
+                                ROJO
+                            )
+
+                            continue
+
+                        if (
+                            nuevo_emoticono
+                            in emojis_usados
+                        ):
+
+                            input_color(
+                                "\nEse emoji ya está "
+                                "en uso. "
+                                "Pulsa Enter para continuar: ",
+                                ROJO
+                            )
+
+                            continue
+
+                        break
+
+                    contadore += 1
+                    break
+
+                else:
+
+                    input_color(
+                        "\nOpción no válida. "
+                        "Pulsa Enter para continuar: ",
+                        ROJO
+                    )
+
             else:
-                nuevo_emoticono = emoticono
 
-        
-            if categorias:
-                if contadorc > 0 and contadore > 0:
+                input_color(
+                    "\nOpción no válida. "
+                    "Pulsa Enter para continuar: ",
+                    ROJO
+                )
 
-                    modificar_categoria(id_categoria,nueva_categoria, nuevo_emoticono)
-                    print_color(f"\nSe ha modificado la categoría inicial por {nueva_categoria} y el emoticono asociado por ({nuevo_emoticono}).",VERDE,"\n")
-                    return
-                elif contadorc == 0 and contadore == 0:
-                    print_color("\nNo se ha modificado nada.",CIAN,"\n\n")
-                    return
-                elif contadorc > 0 and contadore == 0:
-                    modificar_categoria(id_categoria,nueva_categoria, nuevo_emoticono)
-                    print_color(f"\nSe ha modificado la categoría a {nueva_categoria}.",VERDE,"\n")
-                    return
-                elif contadorc == 0 and contadore > 0:
-                    modificar_categoria(id_categoria,nueva_categoria, nuevo_emoticono)
-                    print_color(f"\nEl emoticono asociado a la categoría {nueva_categoria} se ha cambiado por {nuevo_emoticono}.",VERDE,"\n")
-                    return
-            
+    else:
+
+        nuevo_emoticono = emoticono
+
+    # -----------------------------------------
+    # GUARDAR MODIFICACIONES
+    # -----------------------------------------
+
+    if categorias:
+
+        if contadorc > 0 and contadore > 0:
+
+            modificar_categoria(
+                id_categoria,
+                nueva_categoria,
+                nuevo_emoticono
+            )
+
+            print_color(
+                f"\nSe ha modificado la categoría "
+                f"por {nueva_categoria} y el emoticono "
+                f"asociado por {nuevo_emoticono}\n",
+                VERDE,
+                "\n"
+            )
+
+            return
+
+        elif contadorc == 0 and contadore == 0:
+
+            print_color(
+                "\nNo se ha modificado nada.",
+                CIAN,
+                "\n\n"
+            )
+
+            return
+
+        elif contadorc > 0 and contadore == 0:
+
+            modificar_categoria(
+                id_categoria,
+                nueva_categoria,
+                nuevo_emoticono
+            )
+
+            print_color(
+                f"\nSe ha modificado la categoría "
+                f"a {nueva_categoria}.",
+                VERDE,
+                "\n"
+            )
+
+            return
+
+        elif contadorc == 0 and contadore > 0:
+
+            modificar_categoria(
+                id_categoria,
+                nueva_categoria,
+                nuevo_emoticono
+            )
+
+            print_color(
+                f"\nEl emoticono asociado a la categoría "
+                f"{nueva_categoria} se ha cambiado por "
+                f"{nuevo_emoticono}.",
+                VERDE,
+                "\n"
+            )
+
+            return
+                    
 def otro_objetivo(id_habito, tipo, lista_tipos, nombre, categoria):
         
     lista_objetivos = mostrar_csv_diccionario("objetivos")

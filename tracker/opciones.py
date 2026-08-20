@@ -256,6 +256,8 @@ def opcion_registro():
 
                 continue
 
+            tipo = normalizar(tipo)
+
             break
 
         objetivo = input("Objetivo (horas): ")
@@ -268,15 +270,17 @@ def opcion_registro():
 
                 objetivo = validar_horas(objetivo)
 
+                # Utilizamos SIEMPRE categoria_real
                 registrar_categoria(
-                    categoria,
+                    categoria_real,
                     emoticono
                 )
 
                 id_categoria = dev_categoria_id(
-                    categoria
+                    categoria_real
                 )
 
+                # Crear el hábito UNA SOLA VEZ
                 id_habito = registrar(
                     nombre,
                     id_categoria
@@ -290,7 +294,7 @@ def opcion_registro():
 
                 print_color(
                     f"\nHábito añadido correctamente.\n"
-                    f"{nombre} | {categoria} {emoticono} | "
+                    f"{nombre} | {categoria_real} {emoticono} | "
                     f"{tipo} | {objetivo} horas",
                     VERDE,
                     "\n"
@@ -304,6 +308,8 @@ def opcion_registro():
                     categoria_real
                 )
 
+                break
+
             else:
 
                 objetivo = input_color(
@@ -311,27 +317,16 @@ def opcion_registro():
                     ROJO
                 )
 
-                continue
-
-            break
-
         seguir = input(
             "\n¿Quieres introducir un nuevo hábito? s/n: "
         )
 
-        lista = mostrar_registros()
-
         if preguntar_seguir(seguir):
 
             limpiar_pantalla()
-
-            if not lista:
-                break
-
             continue
 
-        else:
-            break
+        break
 
 def opcion_temporizador():
     lista = mostrar_temporizadores()
