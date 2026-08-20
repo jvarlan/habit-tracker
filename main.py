@@ -1,23 +1,44 @@
 import os
 import subprocess
 
+import subprocess
+
 
 def actualizar_programa():
     try:
-        resultado = subprocess.run(
+        # Actualizar código desde GitHub
+        resultado_git = subprocess.run(
             ["git", "pull"],
             capture_output=True,
             text=True
         )
 
-        print(resultado.stdout)
+        print(resultado_git.stdout)
 
-        if resultado.returncode != 0:
+        if resultado_git.returncode != 0:
             print("Error al actualizar el programa:")
-            print(resultado.stderr)
+            print(resultado_git.stderr)
+            return False
+
+        # Actualizar/instalar dependencias
+        resultado_pip = subprocess.run(
+            ["pip", "install", "-r", "requirements.txt"],
+            capture_output=True,
+            text=True
+        )
+
+        print(resultado_pip.stdout)
+
+        if resultado_pip.returncode != 0:
+            print("Error al instalar las dependencias:")
+            print(resultado_pip.stderr)
+            return False
+
+        return True
 
     except Exception as e:
-        print(f"No se pudo ejecutar git pull: {e}")
+        print(f"No se pudo actualizar el programa: {e}")
+        return False
 
 actualizar_programa()
 
