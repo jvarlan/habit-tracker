@@ -1,4 +1,23 @@
 import os
+import subprocess
+
+
+def actualizar_programa():
+    try:
+        resultado = subprocess.run(
+            ["git", "pull"],
+            capture_output=True,
+            text=True
+        )
+
+        print(resultado.stdout)
+
+        if resultado.returncode != 0:
+            print("Error al actualizar el programa:")
+            print(resultado.stderr)
+
+    except Exception as e:
+        print(f"No se pudo ejecutar git pull: {e}")
 
 # Crear la carpeta de datos si no existe
 os.makedirs("datos", exist_ok=True)
