@@ -19,6 +19,8 @@ def actualizar_programa():
     except Exception as e:
         print(f"No se pudo ejecutar git pull: {e}")
 
+actualizar_programa()
+
 # Crear la carpeta de datos si no existe
 os.makedirs("datos", exist_ok=True)
 
