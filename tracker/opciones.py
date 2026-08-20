@@ -729,7 +729,11 @@ def opcion_modi_tempo():
                 temporizador = dev_nombre_habito_id(item[1])
                 tiempo = item[2]
                 fecha = item[3]
-                print(f"{i:<4} {fecha:<12} {tiempo:<12} {temporizador}")
+                fecha_formateada = datetime.strptime(
+                                        fecha,
+                                        "%Y-%m-%d"
+                                    ).strftime("%d/%m/%Y")
+                print(f"{i:<4} {fecha_formateada:<12} {tiempo:<12} {temporizador}")
             print("─────────────────────────────────────────────────")
 
             print_color(volver, CIAN)
