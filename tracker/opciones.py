@@ -307,8 +307,7 @@ def opcion_registro():
             else:
 
                 objetivo = input_color(
-                    "\nEl objetivo debe ser un número mayor que 0. "
-                    "Introduce un valor válido: ",
+                    "\nIntroduce un valor válido (HH:MM:SS): ",
                     ROJO
                 )
 

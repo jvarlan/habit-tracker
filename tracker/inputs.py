@@ -113,10 +113,10 @@ def pedir_fecha_temp():
                 fecha_hoy = datetime.now().date()
 
                 if fecha > fecha_hoy:
-                    fecha = input(f"\n{ROJO}La fecha no puede ser superior a la fecha actual. Introduce una fecha válida: {RESET}")
+                    fecha = input(f"\n{ROJO}No puedes introducir una fecha superior a la actual. Introduce una válida: {RESET}")
                     continue
             except ValueError:
-                fecha = input(f"\n{ROJO}Formato incorrecto. Debe ser DD/MM/AAAA. Introduce una fecha válida: {RESET}")
+                fecha = input(f"\n{ROJO}Introduce una fecha válida (DD/MM/AAAA): {RESET}")
                 continue
         return fecha
 def pedir_habito_borrar():
@@ -179,12 +179,11 @@ def pedir_categoria_borrar():
                
         borrar = dev_categoria_correcta(borrar)
 
-        print_color(
+        print(
                 f"\nLa categoría {borrar} contiene:\n"
                 f"  • {len(lista_objetivos_categoria)} objetivos\n"
                 f"  • {len(lista_habitos)} hábitos\n"
                 f"  • {len(lista_temporizadores)} registros de tiempo\n",
-                NARANJA,"\n"
             )
 
         print_color(
